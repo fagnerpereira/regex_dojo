@@ -16,10 +16,10 @@ announce() {
 announce "Running bundle install..."
 bundle check || bundle install
 
-announce "\nRunning npm install..."
-npm install
+announce "\nRunning bun install..."
+bun install
 
 announce "\nPreparing the database..."
-hanami db prepare
+bundle exec hanami db prepare
 
 announce "\n🌸 Setup complete!"

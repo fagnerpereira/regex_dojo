@@ -30,11 +30,18 @@ module RegexDojo
         user = users.by_pk(user_id).one
         new_xp = user.xp + xp_gained
         
-        # Simple Belt progression for MVP
-        new_belt = user.belt
-        if new_xp >= 200 && user.belt == "white"
-          new_belt = "yellow"
-        end
+        # Recalculate belt dynamically based on cumulative XP progression
+        new_belt = if new_xp >= 370
+                     "black"
+                   elsif new_xp >= 265
+                     "green"
+                   elsif new_xp >= 160
+                     "orange"
+                   elsif new_xp >= 75
+                     "yellow"
+                   else
+                     "white"
+                   end
 
         users.by_pk(user_id).command(:update).call(xp: new_xp, belt: new_belt)
         true
@@ -84,16 +91,17 @@ module RegexDojo
             id: c.id.to_s, # Stimulus uses string ID comparison
             title: c.title,
             difficulty: c.difficulty,
-            concept: "#{c.difficulty} Challenge",
-            lesson: c.description,
-            task: c.description,
+            concept: c.respond_to?(:concept) && c.concept ? c.concept : "#{c.difficulty} Challenge",
+            lesson: c.respond_to?(:lesson) && c.lesson ? c.lesson : c.description,
+            task: c.respond_to?(:task) && c.task ? c.task : c.description,
             test_string: test_string,
             hint: c.hint,
             xp: xp,
             test_cases: c.test_cases.map { |tc|
               {
                 input: tc.input,
-                should_match: !tc.expected_match.nil?
+                should_match: !tc.expected_match.nil?,
+                expected_match: tc.expected_match
               }
             }
           }

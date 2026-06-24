@@ -22,8 +22,11 @@ if File.exist?(challenges_path)
       challenge_id = challenges_relation.insert(
         title: c["title"],
         difficulty: c["difficulty"],
-        description: c["description"],
-        hint: c["hint"]
+        description: c["description"] || c["lesson"] || c["title"],
+        hint: c["hint"],
+        concept: c["concept"],
+        lesson: c["lesson"],
+        task: c["task"]
       )
 
       # Insert test cases for this challenge

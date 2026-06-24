@@ -9,7 +9,7 @@ module RegexDojo
         @title = title
       end
 
-      def template(&block)
+      def view_template
         doctype
 
         html(lang: "en") do
@@ -29,7 +29,7 @@ module RegexDojo
           end
 
           body(class: "bg-dojo-bg text-white font-ui min-h-screen flex flex-col antialiased selection:bg-dojo-cyan/30 selection:text-dojo-cyan") do
-            main(class: "flex-1 flex flex-col", &block)
+            main(class: "flex-1 flex flex-col") { yield }
           end
         end
       end

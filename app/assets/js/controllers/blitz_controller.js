@@ -84,8 +84,13 @@ export default class extends Controller {
     }
 
     const allPassed = this.currentKata.test_cases.every((tc) => {
-      const matched = regex.test(tc.input);
-      return (tc.should_match && matched) || (!tc.should_match && !matched);
+      try {
+        const matchData = tc.input.match(regex);
+        const userMatch = matchData ? matchData[0] : null;
+        return (userMatch === (tc.expected_match || null));
+      } catch (_) {
+        return false;
+      }
     });
 
     if (allPassed) {
@@ -172,7 +177,7 @@ export default class extends Controller {
     // Populate game panel
     if (this.hasConceptTarget) this.conceptTarget.textContent = kata.concept || "";
     if (this.hasKataTitleTarget) this.kataTitleTarget.textContent = kata.title;
-    if (this.hasTaskTarget) this.taskTarget.textContent = kata.task || "";
+    if (this.hasTaskTarget) this.taskTarget.innerHTML = kata.task || "";
     if (this.hasXpBadgeTarget) this.xpBadgeTarget.textContent = `+${kata.xp} XP`;
     if (this.hasTestStringTarget) this.testStringTarget.textContent = kata.test_string;
     if (this.hasPatternInputTarget) {

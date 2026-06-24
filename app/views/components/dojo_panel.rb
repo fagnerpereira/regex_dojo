@@ -17,39 +17,57 @@ module RegexDojo
         def view_template
           div(class: "grid grid-cols-1 lg:grid-cols-12 gap-8", data: { controller: "dojo" }) do
             # Left: Challenge Navigation List (4 cols)
-            div(class: "lg:col-span-4 flex flex-col gap-3 bg-dojo-surface border border-dojo-border p-4 rounded-xl max-h-[600px] overflow-y-auto") do
-              h3(class: "text-sm font-mono font-semibold uppercase tracking-wider text-dojo-cyan mb-2") { "🥋 White Belt Katas" }
+            div(class: "lg:col-span-4 flex flex-col gap-4 bg-dojo-surface border border-dojo-border p-4 rounded-xl max-h-[600px] overflow-y-auto") do
+              belts = [
+                { name: "White Belt", icon: "🥋", color_class: "text-white border-white/20 bg-white/5 shadow-white/5", index_range: 0..2 },
+                { name: "Yellow Belt", icon: "🌟", color_class: "text-dojo-gold border-dojo-gold/20 bg-dojo-gold/5 shadow-dojo-gold/5", index_range: 3..5 },
+                { name: "Orange Belt", icon: "🔥", color_class: "text-orange-400 border-orange-400/20 bg-orange-400/5 shadow-orange-400/5", index_range: 6..8 },
+                { name: "Green Belt", icon: "🍃", color_class: "text-dojo-green border-dojo-green/20 bg-dojo-green/5 shadow-dojo-green/5", index_range: 9..11 },
+                { name: "Black Belt", icon: "💀", color_class: "text-purple-400 border-purple-400/20 bg-purple-400/5 shadow-purple-400/5", index_range: 12..14 }
+              ]
 
-              @katas.each_with_index do |kata, index|
-                solved = @solved_kata_ids.include?(kata[:id])
+              belts.each do |belt|
+                belt_katas = @katas.each_with_index.select { |_, idx| belt[:index_range].include?(idx) }
+                next if belt_katas.empty?
 
-                button(
-                  class: "w-full text-left p-3 rounded-lg border border-transparent transition-all duration-150 flex items-center justify-between hover:bg-dojo-bg hover:border-dojo-border",
-                  data: {
-                    action: "click->dojo#selectKata",
-                    dojo_target: "kataButton",
-                    kata_id: kata[:id],
-                    kata_title: kata[:title],
-                    kata_concept: kata[:concept],
-                    kata_lesson: kata[:lesson],
-                    kata_test_string: kata[:test_string],
-                    kata_task: kata[:task],
-                    kata_hint: kata[:hint],
-                    kata_xp: kata[:xp],
-                    kata_solved: solved.to_s,
-                    # JSON test cases for client side check
-                    kata_test_cases: kata[:test_cases].to_json
-                  }
-                ) do
-                  div(class: "flex flex-col") do
-                    span(class: "text-xs text-dojo-cyan font-mono") { "Challenge #{index + 1}" }
-                    span(class: "text-sm font-semibold text-white") { kata[:title] }
+                div(class: "flex flex-col gap-2") do
+                  div(class: "flex items-center gap-2 px-3 py-1.5 rounded-lg border shadow-sm #{belt[:color_class]} mb-1") do
+                    span(class: "text-sm") { belt[:icon] }
+                    span(class: "text-xs font-mono font-semibold uppercase tracking-wider") { belt[:name] }
                   end
-                  div(class: "flex items-center gap-2") do
-                    if solved
-                      span(class: "kata-solved-badge") { "✅" }
+
+                  belt_katas.each do |kata, index|
+                    solved = @solved_kata_ids.include?(kata[:id])
+
+                    button(
+                      class: "w-full text-left p-3 rounded-lg border border-transparent transition-all duration-150 flex items-center justify-between hover:bg-dojo-bg hover:border-dojo-border",
+                      data: {
+                        action: "click->dojo#selectKata",
+                        dojo_target: "kataButton",
+                        kata_id: kata[:id],
+                        kata_title: kata[:title],
+                        kata_concept: kata[:concept],
+                        kata_lesson: kata[:lesson],
+                        kata_test_string: kata[:test_string],
+                        kata_task: kata[:task],
+                        kata_hint: kata[:hint],
+                        kata_xp: kata[:xp],
+                        kata_solved: solved.to_s,
+                        # JSON test cases for client side check
+                        kata_test_cases: kata[:test_cases].to_json
+                      }
+                    ) do
+                      div(class: "flex flex-col") do
+                        span(class: "text-xs text-dojo-cyan font-mono") { "Challenge #{index + 1}" }
+                        span(class: "text-sm font-semibold text-white") { kata[:title] }
+                      end
+                      div(class: "flex items-center gap-2") do
+                        if solved
+                          span(class: "kata-solved-badge") { "✅" }
+                        end
+                        span(class: "text-xs font-mono text-dojo-gold") { "+#{kata[:xp]} XP" }
+                      end
                     end
-                    span(class: "text-xs font-mono text-dojo-gold") { "+#{kata[:xp]} XP" }
                   end
                 end
               end

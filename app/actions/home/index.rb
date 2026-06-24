@@ -43,8 +43,10 @@ module RegexDojo
             blitz_challenges: blitz_challenges
           )
 
+          # Render the dashboard *into* the layout's buffer. `render` writes
+          # directly (returns nil) — returning a string here would be escaped.
           html = layout.call do |l|
-            dashboard.call
+            l.render(dashboard)
           end
 
           response.body = html

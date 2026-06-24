@@ -13,7 +13,7 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
     {
       "REQUEST_METHOD" => "GET",
       "router.params" => { id: 1 },
-      "rack.input" => StringIO.new({ pattern: "hanami" }.to_json),
+      "rack.input" => StringIO.new({ pattern: "ruby" }.to_json),
       "rack.session" => { "session_id" => session_id }
     }
   end

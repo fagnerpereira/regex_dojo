@@ -1,4 +1,6 @@
-import "../css/app.css";
+// CSS is compiled separately by the Tailwind CLI (see Procfile.dev `css`
+// process) → public/assets/app.css, linked directly in the layout.
+// Do NOT import it here: esbuild can't resolve Tailwind v4's `@import "tailwindcss"`.
 
 // Hotwire Turbo — full page drive, frames, and streams
 import "@hotwired/turbo";

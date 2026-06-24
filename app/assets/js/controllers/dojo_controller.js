@@ -192,8 +192,8 @@ export default class extends Controller {
     // Populate the right panel
     this.conceptTarget.textContent = this.currentKata.concept;
     this.titleTarget.textContent = this.currentKata.title;
-    this.lessonTarget.textContent = this.currentKata.lesson;
-    this.taskTarget.textContent = this.currentKata.task;
+    this.lessonTarget.innerHTML = this.currentKata.lesson;
+    this.taskTarget.innerHTML = this.currentKata.task;
     this.xpBadgeTarget.textContent = `+${this.currentKata.xp} XP`;
     this.highlightAreaTarget.textContent = this.currentKata.testString;
 
@@ -243,8 +243,8 @@ export default class extends Controller {
       const expected = document.createElement("span");
       expected.className = "text-[10px] font-mono text-gray-500 mt-0.5";
       expected.textContent = tc.should_match
-        ? "→ should match"
-        : "→ should NOT match";
+        ? `→ expected: "${tc.expected_match || ""}"`
+        : "→ expected: no match";
 
       details.appendChild(input);
       details.appendChild(expected);
@@ -267,22 +267,36 @@ export default class extends Controller {
       if (!card) return;
 
       const icon = card.querySelector(".test-case-icon");
+      const details = card.querySelector("div");
 
-      let matched;
+      // Remove any existing user-match span
+      const oldUserMatch = details.querySelector(".user-match-result");
+      if (oldUserMatch) oldUserMatch.remove();
+
+      let userMatch = null;
+      let passed = false;
       try {
         const re = new RegExp(rawPattern);
-        matched = re.test(tc.input);
+        const matchData = tc.input.match(re);
+        userMatch = matchData ? matchData[0] : null;
+        passed = (userMatch === (tc.expected_match || null));
       } catch (_) {
-        matched = false;
+        passed = false;
       }
-
-      const passed =
-        (tc.should_match && matched) || (!tc.should_match && !matched);
 
       icon.textContent = passed ? "✅" : "❌";
       card.classList.toggle("border-green-500/30", passed);
       card.classList.toggle("border-red-500/30", !passed);
       card.classList.toggle("border-dojo-border/60", false);
+
+      const userMatchSpan = document.createElement("span");
+      userMatchSpan.className = `user-match-result text-[10px] font-mono mt-0.5 ${
+        passed ? "text-dojo-green" : "text-dojo-red font-bold"
+      }`;
+      userMatchSpan.textContent = userMatch !== null
+        ? `got: "${userMatch}"`
+        : "got: no match";
+      details.appendChild(userMatchSpan);
     });
   }
 
@@ -293,8 +307,9 @@ export default class extends Controller {
     return this.testCases.every((tc) => {
       try {
         const re = new RegExp(rawPattern);
-        const matched = re.test(tc.input);
-        return (tc.should_match && matched) || (!tc.should_match && !matched);
+        const matchData = tc.input.match(re);
+        const userMatch = matchData ? matchData[0] : null;
+        return (userMatch === (tc.expected_match || null));
       } catch (_) {
         return false;
       }
@@ -309,6 +324,9 @@ export default class extends Controller {
     cards.forEach((card) => {
       const icon = card.querySelector(".test-case-icon");
       if (icon) icon.textContent = "⬜";
+      const details = card.querySelector("div");
+      const oldUserMatch = details.querySelector(".user-match-result");
+      if (oldUserMatch) oldUserMatch.remove();
       card.classList.remove("border-green-500/30", "border-red-500/30");
       card.classList.add("border-dojo-border/60");
     });
@@ -380,7 +398,7 @@ export default class extends Controller {
     this._clearError();
 
     // Show success banner
-    const xpGained = data?.xp ?? this.currentKata.xp;
+    const xpGained = data?.xp_awarded ?? this.currentKata.xp;
     this._showSuccessBanner(xpGained);
 
     // Shake-success animation on the card
@@ -388,6 +406,36 @@ export default class extends Controller {
 
     // Update HUD XP display
     this._updateHudXP(xpGained);
+
+    // Update HUD belt badge dynamically
+    const beltBadge = document.getElementById("hud-belt-badge");
+    if (beltBadge && data.belt) {
+      const newBeltText = `${data.belt.charAt(0).toUpperCase() + data.belt.slice(1)} Belt`;
+      if (beltBadge.textContent.trim() !== newBeltText) {
+        beltBadge.textContent = newBeltText;
+
+        const beltStyles = {
+          white: ["text-white", "border-white/20", "bg-white/5", "shadow-white/5"],
+          yellow: ["text-dojo-gold", "border-dojo-gold/20", "bg-dojo-gold/5", "shadow-dojo-gold/5"],
+          orange: ["text-orange-400", "border-orange-400/20", "bg-orange-400/5", "shadow-orange-400/5"],
+          green: ["text-dojo-green", "border-dojo-green/20", "bg-dojo-green/5", "shadow-dojo-green/5"],
+          black: ["text-purple-400", "border-purple-400/20", "bg-purple-400/5", "shadow-purple-400/5"]
+        };
+
+        // Reset any existing belt classes
+        Object.values(beltStyles).flat().forEach(cls => beltBadge.classList.remove(cls));
+
+        // Add corresponding style classes
+        const newClasses = beltStyles[data.belt.toLowerCase()] || ["text-dojo-cyan", "border-dojo-border", "bg-dojo-bg"];
+        beltBadge.classList.add(...newClasses);
+
+        // Play level up celebration bounce
+        beltBadge.classList.add("animate-bounce");
+        setTimeout(() => {
+          beltBadge.classList.remove("animate-bounce");
+        }, 2500);
+      }
+    }
 
     // Mark the sidebar button as completed
     this._markKataComplete(this.currentKata.id);

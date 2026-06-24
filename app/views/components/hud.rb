@@ -10,7 +10,7 @@ module RegexDojo
           @user = user # users SQLite struct
         end
 
-        def template
+        def view_template
           div(id: "hud-bar", class: "sticky top-0 z-50 bg-dojo-surface/80 backdrop-blur-md border-b border-dojo-border py-4 px-6 shadow-lg shadow-dojo-bg/20") do
             div(class: "max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4") do
               # Logo / Title
@@ -21,17 +21,27 @@ module RegexDojo
 
               # XP and Belt Progress
               div(class: "flex-1 max-w-md w-full flex items-center gap-4") do
+                # Dynamic styling based on current belt level
+                belt_styles = {
+                  "white" => "text-white border-white/20 bg-white/5 shadow-white/5",
+                  "yellow" => "text-dojo-gold border-dojo-gold/20 bg-dojo-gold/5 shadow-dojo-gold/5",
+                  "orange" => "text-orange-400 border-orange-400/20 bg-orange-400/5 shadow-orange-400/5",
+                  "green" => "text-dojo-green border-dojo-green/20 bg-dojo-green/5 shadow-dojo-green/5",
+                  "black" => "text-purple-400 border-purple-400/20 bg-purple-400/5 shadow-purple-400/5"
+                }
+                current_belt_style = belt_styles[@user[:belt].to_s.downcase] || "text-dojo-cyan border-dojo-border bg-dojo-bg"
+
                 # Current Belt Badge
-                span(class: "px-3 py-1 text-xs font-mono font-semibold uppercase tracking-wider rounded border border-dojo-border bg-dojo-bg text-dojo-cyan shadow-sm shadow-dojo-cyan/10") do
+                span(
+                  id: "hud-belt-badge",
+                  class: "px-3 py-1 text-xs font-mono font-semibold uppercase tracking-wider rounded border shadow-sm transition-all duration-500 #{current_belt_style}"
+                ) do
                   "#{@user[:belt].capitalize} Belt"
                 end
 
                 # Progress Bar
                 div(class: "flex-grow bg-dojo-bg border border-dojo-border h-4 rounded-full overflow-hidden p-[2px] relative") do
-                  # Determine percentage based on current belt levels
-                  # Let's say White Belt requires 200 XP to level up to Yellow.
-                  # Simple math for MVP: % of current level (max 200 XP for White)
-                  xp_limit = 200
+                  xp_limit = 520
                   percentage = [(@user[:xp].to_f / xp_limit * 100).round, 100].min
 
                   div(
@@ -42,7 +52,7 @@ module RegexDojo
 
                 # XP Label
                 span(class: "font-mono text-sm text-dojo-gold min-w-[70px] text-right") do
-                  "#{@user[:xp]}/200 XP"
+                  "#{@user[:xp]}/520 XP"
                 end
               end
 
