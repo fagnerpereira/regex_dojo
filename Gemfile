@@ -27,6 +27,7 @@ group :development, :test do
   gem "dotenv"
   # Syntax highlighting SQL logs
   gem "rouge"
+  gem "standard"
 end
 
 group :cli, :development do

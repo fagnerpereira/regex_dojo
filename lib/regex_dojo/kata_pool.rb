@@ -13,14 +13,14 @@ module RegexDojo
         task: "Write a pattern that matches the literal word 'dog'.",
         hint: "Just type 'dog' without any other characters.",
         test_cases: [
-          { input: "my dog is here", should_match: true },
-          { input: "no dogs allowed", should_match: true },
-          { input: "my cat is cool", should_match: false }
+          {input: "my dog is here", should_match: true},
+          {input: "no dogs allowed", should_match: true},
+          {input: "my cat is cool", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "my dog is here", expected_match: "dog" },
-          { input: "no dogs allowed", expected_match: "dog" },
-          { input: "my cat is cool", expected_match: nil }
+          {input: "my dog is here", expected_match: "dog"},
+          {input: "no dogs allowed", expected_match: "dog"},
+          {input: "my cat is cool", expected_match: nil}
         ],
         xp: 20
       },
@@ -34,14 +34,14 @@ module RegexDojo
         task: "Write a pattern that matches 'cat' and 'cot' using the wildcard dot.",
         hint: "Use a dot to replace the middle vowel: c.t",
         test_cases: [
-          { input: "a cat ran by", should_match: true },
-          { input: "slept on a cot", should_match: true },
-          { input: "drank from a cup", should_match: false }
+          {input: "a cat ran by", should_match: true},
+          {input: "slept on a cot", should_match: true},
+          {input: "drank from a cup", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "a cat ran by", expected_match: "cat" },
-          { input: "slept on a cot", expected_match: "cot" },
-          { input: "drank from a cup", expected_match: nil }
+          {input: "a cat ran by", expected_match: "cat"},
+          {input: "slept on a cot", expected_match: "cot"},
+          {input: "drank from a cup", expected_match: nil}
         ],
         xp: 25
       },
@@ -55,14 +55,14 @@ module RegexDojo
         task: "Match 'bat' and 'bet' using a character set, but do not match 'bit'.",
         hint: "Put the valid vowels inside square brackets: b[ae]t",
         test_cases: [
-          { input: "hit with a bat", should_match: true },
-          { input: "placed a bet", should_match: true },
-          { input: "a tiny bit", should_match: false }
+          {input: "hit with a bat", should_match: true},
+          {input: "placed a bet", should_match: true},
+          {input: "a tiny bit", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "hit with a bat", expected_match: "bat" },
-          { input: "placed a bet", expected_match: "bet" },
-          { input: "a tiny bit", expected_match: nil }
+          {input: "hit with a bat", expected_match: "bat"},
+          {input: "placed a bet", expected_match: "bet"},
+          {input: "a tiny bit", expected_match: nil}
         ],
         xp: 30
       },
@@ -76,14 +76,14 @@ module RegexDojo
         task: "Match any single digit between 0 and 9.",
         hint: "Use [0-9] to represent the range of digits.",
         test_cases: [
-          { input: "I bought 3 apples", should_match: true },
-          { input: "Agent 007", should_match: true },
-          { input: "no numbers here", should_match: false }
+          {input: "I bought 3 apples", should_match: true},
+          {input: "Agent 007", should_match: true},
+          {input: "no numbers here", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "I bought 3 apples", expected_match: "3" },
-          { input: "Agent 007", expected_match: "0" },
-          { input: "no numbers here", expected_match: nil }
+          {input: "I bought 3 apples", expected_match: "3"},
+          {input: "Agent 007", expected_match: "0"},
+          {input: "no numbers here", expected_match: nil}
         ],
         xp: 30
       },
@@ -97,14 +97,14 @@ module RegexDojo
         task: "Match any character that is NOT a number between 0 and 9.",
         hint: "Use [^0-9] to negate the digit range.",
         test_cases: [
-          { input: "X", should_match: true },
-          { input: "$", should_match: true },
-          { input: "5", should_match: false }
+          {input: "X", should_match: true},
+          {input: "$", should_match: true},
+          {input: "5", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "X", expected_match: "X" },
-          { input: "$", expected_match: "$" },
-          { input: "5", expected_match: nil }
+          {input: "X", expected_match: "X"},
+          {input: "$", expected_match: "$"},
+          {input: "5", expected_match: nil}
         ],
         xp: 35
       },
@@ -118,12 +118,12 @@ module RegexDojo
         task: "Match 'cat' only when it starts the line.",
         hint: "Prepend the caret anchor to the literal word: ^cat",
         test_cases: [
-          { input: "cat is cute", should_match: true },
-          { input: "the copycat", should_match: false }
+          {input: "cat is cute", should_match: true},
+          {input: "the copycat", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "cat is cute", expected_match: "cat" },
-          { input: "the copycat", expected_match: nil }
+          {input: "cat is cute", expected_match: "cat"},
+          {input: "the copycat", expected_match: nil}
         ],
         xp: 35
       },
@@ -137,12 +137,12 @@ module RegexDojo
         task: "Match 'dog' only when it ends the line.",
         hint: "Append the dollar anchor to the literal word: dog$",
         test_cases: [
-          { input: "my pet dog", should_match: true },
-          { input: "dog training", should_match: false }
+          {input: "my pet dog", should_match: true},
+          {input: "dog training", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "my pet dog", expected_match: "dog" },
-          { input: "dog training", expected_match: nil }
+          {input: "my pet dog", expected_match: "dog"},
+          {input: "dog training", expected_match: nil}
         ],
         xp: 35
       },
@@ -156,14 +156,14 @@ module RegexDojo
         task: "Match any string that starts with 'go', has one or more 'o's, and ends with 'al'.",
         hint: "Use the plus sign after the 'o' character: go+al",
         test_cases: [
-          { input: "goal", should_match: true },
-          { input: "goooal", should_match: true },
-          { input: "gal", should_match: false }
+          {input: "goal", should_match: true},
+          {input: "goooal", should_match: true},
+          {input: "gal", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "goal", expected_match: "goal" },
-          { input: "goooal", expected_match: "goooal" },
-          { input: "gal", expected_match: nil }
+          {input: "goal", expected_match: "goal"},
+          {input: "goooal", expected_match: "goooal"},
+          {input: "gal", expected_match: nil}
         ],
         xp: 40
       },
@@ -177,14 +177,14 @@ module RegexDojo
         task: "Match 'ac', 'abc', or 'abbc' using the zero-or-more star quantifier.",
         hint: "Place the star quantifier after the 'b' character: ab*c",
         test_cases: [
-          { input: "ac", should_match: true },
-          { input: "abc", should_match: true },
-          { input: "abbc", should_match: true }
+          {input: "ac", should_match: true},
+          {input: "abc", should_match: true},
+          {input: "abbc", should_match: true}
         ],
         test_cases_for_validation: [
-          { input: "ac", expected_match: "ac" },
-          { input: "abc", expected_match: "abc" },
-          { input: "abbc", expected_match: "abbc" }
+          {input: "ac", expected_match: "ac"},
+          {input: "abc", expected_match: "abc"},
+          {input: "abbc", expected_match: "abbc"}
         ],
         xp: 40
       },
@@ -198,16 +198,16 @@ module RegexDojo
         task: "Match 'xyyz' and 'xyyyz' using a range quantifier for 'y' between 2 and 3 repetitions.",
         hint: "Specify the range {2,3} after the 'y' character: xy{2,3}z",
         test_cases: [
-          { input: "xyyz", should_match: true },
-          { input: "xyyyz", should_match: true },
-          { input: "xyz", should_match: false },
-          { input: "xyyyyz", should_match: false }
+          {input: "xyyz", should_match: true},
+          {input: "xyyyz", should_match: true},
+          {input: "xyz", should_match: false},
+          {input: "xyyyyz", should_match: false}
         ],
         test_cases_for_validation: [
-          { input: "xyyz", expected_match: "xyyz" },
-          { input: "xyyyz", expected_match: "xyyyz" },
-          { input: "xyz", expected_match: nil },
-          { input: "xyyyyz", expected_match: nil }
+          {input: "xyyz", expected_match: "xyyz"},
+          {input: "xyyyz", expected_match: "xyyyz"},
+          {input: "xyz", expected_match: nil},
+          {input: "xyyyyz", expected_match: nil}
         ],
         xp: 45
       }

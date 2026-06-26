@@ -20,13 +20,13 @@ Built with **Hanami 3.0**, **Phlex** (component views), **SQLite**, and **RSpec*
 
 ## Core Files & Their Roles
 
-| File | Purpose |
-|------|---------|
-| `config/routes.rb` | Routes: `GET /` (home), `POST /kata/:id/check` (validate regex) |
-| `config/challenges.json` | Kata definitions (id, difficulty, title, description, hint, test_cases) |
-| `config/app.rb` | App config (sessions, cookies, middleware) |
-| `app/action.rb` | Base action with `Dry::Monads[:result]` included |
-| `lib/regex_dojo/kata_pool.rb` | Loads and manages challenges in memory |
+| File                          | Purpose                                                                 |
+| ----------------------------- | ----------------------------------------------------------------------- |
+| `config/routes.rb`            | Routes: `GET /` (home), `POST /kata/:id/check` (validate regex)         |
+| `config/challenges.json`      | Kata definitions (id, difficulty, title, description, hint, test_cases) |
+| `config/app.rb`               | App config (sessions, cookies, middleware)                              |
+| `app/action.rb`               | Base action with `Dry::Monads[:result]` included                        |
+| `lib/regex_dojo/kata_pool.rb` | Loads and manages challenges in memory                                  |
 
 ## Development Workflow
 
@@ -38,6 +38,7 @@ bundle exec hanami console  # Interactive shell
 ```
 
 **Key commands**:
+
 ```bash
 bundle exec rspec spec/actions/home/index_spec.rb                 # Single spec
 bundle exec rspec spec/actions/home/index_spec.rb:42 -f d         # Line + docs format
@@ -74,6 +75,7 @@ bundle exec hanami db reset                                        # Drop & recr
 ## What's Already in `~/.claude/CLAUDE.md`
 
 Your global setup covers:
+
 - TDD workflow (red → green → refactor)
 - Hanami/Rails patterns & conventions
 - Agent routing (test-writer, code-writer, debugger, etc.)

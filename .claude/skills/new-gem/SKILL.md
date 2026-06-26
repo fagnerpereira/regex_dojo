@@ -36,6 +36,7 @@ bundle gem GEM_NAME \
 ```
 
 Persist preferences globally so future runs don't prompt:
+
 ```bash
 bundle config set --global gem.test rspec
 bundle config set --global gem.linter standard
@@ -48,6 +49,7 @@ bundle config set --global gem.changelog true
 ## Step 2 — Complete the gemspec (generation leaves TODOs)
 
 Open `GEM_NAME.gemspec` and fix every `TODO`:
+
 - `summary` (one line), `description` (longer), `homepage`, `metadata["source_code_uri"]`,
   `metadata["changelog_uri"]`, `metadata["rubygems_mfa_required"] = "true"`
 - `required_ruby_version` — set to oldest version you'll support (`>= 3.1.0`)

@@ -44,32 +44,35 @@ erDiagram
 ## 2. Table Specifications
 
 ### `challenges`
+
 Stores the default list of Regex exercises.
 
-*   `id` (integer, Primary Key)
-*   `title` (string, Not Null) - E.g. "Literal Matching".
-*   `difficulty` (string, Not Null) - "Easy", "Medium", "Hard".
-*   `description` (text, Not Null) - Detailed instructions.
-*   `hint` (text, Nullable) - Hints for the user.
-*   `created_at` / `updated_at` (datetime)
+- `id` (integer, Primary Key)
+- `title` (string, Not Null) - E.g. "Literal Matching".
+- `difficulty` (string, Not Null) - "Easy", "Medium", "Hard".
+- `description` (text, Not Null) - Detailed instructions.
+- `hint` (text, Nullable) - Hints for the user.
+- `created_at` / `updated_at` (datetime)
 
 ### `test_cases`
+
 Stores the validation inputs and expected outputs for each challenge.
 
-*   `id` (integer, Primary Key)
-*   `challenge_id` (integer, Foreign Key pointing to `challenges.id`, Cascade Delete)
-*   `input` (text, Not Null) - The test string.
-*   `expected_match` (text, Nullable) - The exact substring expected to match. If null, indicates the string should *not* match.
-*   `created_at` / `updated_at` (datetime)
+- `id` (integer, Primary Key)
+- `challenge_id` (integer, Foreign Key pointing to `challenges.id`, Cascade Delete)
+- `input` (text, Not Null) - The test string.
+- `expected_match` (text, Nullable) - The exact substring expected to match. If null, indicates the string should _not_ match.
+- `created_at` / `updated_at` (datetime)
 
 ### `submissions`
+
 Logs user attempts for telemetry, stats, and progress tracking.
 
-*   `id` (integer, Primary Key)
-*   `challenge_id` (integer, Foreign Key pointing to `challenges.id`)
-*   `user_pattern` (text, Not Null) - The regex pattern inputted by the user.
-*   `is_passing` (boolean, Not Null) - Whether the pattern passed all test cases.
-*   `submitted_at` (datetime, Defaults to current time)
+- `id` (integer, Primary Key)
+- `challenge_id` (integer, Foreign Key pointing to `challenges.id`)
+- `user_pattern` (text, Not Null) - The regex pattern inputted by the user.
+- `is_passing` (boolean, Not Null) - Whether the pattern passed all test cases.
+- `submitted_at` (datetime, Defaults to current time)
 
 ---
 
@@ -78,6 +81,7 @@ Logs user attempts for telemetry, stats, and progress tracking.
 To implement this schema, generate and run migrations using Hanami CLI.
 
 ### Creating the Migrations
+
 Run the following commands inside your Hanami terminal environment:
 
 ```bash
@@ -89,6 +93,7 @@ bundle exec hanami db g migration create_submissions
 ### Migration Code Definitions
 
 #### `create_challenges` Migration
+
 ```ruby
 # config/db/migrate/XXXXXXXXXXXXXX_create_challenges.rb
 ROM::SQL.migration do
@@ -107,6 +112,7 @@ end
 ```
 
 #### `create_test_cases` Migration
+
 ```ruby
 # config/db/migrate/XXXXXXXXXXXXXX_create_test_cases.rb
 ROM::SQL.migration do
@@ -124,6 +130,7 @@ end
 ```
 
 #### `create_submissions` Migration
+
 ```ruby
 # config/db/migrate/XXXXXXXXXXXXXX_create_submissions.rb
 ROM::SQL.migration do
@@ -140,8 +147,11 @@ end
 ```
 
 ### Running the Database Migrations
+
 Execute the migration runner:
+
 ```bash
 bundle exec hanami db migrate
 ```
+
 This will apply the tables directly to your SQLite database file (`db/regex_dojo.sqlite`).

@@ -37,7 +37,9 @@ export default class extends Controller {
 
       // Find the sandbox pattern input and set its value
       setTimeout(() => {
-        const sandboxInput = document.querySelector('[data-sandbox-target="pattern"]');
+        const sandboxInput = document.querySelector(
+          '[data-sandbox-target="pattern"]',
+        );
         if (sandboxInput) {
           sandboxInput.value = pattern;
           sandboxInput.dispatchEvent(new Event("input", { bubbles: true }));

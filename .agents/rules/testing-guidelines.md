@@ -2,6 +2,7 @@
 description: Testing standards and quality guidelines for AI agents writing RSpec tests
 globs: spec/**/*_spec.rb
 ---
+
 # Testing Standards & Guidelines
 
 ## Useless & Low-Value Tests (DO NOT WRITE THEM)
@@ -58,5 +59,6 @@ yarn format                          # prettier/herb formatters (optional)
 ## Documentation Sync
 
 When making structural changes, features, or refactors:
+
 - Update relevant docs in `docs/`, `README.md`, `TODO.md`.
 - Keep `.agents/rules/` in sync with actual project conventions.

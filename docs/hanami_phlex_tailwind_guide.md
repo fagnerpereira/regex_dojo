@@ -9,6 +9,7 @@ This guide provides developer reference documentation for integrating Phlex view
 Phlex replaces standard templates (like ERB) with object-oriented Ruby classes that generate HTML. This provides performance, clean testing, type safety, and full Ruby control (mixins, loops, conditionals) over the UI.
 
 ### Defining a Phlex Component
+
 In Hanami 3.0, custom UI components are stored in `app/views/components/` or inside slice-specific directories. A typical Phlex component inherits from `Phlex::HTML` and defines a `view_template` method.
 
 ```ruby
@@ -28,7 +29,7 @@ module Views
         div(class: "p-6 max-w-sm bg-white rounded-xl shadow-md space-y-4 border border-gray-100") do
           h2(class: "text-xl font-medium text-black") { @title }
           p(class: "text-gray-500") { @description }
-          
+
           if @link_url
             a(
               href: @link_url,
@@ -45,6 +46,7 @@ end
 ```
 
 ### Rendering Components Inside Actions/Views
+
 To render a component in your main views or actions, simply instantiate it and call it, or render it inside another Phlex class:
 
 ```ruby
@@ -63,23 +65,25 @@ render Views::Components::Card.new(
 Tailwind CSS provides low-level utility classes to construct layouts. Here is a cheat sheet for the most common layout controls needed for UI design.
 
 ### Flexbox Layouts
+
 Flexbox is ideal for single-axis alignments (menus, rows of items, centered blocks).
 
-| Class | CSS Equivalent | Description |
-| :--- | :--- | :--- |
-| `flex` | `display: flex;` | Starts a flexbox container |
-| `flex-row` | `flex-direction: row;` | Lays out items horizontally (default) |
-| `flex-col` | `flex-direction: column;` | Lays out items vertically |
-| `flex-wrap` | `flex-wrap: wrap;` | Wraps items onto multiple lines |
-| `justify-start` | `justify-content: flex-start;` | Aligns items to the start |
-| `justify-center` | `justify-content: center;` | Centers items along the main axis |
-| `justify-between`| `justify-content: space-between;` | Spends leftover space evenly between items |
-| `items-center` | `align-items: center;` | Centers items along the cross axis |
-| `gap-4` | `gap: 1rem;` | Adds 1rem spacing between sibling items |
-| `flex-1` | `flex: 1 1 0%;` | Allows an item to grow and shrink to fill space |
-| `flex-shrink-0`| `flex-shrink: 0;` | Prevents an item from shrinking |
+| Class             | CSS Equivalent                    | Description                                     |
+| :---------------- | :-------------------------------- | :---------------------------------------------- |
+| `flex`            | `display: flex;`                  | Starts a flexbox container                      |
+| `flex-row`        | `flex-direction: row;`            | Lays out items horizontally (default)           |
+| `flex-col`        | `flex-direction: column;`         | Lays out items vertically                       |
+| `flex-wrap`       | `flex-wrap: wrap;`                | Wraps items onto multiple lines                 |
+| `justify-start`   | `justify-content: flex-start;`    | Aligns items to the start                       |
+| `justify-center`  | `justify-content: center;`        | Centers items along the main axis               |
+| `justify-between` | `justify-content: space-between;` | Spends leftover space evenly between items      |
+| `items-center`    | `align-items: center;`            | Centers items along the cross axis              |
+| `gap-4`           | `gap: 1rem;`                      | Adds 1rem spacing between sibling items         |
+| `flex-1`          | `flex: 1 1 0%;`                   | Allows an item to grow and shrink to fill space |
+| `flex-shrink-0`   | `flex-shrink: 0;`                 | Prevents an item from shrinking                 |
 
 #### Example: Responsive Navigation Bar (Phlex + Tailwind CSS)
+
 ```ruby
 nav(class: "flex flex-col md:flex-row items-center justify-between p-4 bg-gray-900 text-white gap-4") do
   div(class: "flex items-center gap-2") do
@@ -94,18 +98,20 @@ end
 ```
 
 ### Grid Layouts
+
 Grid is best for two-dimensional layouts (cards, dashboards, sidebars).
 
-| Class | Description |
-| :--- | :--- |
-| `grid` | Starts a grid container |
-| `grid-cols-1` | 1-column layout |
+| Class            | Description                              |
+| :--------------- | :--------------------------------------- |
+| `grid`           | Starts a grid container                  |
+| `grid-cols-1`    | 1-column layout                          |
 | `md:grid-cols-2` | 2-column layout on medium screens and up |
-| `lg:grid-cols-3` | 3-column layout on large screens and up |
-| `gap-6` | Spacing of 1.5rem between grid cells |
-| `col-span-2` | Makes an element span 2 columns |
+| `lg:grid-cols-3` | 3-column layout on large screens and up  |
+| `gap-6`          | Spacing of 1.5rem between grid cells     |
+| `col-span-2`     | Makes an element span 2 columns          |
 
 #### Example: Responsive Card Grid
+
 ```ruby
 div(class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6") do
   render Views::Components::Card.new(title: "Level 1", description: "Literal matching")

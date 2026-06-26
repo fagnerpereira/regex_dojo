@@ -2,6 +2,7 @@
 description: Layered review methodology and verdict rules for reviewing changes in Anonymous Pix
 globs: **/*
 ---
+
 # Code Review Principles
 
 Adapted for Anonymous Pix from GitLab's review playbook. Use when reviewing a diff,
@@ -33,6 +34,7 @@ Question whether each extra change is genuinely load-bearing.
 When a diff modifies existing code, verify the current state from an
 authoritative source before claiming a discrepancy. NEVER infer the pre-change
 state from diff context alone. Examples:
+
 - Migration `down`/schema: check `db/schema.rb` on the base branch (`git show main:db/schema.rb`), not the diff.
 - Method/behavior changes: read the actual file on `main`, not just the surrounding hunk.
 

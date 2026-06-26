@@ -6,6 +6,7 @@ many techniques are one-liners here that take ceremony in Java.
 ## Composing Methods
 
 **Extract Method** — the workhorse.
+
 ```ruby
 # Before                              # After
 def print_owing                       def print_owing
@@ -13,6 +14,7 @@ def print_owing                       def print_owing
   puts "amount: #{outstanding}"         print_details(outstanding)
 end                                   end
 ```
+
 Name the method after intent, not mechanics. Private methods are free.
 
 **Inline Method** — body clearer than the name → inline it. Kills Lazy Class
@@ -74,6 +76,7 @@ return values → one class with attributes (collapse STI you didn't need).
 **Consolidate Conditional Expression** — multiple checks, same result → one
 predicate method joining them.
 **Replace Nested Conditional with Guard Clauses** — Ruby loves this:
+
 ```ruby
 def pay_amount
   return deceased_amount if deceased?
@@ -82,10 +85,12 @@ def pay_amount
   normal_pay_amount
 end
 ```
+
 **Remove Control Flag** — use `break`/`return`/`find` instead of `found = true`.
 **Replace Conditional with Polymorphism** — case/when on type → method per type.
 Lightweight Ruby alternative: hash dispatch `RATES.fetch(plan).call(usage)`.
 **Introduce Null Object** —
+
 ```ruby
 class GuestUser
   def name = "Guest"
@@ -93,6 +98,7 @@ class GuestUser
 end
 def current_user = super || GuestUser.new
 ```
+
 Kills scattered `user&.name || "Guest"`.
 **Introduce Assertion** — Ruby: raise early with a message; in Rails models
 prefer validations + DB constraints over inline assertions.
@@ -133,6 +139,7 @@ is almost always better (no single-inheritance slot consumed).
 (`it_behaves_like "a notifier"`) IS the interface.
 **Collapse Hierarchy** — subclass ≈ superclass → merge (kills Speculative Generality).
 **Form Template Method** — same algorithm shape, different steps:
+
 ```ruby
 class Report
   def generate = [header, body, footer].join("\n")  # template
@@ -140,6 +147,7 @@ class Report
   def header = raise NotImplementedError
 end
 ```
+
 Ruby alternative: pass blocks/procs for the varying steps.
 **Replace Inheritance with Delegation** — Refused Bequest fix. Ruby:
 `SimpleDelegator`, or Forwardable's `def_delegators`.

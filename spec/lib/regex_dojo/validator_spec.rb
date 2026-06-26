@@ -6,15 +6,15 @@ require_relative "../../../lib/regex_dojo/validator"
 RSpec.describe RegexDojo::Validator do
   let(:test_cases) do
     [
-      { input: "the black cat", expected_match: "cat" },
-      { input: "dogs are cool", expected_match: nil }
+      {input: "the black cat", expected_match: "cat"},
+      {input: "dogs are cool", expected_match: nil}
     ]
   end
 
   describe ".validate" do
     context "with a valid passing pattern" do
       it "returns a passing result" do
-        result = described_index = described_class.validate("cat", test_cases)
+        result = described_class.validate("cat", test_cases)
         expect(result.passing?).to be(true)
         expect(result.test_results[0][:passed]).to be(true)
         expect(result.test_results[1][:passed]).to be(true)

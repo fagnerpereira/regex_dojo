@@ -36,23 +36,23 @@ canonical example.
 
 ## Quick dissolution table (full version + code in references/)
 
-| You're about to write... | Use instead |
-|---|---|
-| Strategy classes | A lambda/proc, method object, or hash dispatch |
-| Template Method hierarchy | Module with hook methods, or yield a block |
-| Observer infrastructure | AR callbacks (same-model), Turbo broadcasts (UI), ActiveSupport::Notifications (cross-cutting) |
-| Singleton class | A module with module_function, or Rails config/CurrentAttributes |
-| Decorator chain | SimpleDelegator, or a helper/partial (view concerns) |
-| Factory Method classes | `Payment.for(type)` class method; delegated_type |
-| Command objects | A method object PORO with #call (= legit service object) |
-| Adapter | A thin wrapper class — this one survives intact in Ruby |
-| Facade | A module function orchestrating subsystems — survives intact |
-| Builder | Keyword args + with_options; AR's `new` + block |
-| State machine | enum + guard methods; state classes only when transitions carry behavior |
-| Iterator | NEVER — Enumerable + each IS the pattern |
-| Visitor | Pattern matching (`case ... in`) or double-dispatch via duck typing |
-| Proxy | method_missing + define_method, or SimpleDelegator |
-| Chain of Responsibility | Array of handlers + `find { |h| h.handles?(req) }` |
+| You're about to write...  | Use instead                                                                                    |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | --- | ------------------ |
+| Strategy classes          | A lambda/proc, method object, or hash dispatch                                                 |
+| Template Method hierarchy | Module with hook methods, or yield a block                                                     |
+| Observer infrastructure   | AR callbacks (same-model), Turbo broadcasts (UI), ActiveSupport::Notifications (cross-cutting) |
+| Singleton class           | A module with module_function, or Rails config/CurrentAttributes                               |
+| Decorator chain           | SimpleDelegator, or a helper/partial (view concerns)                                           |
+| Factory Method classes    | `Payment.for(type)` class method; delegated_type                                               |
+| Command objects           | A method object PORO with #call (= legit service object)                                       |
+| Adapter                   | A thin wrapper class — this one survives intact in Ruby                                        |
+| Facade                    | A module function orchestrating subsystems — survives intact                                   |
+| Builder                   | Keyword args + with_options; AR's `new` + block                                                |
+| State machine             | enum + guard methods; state classes only when transitions carry behavior                       |
+| Iterator                  | NEVER — Enumerable + each IS the pattern                                                       |
+| Visitor                   | Pattern matching (`case ... in`) or double-dispatch via duck typing                            |
+| Proxy                     | method_missing + define_method, or SimpleDelegator                                             |
+| Chain of Responsibility   | Array of handlers + `find {                                                                    | h   | h.handles?(req) }` |
 
 ## When a full pattern IS right
 

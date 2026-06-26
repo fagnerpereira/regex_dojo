@@ -16,7 +16,7 @@ module RegexDojo
           unless challenge
             response.status = 404
             response.format = :json
-            response.body = { error: "Challenge not found" }.to_json
+            response.body = {error: "Challenge not found"}.to_json
             return
           end
 
@@ -32,7 +32,7 @@ module RegexDojo
           if pattern.empty?
             response.status = 422
             response.format = :json
-            response.body = { error: "Pattern cannot be empty", passing: false }.to_json
+            response.body = {error: "Pattern cannot be empty", passing: false}.to_json
             return
           end
 
@@ -73,10 +73,10 @@ module RegexDojo
           )
 
           xp_value = case challenge.difficulty.to_s.downcase
-                     when "hard" then 50
-                     when "medium" then 35
-                     else 25
-                     end
+          when "hard" then 50
+          when "medium" then 35
+          else 25
+          end
 
           xp_awarded = 0
 

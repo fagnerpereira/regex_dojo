@@ -79,7 +79,10 @@ export default class extends Controller {
     try {
       regex = new RegExp(rawPattern);
     } catch (_) {
-      this._showFeedback("❌ Invalid regex syntax", "text-dojo-red bg-dojo-red/10 border border-dojo-red/30");
+      this._showFeedback(
+        "❌ Invalid regex syntax",
+        "text-dojo-red bg-dojo-red/10 border border-dojo-red/30",
+      );
       return;
     }
 
@@ -87,14 +90,17 @@ export default class extends Controller {
       try {
         const matchData = tc.input.match(regex);
         const userMatch = matchData ? matchData[0] : null;
-        return (userMatch === (tc.expected_match || null));
+        return userMatch === (tc.expected_match || null);
       } catch (_) {
         return false;
       }
     });
 
     if (allPassed) {
-      const speedMultiplier = Math.max(this.timeRemaining / this.totalTime, 0.1);
+      const speedMultiplier = Math.max(
+        this.timeRemaining / this.totalTime,
+        0.1,
+      );
       const baseXP = this.currentKata.xp || 25;
       const earned = Math.round(baseXP * (1 + speedMultiplier));
 
@@ -102,11 +108,17 @@ export default class extends Controller {
       this.solvedCount++;
       this._updateScoreDisplay();
 
-      this._showFeedback(`✅ +${earned} XP!`, "text-dojo-green bg-dojo-green/10 border border-dojo-green/30");
+      this._showFeedback(
+        `✅ +${earned} XP!`,
+        "text-dojo-green bg-dojo-green/10 border border-dojo-green/30",
+      );
 
       setTimeout(() => this._nextKata(), 500);
     } else {
-      this._showFeedback("❌ Not all test cases pass — keep trying!", "text-dojo-red bg-dojo-red/10 border border-dojo-red/30");
+      this._showFeedback(
+        "❌ Not all test cases pass — keep trying!",
+        "text-dojo-red bg-dojo-red/10 border border-dojo-red/30",
+      );
     }
   }
 
@@ -135,7 +147,11 @@ export default class extends Controller {
       this.timerTarget.textContent = this.timeRemaining;
 
       // Color coding + danger animation
-      this.timerTarget.classList.remove("text-dojo-cyan", "text-dojo-gold", "danger");
+      this.timerTarget.classList.remove(
+        "text-dojo-cyan",
+        "text-dojo-gold",
+        "danger",
+      );
       if (this.timeRemaining > 15) {
         this.timerTarget.classList.add("text-dojo-cyan");
       } else if (this.timeRemaining > 5) {
@@ -175,11 +191,14 @@ export default class extends Controller {
     this.usedKataIds.add(kata.id);
 
     // Populate game panel
-    if (this.hasConceptTarget) this.conceptTarget.textContent = kata.concept || "";
+    if (this.hasConceptTarget)
+      this.conceptTarget.textContent = kata.concept || "";
     if (this.hasKataTitleTarget) this.kataTitleTarget.textContent = kata.title;
     if (this.hasTaskTarget) this.taskTarget.innerHTML = kata.task || "";
-    if (this.hasXpBadgeTarget) this.xpBadgeTarget.textContent = `+${kata.xp} XP`;
-    if (this.hasTestStringTarget) this.testStringTarget.textContent = kata.test_string;
+    if (this.hasXpBadgeTarget)
+      this.xpBadgeTarget.textContent = `+${kata.xp} XP`;
+    if (this.hasTestStringTarget)
+      this.testStringTarget.textContent = kata.test_string;
     if (this.hasPatternInputTarget) {
       this.patternInputTarget.value = "";
       this.patternInputTarget.focus();
@@ -202,7 +221,8 @@ export default class extends Controller {
 
   _updateScoreDisplay() {
     if (this.hasScoreTarget) this.scoreTarget.textContent = this.currentScore;
-    if (this.hasSolvedCountTarget) this.solvedCountTarget.textContent = this.solvedCount;
+    if (this.hasSolvedCountTarget)
+      this.solvedCountTarget.textContent = this.solvedCount;
   }
 
   // ── Private: Game end ──────────────────────────────────────────────────────
@@ -215,8 +235,10 @@ export default class extends Controller {
     this.resultPanelTarget.classList.remove("panel-hidden");
 
     // Update final scores
-    if (this.hasFinalScoreTarget) this.finalScoreTarget.textContent = this.currentScore;
-    if (this.hasFinalSolvedTarget) this.finalSolvedTarget.textContent = this.solvedCount;
+    if (this.hasFinalScoreTarget)
+      this.finalScoreTarget.textContent = this.currentScore;
+    if (this.hasFinalSolvedTarget)
+      this.finalSolvedTarget.textContent = this.solvedCount;
   }
 
   // ── Private: Feedback ──────────────────────────────────────────────────────

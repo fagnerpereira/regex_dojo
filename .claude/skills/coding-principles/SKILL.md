@@ -18,27 +18,33 @@ When your task involves database queries, scopes, or data access, ALWAYS load
 the Database rules regardless of which files you edit.
 
 ## Backend (Ruby / Rails)
+
 - Architecture, SOLID, fat-model/skinny-controller, no global state → Read `.agents/rules/architecture.md`
 - Rails commands, linting (standardrb), env workflows → Read `.agents/rules/rails-conventions.md`
 - Memory / GC discipline (in-place mutation, batching, streaming reads) → Read `.agents/rules/memory-gc.md`
 - Solid Queue (background jobs) usage → Read `.agents/rules/solid-framework.md`
 
 ## Database
+
 - ActiveRecord efficiency, batching, aggregations, **callback discipline**, scopes/indexes → Read `.agents/rules/active-record.md`
 - Schema design, column types, indexing, EXPLAIN (PostgreSQL) → Skill `database`
 - Schema CHANGES (any migration) → Skill `migration`
 - Query / N+1 / allocation audit → Skill `n-plus-one-audit`
 
 ## Frontend
+
 - Phlex views, Stimulus, Turbo/Hotwire, Tailwind 3 → Skill `frontend`
 
 ## Testing
+
 - RSpec patterns, factories, branch/edge coverage, spec hygiene → Read `.agents/rules/testing-guidelines.md` (and `.agents/rules/rspec-testing.md`)
 
 ## API
+
 - JSON API design, versioning, serialization, error envelopes → Skill `api`
 
 ## Quality & process
+
 - Reviewing a diff/PR (layers, verdict, verify-before-flagging) → Read `.agents/rules/code-review.md`
 - Replying to PR review comments (never resolve threads) → Skill `pr-review-reply`
 - Refactoring by code smell → Skill `refactor`
@@ -51,6 +57,7 @@ the Database rules regardless of which files you edit.
 - Scaffolding a new gem → Skill `new-gem`
 
 ## How these files are written (and how to add to them)
+
 Keep every rule a directive, not a description: start with `DO NOT <verb>`,
 or an imperative (`Use`, `Prefer`, `Ensure`, `Freeze`...). Omit best practices
 any competent Rails dev already knows — keep only Anonymous Pix-specific conventions,

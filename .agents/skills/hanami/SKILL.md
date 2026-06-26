@@ -10,6 +10,7 @@ This skill outlines guidelines and conventions for working with the Hanami 3.0 f
 ## 1. Environment & Common Commands
 
 Always use the standard CLI commands for the project:
+
 - **Test Suite**: Run `mise exec -- bundle exec rspec` or `bundle exec rake`.
 - **Linter & Style**: Use `bundle exec standardrb --fix` for linting.
 - **Database Migrations**: Run `bundle exec hanami db migrate`.
@@ -18,7 +19,9 @@ Always use the standard CLI commands for the project:
 - **Development Server**: Run `bin/dev` or `bundle exec hanami server`.
 
 ### Generating Code
+
 Use standard Hanami generators:
+
 - Actions: `bundle exec hanami generate action NAME`
 - Operations: `bundle exec hanami generate operation NAME`
 - Relations: `bundle exec hanami generate relation NAME`
@@ -27,8 +30,10 @@ Use standard Hanami generators:
 ## 2. Dry-System Dependency Injection (`Deps`)
 
 Hanami uses the `dry-system` container to resolve dependencies automatically.
+
 - Avoid manual instantiations (`DojoRepo.new`) for application dependencies.
 - Use the `Deps` mixin to inject dependencies:
+
   ```ruby
   # app/actions/kata/show.rb
   module Actions
@@ -50,6 +55,7 @@ Hanami uses the `dry-system` container to resolve dependencies automatically.
   ```
 
 ## 3. Action Controllers
+
 - Inherit from `App::Action`.
 - Implement `handle(request, response)`.
 - Use strong parameters if validated via Dry-Validation in Hanami actions.

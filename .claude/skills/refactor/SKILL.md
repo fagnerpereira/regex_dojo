@@ -36,21 +36,21 @@ description: >
 
 ## Quick smell → technique map (full tables in references/)
 
-| Smell | First-choice technique (Ruby/Rails) |
-|---|---|
-| Long Method | Extract Method (private methods reading like a sentence) |
-| Large Class / fat model | Extract Concern (cohesive!) or model-namespaced PORO |
-| Primitive Obsession | Replace Data Value with Object (Value object, `Data.define`) |
-| Long Parameter List | Introduce Parameter Object / keyword args |
-| Switch/case on type | Replace Conditional with Polymorphism (or hash dispatch) |
-| Nested conditionals | Replace Nested Conditional with Guard Clauses |
-| Feature Envy | Move Method to the class whose data it craves |
-| Message Chains (`a.b.c.d`) | Hide Delegate (`delegate :street, to: :address`) |
-| nil checks everywhere | Introduce Null Object |
-| Temp variables obscuring logic | Replace Temp with Query / Extract Variable |
-| Duplicate Code (3rd time) | Extract Method/Class/Concern; partials in views |
-| Speculative Generality | DELETE it (inline class, collapse hierarchy, remove param) |
-| Comments explaining "how" | Extract Method named after the comment |
+| Smell                          | First-choice technique (Ruby/Rails)                          |
+| ------------------------------ | ------------------------------------------------------------ |
+| Long Method                    | Extract Method (private methods reading like a sentence)     |
+| Large Class / fat model        | Extract Concern (cohesive!) or model-namespaced PORO         |
+| Primitive Obsession            | Replace Data Value with Object (Value object, `Data.define`) |
+| Long Parameter List            | Introduce Parameter Object / keyword args                    |
+| Switch/case on type            | Replace Conditional with Polymorphism (or hash dispatch)     |
+| Nested conditionals            | Replace Nested Conditional with Guard Clauses                |
+| Feature Envy                   | Move Method to the class whose data it craves                |
+| Message Chains (`a.b.c.d`)     | Hide Delegate (`delegate :street, to: :address`)             |
+| nil checks everywhere          | Introduce Null Object                                        |
+| Temp variables obscuring logic | Replace Temp with Query / Extract Variable                   |
+| Duplicate Code (3rd time)      | Extract Method/Class/Concern; partials in views              |
+| Speculative Generality         | DELETE it (inline class, collapse hierarchy, remove param)   |
+| Comments explaining "how"      | Extract Method named after the comment                       |
 
 ## Deep dives (fetch only when needed — allowed doc references)
 

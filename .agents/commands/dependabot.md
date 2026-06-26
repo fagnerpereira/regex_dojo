@@ -4,7 +4,7 @@ Scan for vulnerable dependencies and open one PR per fix — done entirely by Cl
 
 ## Arguments (`$ARGUMENTS`)
 
-- *(none)* — security vulnerabilities only (Ruby + JS)
+- _(none)_ — security vulnerabilities only (Ruby + JS)
 - `--all` — all outdated packages, not just vulnerable ones
 - `--ruby` — Ruby/Bundler only
 - `--js` — JavaScript/npm only
@@ -33,6 +33,7 @@ bundle-audit check 2>&1
 ```
 
 For each finding, extract:
+
 - **gem name** (e.g. `nokogiri`)
 - **installed version** (e.g. `1.15.7`)
 - **advisory ID** (GHSA/CVE) and **criticality**
@@ -69,9 +70,11 @@ Also check whether GitHub Dependabot already has an open PR for the same bump (`
 ### 3b — Resolve current and target versions
 
 Ruby — current locked version from `Gemfile.lock`:
+
 ```bash
 grep -A1 "^    <gem-name> " Gemfile.lock | head -2
 ```
+
 JS — read from `package-lock.json` or `package.json`.
 
 Target = lowest version satisfying the advisory's patched range (or latest stable if `--all`).
@@ -90,21 +93,27 @@ Branch namespace is `deps/` (not `dependabot/`) so this never collides with GitH
 ### 3d — Update the dependency
 
 **Ruby** — update only the target gem, respect other constraints:
+
 ```bash
 bundle update <gem-name> --conservative
 ```
+
 Verify in `Gemfile.lock`:
+
 ```bash
 grep -A1 "^    <gem-name> " Gemfile.lock
 ```
 
 **If the version did not reach the patched range** (Bundler says "stayed the same", or it landed below the advisory's solution), the bump is BLOCKED by another gem's constraint. Do NOT open a PR. Identify and report the blocker:
+
 ```bash
 bundle exec ruby -e "puts Bundler.load.specs.select{|s| s.dependencies.any?{|d| d.name=='<gem-name>'}}.map{|s| \"#{s.name} #{s.version} -> #{s.dependencies.find{|d| d.name=='<gem-name>'}.requirement}\"}"
 ```
+
 Report it as `BLOCKED — <blocking-gem> requires <constraint>` in the summary so the human can decide (relax upstream, fork, replace, or accept the risk). Revert the lockfile (`git checkout Gemfile.lock`) before moving on.
 
 **JS**:
+
 ```bash
 npm install <package-name>@<target-version>   # updates package-lock.json
 ```
@@ -119,11 +128,13 @@ git add package-lock.json package.json   # JS
 ```
 
 Commit message matches this repo's dependency convention:
+
 ```
 chore(deps): bump <name> from <old-version> to <new-version>
 ```
 
 Example:
+
 ```bash
 git commit -m "chore(deps): bump nokogiri from 1.15.7 to 1.19.3"
 ```
@@ -137,6 +148,7 @@ git push origin HEAD
 ### 3g — Fetch metadata for the PR body
 
 **Ruby** — homepage / source / changelog from RubyGems:
+
 ```bash
 curl -s "https://rubygems.org/api/v1/gems/<gem-name>.json" | python3 -c "
 import sys, json
@@ -148,6 +160,7 @@ print('changelog:', d.get('changelog_uri',''))
 ```
 
 **JS** — from the npm registry:
+
 ```bash
 curl -s "https://registry.npmjs.org/<package-name>/latest" | python3 -c "
 import sys, json

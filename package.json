@@ -7,8 +7,31 @@
     "@hotwired/turbo": "^8.0.23",
     "@rails/request.js": "^0.0.13",
     "@tailwindcss/cli": "^4.3.1",
-    "esbuild": "^0.28.1",
     "hanami-assets": "^3.0.0-rc",
     "tailwindcss": "^4.3.1"
+  },
+  "scripts": {
+    "build": "bun bun.config.js",
+    "build:css": "bunx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "format": "bun run format:erb && bun run format:ruby && bun run format:other",
+    "format:erb": "herb-format",
+    "format:ruby": "bundle exec standardrb --fix",
+    "format:other": "prettier --write \"**/*.{html,js,css,json,md}\"",
+    "format:check": "bun run format:erb:check && bun run format:ruby:check && bun run format:other:check",
+    "format:erb:check": "herb-format --check",
+    "format:ruby:check": "bundle exec standardrb",
+    "format:other:check": "prettier --check \"**/*.{html,js,css,json,md}\"",
+    "lint:check": "bunx herb-lint --format simple",
+    "lint:fix": "bunx herb-lint --fix"
+  },
+  "devDependencies": {
+    "@herb-tools/dev-tools": "^0.10.1",
+    "@herb-tools/formatter": "^0.10.1",
+    "@herb-tools/linter": "^0.10.1",
+    "@herb-tools/tailwind-class-sorter": "^0.10.1",
+    "@upstash/context7-mcp": "^2.3.0",
+    "htmlhint": "^1.8.0",
+    "prettier": "^3.8.4",
+    "prettier-plugin-tailwindcss": "^0.8.0"
   }
 }

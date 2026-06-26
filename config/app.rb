@@ -16,5 +16,10 @@ module RegexDojo
       urls: ["/assets"],
       root: File.join(__dir__, "..", "public")
     }
+
+    # Per-request CSP nonce: the middleware injects a random nonce into the
+    # response CSP header, and `content_security_policy_nonce` exposes it to views.
+    config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
+    config.actions.content_security_policy[:script_src] += " 'nonce'"
   end
 end

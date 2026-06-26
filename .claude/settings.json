@@ -16,6 +16,17 @@
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/validate-commands.sh\""
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && bun run lint:fix 2>&1; bun run lint:check",
+            "statusMessage": "Running herb-lint before commit..."
+          }
+        ]
       }
     ]
   }

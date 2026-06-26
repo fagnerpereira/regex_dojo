@@ -17,6 +17,7 @@ scripts/detect_adapter.sh    # reads config/database.yml + Gemfile.lock
 ```
 
 Then load ONLY the matching reference:
+
 - PostgreSQL → `references/postgresql.md`
 - MySQL/MariaDB (mysql2/trilogy) → `references/mysql.md`
 - SQLite → `references/sqlite.md`
@@ -25,6 +26,7 @@ Then load ONLY the matching reference:
 ## The danger test (strong_migrations' classification, applied manually)
 
 An operation is dangerous if it either:
+
 1. **Blocks reads or writes for more than a few seconds** (after acquiring a lock), or
 2. **Has the potential to cause application errors** (cached columns, old code
    running against new schema during deploy).

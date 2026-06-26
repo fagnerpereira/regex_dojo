@@ -14,14 +14,14 @@ description: >
 Run `bundle exec brakeman -q` before any security-sensitive change.
 Common findings and fixes:
 
-| Warning | Fix |
-|---|---|
-| SQL injection | Use ActiveRecord query methods, never raw `sanitize_sql` or string interpolation in `where()` |
-| XSS in view | Phlex auto-escapes HTML. In legacy ERB, use `sanitize` or `strip_tags` |
-| Mass assignment | Use `params.require(...).permit(...)` — strong parameters are already enforced |
-| Redirect | Use `redirect_to <named_path>` not `redirect_to params[:url]` |
-| Skip_before_action | Avoid; use `only:` / `except:` explicitly |
-| Unsafe reflection | Avoid `constantize` / `classify` on user input |
+| Warning            | Fix                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------- |
+| SQL injection      | Use ActiveRecord query methods, never raw `sanitize_sql` or string interpolation in `where()` |
+| XSS in view        | Phlex auto-escapes HTML. In legacy ERB, use `sanitize` or `strip_tags`                        |
+| Mass assignment    | Use `params.require(...).permit(...)` — strong parameters are already enforced                |
+| Redirect           | Use `redirect_to <named_path>` not `redirect_to params[:url]`                                 |
+| Skip_before_action | Avoid; use `only:` / `except:` explicitly                                                     |
+| Unsafe reflection  | Avoid `constantize` / `classify` on user input                                                |
 
 ## SQL injection prevention
 

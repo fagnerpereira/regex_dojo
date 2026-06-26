@@ -30,6 +30,7 @@ add_check_constraint :orders, "total_cents >= 0", name: "orders_total_nonneg"
 add_index :orders, [:user_id, :status]
 add_index :users, "lower(email)", unique: true          # PG; MySQL: collation handles it
 ```
+
 Rule: every AR validation that protects data integrity (presence on FK,
 uniqueness, numericality bounds, inclusion) gets a DB twin (null: false,
 unique index, check constraint, FK/enum). Uniqueness WITHOUT a unique index
@@ -57,6 +58,7 @@ is a race condition, not a validation.
 User.where(email: e).joins(:orders).explain          # AR helper
 User.where(...).explain(:analyze, :buffers)          # Rails 7.1+: real execution (PG)
 ```
+
 Red flags: `Seq Scan` on a large table inside a filter (missing/unusable
 index); rows estimate wildly off actual (stale stats → ANALYZE); `Filter`
 removing most rows AFTER an index scan (index doesn't cover the predicate);
@@ -77,15 +79,16 @@ Nested Loop over big sets (missing join index). MySQL: `EXPLAIN ANALYZE`
 
 ## Data type decisions (cross-adapter defaults)
 
-| Need | Use | Never |
-|---|---|---|
-| Money | integer cents (+ currency col) | float |
-| Timestamps | datetime (Rails = UTC) + iso8601 out | strings |
-| Enum-ish status | integer + AR enum (or PG native enum) | bare strings everywhere |
-| Flexible blob | jsonb (PG) / json (MySQL) + store_accessor | serialized YAML |
-| IDs at scale | bigint (Rails 5.1+ default) | int (2.1B ceiling) |
-| Public IDs | uuid (PG native) or prefixed token (has_secure_token) | exposing sequential ids when enumeration matters |
-| Text search | PG tsvector+GIN; MySQL FULLTEXT | LIKE '%...%' on big tables |
+| Need            | Use                                                   | Never                                            |
+| --------------- | ----------------------------------------------------- | ------------------------------------------------ |
+| Money           | integer cents (+ currency col)                        | float                                            |
+| Timestamps      | datetime (Rails = UTC) + iso8601 out                  | strings                                          |
+| Enum-ish status | integer + AR enum (or PG native enum)                 | bare strings everywhere                          |
+| Flexible blob   | jsonb (PG) / json (MySQL) + store_accessor            | serialized YAML                                  |
+| IDs at scale    | bigint (Rails 5.1+ default)                           | int (2.1B ceiling)                               |
+| Public IDs      | uuid (PG native) or prefixed token (has_secure_token) | exposing sequential ids when enumeration matters |
+| Text search     | PG tsvector+GIN; MySQL FULLTEXT                       | LIKE '%...%' on big tables                       |
+
 Adapter-specific types: see /migration references (PG: jsonb/arrays/ranges/
 enums/EXCLUDE; MySQL: utf8mb4 mandatory, index byte limits; SQLite: type
 affinity — lengths unenforced).
@@ -99,10 +102,11 @@ production:
   cache:    { <<: *default, database: app_cache, migrations_paths: db/cache_migrate }
   replica:  { <<: *default, replica: true }
 ```
+
 - Solid Queue/Cache/Cable each get their own db (SQLite: separate files) —
   keeps their write volume and migration locks off the primary.
 - Replicas: `connects_to database: { writing: :primary, reading: :replica }`
-  + automatic role switching; remember replica lag for read-after-write.
+  - automatic role switching; remember replica lag for read-after-write.
 
 ## Database checklist (schema design PR)
 

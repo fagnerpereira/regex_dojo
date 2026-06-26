@@ -16,6 +16,7 @@ description: >
 grep -E "^\s+(grape|jbuilder|alba|blueprinter|jsonapi-serializer) " Gemfile.lock
 ls app/api 2>/dev/null && echo "Grape structure present"
 ```
+
 Grape present → follow Grape forms below. Otherwise → Rails controllers.
 Full request/response contract details: `references/rest-contract.md`.
 
@@ -35,9 +36,15 @@ Full request/response contract details: `references/rest-contract.md`.
 ## The error envelope (one shape, everywhere)
 
 ```json
-{ "error": { "code": "validation_failed", "message": "Title can't be blank",
-             "details": [{ "field": "title", "code": "blank" }] } }
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Title can't be blank",
+    "details": [{ "field": "title", "code": "blank" }]
+  }
+}
 ```
+
 Rails: centralize in a concern with `rescue_from` (RecordNotFound→404,
 RecordInvalid→422, ParameterMissing→400, your AuthError→401/403).
 Grape: `rescue_from` blocks + `error!({ error: {...} }, 422)`.
@@ -104,8 +111,8 @@ end
 3. External gems when justified (see references/rest-contract.md):
    Jbuilder (ships with Rails, view-style), Alba (fast, modern),
    Blueprinter (declarative). AMS is unmaintained — never for new code.
-Rules regardless of tool: expose ONLY needed fields; `iso8601` timestamps;
-cents-as-integers for money; ids as strings if JS consumers (53-bit limit).
+   Rules regardless of tool: expose ONLY needed fields; `iso8601` timestamps;
+   cents-as-integers for money; ids as strings if JS consumers (53-bit limit).
 
 ## Grape projects (work stack)
 

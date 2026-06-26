@@ -8,7 +8,9 @@ description: ROM (Ruby Object Mapper) conventions, schema definitions, query enc
 This skill defines rules and conventions for working with ROM and SQLite database layers inside this project.
 
 ## 1. Decoupled Persistence Architecture
+
 ROM splits database mapping into distinct layers:
+
 - **Relations**: Define the low-level database schemas and associations. Keep relations thin and declarative.
   ```ruby
   # app/relations/users.rb
@@ -21,6 +23,7 @@ ROM splits database mapping into distinct layers:
   end
   ```
 - **Repositories**: Encapsulate high-level application queries and mutations. Controllers and operations MUST talk to repositories and never call relations directly.
+
   ```ruby
   # app/repos/user_repo.rb
   module Repos
@@ -37,11 +40,13 @@ ROM splits database mapping into distinct layers:
     end
   end
   ```
+
 - **Idempotent Commands**: Create/update/delete records using repository commands or custom command classes.
 
 ## 2. Query Safety & Performance
 
 ### Avoid N+1 Queries
+
 - Eager-load associations with `.combine` inside repositories:
   ```ruby
   challenges.combine(:test_cases)
@@ -49,12 +54,14 @@ ROM splits database mapping into distinct layers:
 - Avoid calling association methods inside iterations if they perform lazy-loaded database queries.
 
 ### Columns and Projections
+
 - Project column lists by using `.select` or pluck operations to load only what is needed:
   ```ruby
   users.select(:id, :name).to_a
   ```
 
 ### SQLite Specific Rules
+
 - SQLite is the storage engine for this project.
 - Always implement cascading deletes or foreign key constraints at the SQLite layer in migrations rather than in memory.
 - Avoid large open transactions.

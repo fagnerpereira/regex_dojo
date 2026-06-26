@@ -30,9 +30,9 @@ No safe in-place type change for most conversions. Recipe:
 - Normal tables → dual-column pattern (zero-downtime.md)
 - Huge/hot tables → gh-ost or pt-online-schema-change (external gems/tools
   section; they replay binlog while copying)
-Safe-ish exceptions: extending VARCHAR length **within the same byte-length
-bucket** (≤255 stays ≤255) is INPLACE; crossing 255 forces a COPY.
-ENUM value APPEND is INSTANT; reorder/remove is a COPY.
+  Safe-ish exceptions: extending VARCHAR length **within the same byte-length
+  bucket** (≤255 stays ≤255) is INPLACE; crossing 255 forces a COPY.
+  ENUM value APPEND is INSTANT; reorder/remove is a COPY.
 
 ### NOT NULL on existing column
 
@@ -84,13 +84,13 @@ replicas. Treat like a rename: new table, sync, swap (or gh-ost).
 # config/database.yml
 production:
   variables:
-    lock_wait_timeout: 10        # seconds; metadata lock wait
-    max_execution_time: 3600000  # ms; read-statement ceiling (8.0+)
+    lock_wait_timeout: 10 # seconds; metadata lock wait
+    max_execution_time: 3600000 # ms; read-statement ceiling (8.0+)
 ```
 
 ## External tools (separate from base conventions — for huge tables only)
 
 - **gh-ost** (GitHub): triggerless online schema change via binlog replay
 - **pt-online-schema-change** (Percona): trigger-based equivalent
-Both: copy table + replay changes + atomic cutover. Reach for them when the
-dual-column recipe is impractical (very hot, very large tables).
+  Both: copy table + replay changes + atomic cutover. Reach for them when the
+  dual-column recipe is impractical (very hot, very large tables).

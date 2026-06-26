@@ -16,6 +16,7 @@ Deploy 3 (SWITCH):   code reads :handle everywhere; stop writing :username
                      Model: self.ignored_columns += ["username"]
 Deploy 4 (CONTRACT): remove_column :users, :username
 ```
+
 Rename a TABLE: same shape — create new table (or updatable VIEW pointing at
 old), sync writes, backfill, switch reads, drop.
 
@@ -49,22 +50,26 @@ class BackfillUsersStatus < ActiveRecord::Migration[7.1]
   def down = nil   # backfills don't roll back
 end
 ```
+
 For long/huge backfills prefer a rake task or maintenance job over a migration
 (deploys shouldn't wait on hours of data movement). Idempotency is mandatory —
 it WILL be interrupted and rerun.
 
 ## NOT NULL on existing column (cross-adapter summary)
+
 - PG: check constraint NOT VALID → validate → change_column_null (see postgresql.md)
 - MySQL: backfill to zero NULLs → MODIFY in low-traffic window or gh-ost (mysql.md)
 - SQLite: backfill → accept the table rebuild in a window (sqlite.md)
 
 ## Deploy-order rules
+
 - **Additive schema BEFORE the code that uses it** (deploy migration first).
 - **Destructive schema AFTER the code that stops using it** (+ ignored_columns).
 - Rolling deploys double the exposure window — every recipe assumes both
   versions run simultaneously.
 
 ## Verification commands
+
 ```bash
 bin/rails db:migrate && bin/rails db:rollback && bin/rails db:migrate  # reversibility
 git diff db/schema.rb        # only YOUR change, no drift noise

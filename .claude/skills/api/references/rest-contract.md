@@ -3,23 +3,41 @@
 ## Response envelopes
 
 Single resource:
+
 ```json
-{ "data": { "id": "42", "status": "paid", "total_cents": 1990,
-            "created_at": "2026-06-01T12:00:00Z" } }
+{
+  "data": {
+    "id": "42",
+    "status": "paid",
+    "total_cents": 1990,
+    "created_at": "2026-06-01T12:00:00Z"
+  }
+}
 ```
+
 Collection:
+
 ```json
 { "data": [ {...}, {...} ],
   "meta": { "page": 2, "pages": 14, "count": 333, "per_page": 25 } }
 ```
+
 Cursor variant meta: `{ "next_cursor": "eyJpZCI6OTk5fQ", "has_more": true }`
 
 Error (the one shape — repeat from SKILL.md for completeness):
+
 ```json
-{ "error": { "code": "validation_failed", "message": "Human-readable summary",
-             "details": [ { "field": "title", "code": "blank",
-                            "message": "can't be blank" } ] } }
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Human-readable summary",
+    "details": [
+      { "field": "title", "code": "blank", "message": "can't be blank" }
+    ]
+  }
+}
 ```
+
 `code` is machine-stable (clients switch on it); `message` is human, may change.
 
 ## rescue_from concern (Rails)
@@ -50,35 +68,38 @@ end
 
 ## Status code decision table
 
-| Situation | Code |
-|---|---|
-| Read OK | 200 |
-| Created (return body + Location) | 201 |
-| Accepted for async processing (return job/status URL) | 202 |
-| Deleted / no body | 204 |
-| Malformed request (unparseable, missing root param) | 400 |
-| No/invalid credentials | 401 |
-| Authenticated but forbidden (resource known to exist for them) | 403 |
-| Not found AND cross-tenant access (hide existence) | 404 |
-| State conflict (duplicate, stale version) | 409 |
-| Valid syntax, failed validations | 422 |
-| Throttled (+ Retry-After header) | 429 |
+| Situation                                                      | Code |
+| -------------------------------------------------------------- | ---- |
+| Read OK                                                        | 200  |
+| Created (return body + Location)                               | 201  |
+| Accepted for async processing (return job/status URL)          | 202  |
+| Deleted / no body                                              | 204  |
+| Malformed request (unparseable, missing root param)            | 400  |
+| No/invalid credentials                                         | 401  |
+| Authenticated but forbidden (resource known to exist for them) | 403  |
+| Not found AND cross-tenant access (hide existence)             | 404  |
+| State conflict (duplicate, stale version)                      | 409  |
+| Valid syntax, failed validations                               | 422  |
+| Throttled (+ Retry-After header)                               | 429  |
 
 ## Versioning mechanics
 
 URL path (default):
+
 ```ruby
 namespace :api do
   namespace :v1 do resources :orders end
   namespace :v2 do resources :orders end   # only on breaking change
 end
 ```
+
 Shared logic: `Api::BaseController` → `Api::V1::BaseController`. Serializers
 versioned with controllers (they ARE the contract): `Api::V1::OrderSerializer`.
 Deprecation: `Deprecation` + `Sunset` headers on v1 responses, deadline
 communicated, then 410 Gone.
 
 Breaking vs additive:
+
 - Additive (new fields, new endpoints, new optional params) → same version
 - Breaking (remove/rename field, change type/semantics, tighten validation) → new version
 
@@ -108,12 +129,13 @@ end
 
 ## Serializer gem comparison (when PORO isn't enough)
 
-| | Jbuilder | Alba | Blueprinter |
-|---|---|---|---|
-| Style | view templates (.json.jbuilder) | Ruby DSL, blocks | declarative class DSL |
-| Speed | slowest | fastest | fast |
-| Ships with Rails | yes | no | no |
-| Best for | HTML+API apps, complex nesting | performance-sensitive APIs | team-readable contracts |
+|                  | Jbuilder                        | Alba                       | Blueprinter             |
+| ---------------- | ------------------------------- | -------------------------- | ----------------------- |
+| Style            | view templates (.json.jbuilder) | Ruby DSL, blocks           | declarative class DSL   |
+| Speed            | slowest                         | fastest                    | fast                    |
+| Ships with Rails | yes                             | no                         | no                      |
+| Best for         | HTML+API apps, complex nesting  | performance-sensitive APIs | team-readable contracts |
+
 AMS (active_model_serializers): unmaintained — migrate away, never adopt.
 
 ## OpenAPI documentation

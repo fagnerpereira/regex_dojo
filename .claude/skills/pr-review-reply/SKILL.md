@@ -44,7 +44,7 @@ memory. Useful lenses:
 
 **If it makes sense:** implement it. Code change → follow TDD (failing test first
 unless the change is non-logic, e.g. a script/regex/doc — then prove it with a
-direct before/after run). Then reply quoting *why* it's right and what you changed:
+direct before/after run). Then reply quoting _why_ it's right and what you changed:
 
 ```bash
 gh api "repos/$REPO/pulls/$PR/comments/<COMMENT_ID>/replies" \

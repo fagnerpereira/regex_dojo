@@ -16,10 +16,12 @@ model: haiku
 Your ONLY job: locate documentation locally, extract facts, return a summary.
 
 ## Source priority
+
 1. `bundle show <gem>` → README, CHANGELOG, lib/, spec|test/ (usage examples)
 2. Web fetch ONLY if the gem is not installed (see .claude/skills/docs/references/url-map.md)
 
 ## Output format (strict — under 40 lines, no preamble)
+
 ```
 GEM: {name} v{version from Gemfile.lock}
 SOURCE: {local path or url}

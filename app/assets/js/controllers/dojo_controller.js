@@ -279,7 +279,7 @@ export default class extends Controller {
         const re = new RegExp(rawPattern);
         const matchData = tc.input.match(re);
         userMatch = matchData ? matchData[0] : null;
-        passed = (userMatch === (tc.expected_match || null));
+        passed = userMatch === (tc.expected_match || null);
       } catch (_) {
         passed = false;
       }
@@ -293,9 +293,8 @@ export default class extends Controller {
       userMatchSpan.className = `user-match-result text-[10px] font-mono mt-0.5 ${
         passed ? "text-dojo-green" : "text-dojo-red font-bold"
       }`;
-      userMatchSpan.textContent = userMatch !== null
-        ? `got: "${userMatch}"`
-        : "got: no match";
+      userMatchSpan.textContent =
+        userMatch !== null ? `got: "${userMatch}"` : "got: no match";
       details.appendChild(userMatchSpan);
     });
   }
@@ -309,7 +308,7 @@ export default class extends Controller {
         const re = new RegExp(rawPattern);
         const matchData = tc.input.match(re);
         const userMatch = matchData ? matchData[0] : null;
-        return (userMatch === (tc.expected_match || null));
+        return userMatch === (tc.expected_match || null);
       } catch (_) {
         return false;
       }
@@ -415,18 +414,49 @@ export default class extends Controller {
         beltBadge.textContent = newBeltText;
 
         const beltStyles = {
-          white: ["text-white", "border-white/20", "bg-white/5", "shadow-white/5"],
-          yellow: ["text-dojo-gold", "border-dojo-gold/20", "bg-dojo-gold/5", "shadow-dojo-gold/5"],
-          orange: ["text-orange-400", "border-orange-400/20", "bg-orange-400/5", "shadow-orange-400/5"],
-          green: ["text-dojo-green", "border-dojo-green/20", "bg-dojo-green/5", "shadow-dojo-green/5"],
-          black: ["text-purple-400", "border-purple-400/20", "bg-purple-400/5", "shadow-purple-400/5"]
+          white: [
+            "text-white",
+            "border-white/20",
+            "bg-white/5",
+            "shadow-white/5",
+          ],
+          yellow: [
+            "text-dojo-gold",
+            "border-dojo-gold/20",
+            "bg-dojo-gold/5",
+            "shadow-dojo-gold/5",
+          ],
+          orange: [
+            "text-orange-400",
+            "border-orange-400/20",
+            "bg-orange-400/5",
+            "shadow-orange-400/5",
+          ],
+          green: [
+            "text-dojo-green",
+            "border-dojo-green/20",
+            "bg-dojo-green/5",
+            "shadow-dojo-green/5",
+          ],
+          black: [
+            "text-purple-400",
+            "border-purple-400/20",
+            "bg-purple-400/5",
+            "shadow-purple-400/5",
+          ],
         };
 
         // Reset any existing belt classes
-        Object.values(beltStyles).flat().forEach(cls => beltBadge.classList.remove(cls));
+        Object.values(beltStyles)
+          .flat()
+          .forEach((cls) => beltBadge.classList.remove(cls));
 
         // Add corresponding style classes
-        const newClasses = beltStyles[data.belt.toLowerCase()] || ["text-dojo-cyan", "border-dojo-border", "bg-dojo-bg"];
+        const newClasses = beltStyles[data.belt.toLowerCase()] || [
+          "text-dojo-cyan",
+          "border-dojo-border",
+          "bg-dojo-bg",
+        ];
         beltBadge.classList.add(...newClasses);
 
         // Play level up celebration bounce
@@ -492,10 +522,7 @@ export default class extends Controller {
       // Update progress bar width
       const progressBar = hudBar.querySelector(".belt-bar");
       if (progressBar) {
-        const percentage = Math.min(
-          Math.round((currentXP / maxXP) * 100),
-          100,
-        );
+        const percentage = Math.min(Math.round((currentXP / maxXP) * 100), 100);
         progressBar.style.width = `${percentage}%`;
       }
     }

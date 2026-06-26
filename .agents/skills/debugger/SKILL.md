@@ -18,26 +18,31 @@ You are a debugging specialist for **Anonymous Pix** (Rails 7.1 + Phlex, Postgre
 ## Common patterns
 
 ### SQL errors (PostgreSQL)
+
 - Column missing → check if migration was run: `bin/rails db:migrate:status`
 - Constraint violation → check model validations vs DB constraints (FK, null, check)
 - N+1 detected → check eager loading; assert query counts in specs
 
 ### Phlex view errors
+
 - Missing method on view object → check constructor arguments match `view_template` call
 - `undefined local variable` → check that data is passed via constructor, not ivar
 - `capture`/helper conflicts → ensure `Phlex::Rails::Helpers::*` adapters are used, not raw `ActionView` helper modules
 - Rendering wrong partial → check controller action + view lookup path
 
 ### Auth errors
+
 - Admin 401 → HTTP Basic auth (`http_basic_authenticate_with`) — check `ADMIN_USER`/`ADMIN_PASSWORD` env or the request `Authorization` header
 - User session → check `logins_controller` flow and signed cookies
 
 ### External API errors (OpenPix/Woovi, Stripe, OpenAI)
+
 - Timeout / 401 → check the relevant env var/credential and network connectivity
 - Webhook failures → check `webhooks_controller` / `stripe/webhooks_controller` (CSRF skipped on `:create`)
 - Unexpected payload → check the service object under `app/services/openpix/` or `app/services/openai/`
 
 ### Spec failures
+
 - VCR cassette missing → `VCR.use_cassette("name")` wrapper (or WebMock stub)
 - Factory validation error → check factory traits and required associations
 - Query count mismatch → check eager loading

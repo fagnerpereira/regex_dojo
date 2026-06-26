@@ -22,6 +22,7 @@ description: >
 - Generators: `bin/rails generate phlex:component Ui::MyComponent`, `bin/rails generate phlex:view ControllerName::ActionName`
 
 ### Example Phlex component (matches `app/views/components/ui/button.rb`)
+
 ```ruby
 # frozen_string_literal: true
 
@@ -55,20 +56,21 @@ end
 - Use `@rails/request.js` for AJAX (not raw `fetch`)
 
 ### Example controller
+
 ```javascript
-import { Controller } from "@hotwired/stimulus"
-import { get, post } from "@rails/request.js"
+import { Controller } from "@hotwired/stimulus";
+import { get, post } from "@rails/request.js";
 
 export default class extends Controller {
-  static targets = ["output"]
-  static values = { url: String }
+  static targets = ["output"];
+  static values = { url: String };
 
   connect() {
-    this.load()
+    this.load();
   }
 
   async load() {
-    const response = await get(this.urlValue, { responseKind: "turbo-stream" })
+    const response = await get(this.urlValue, { responseKind: "turbo-stream" });
     if (response.ok) {
       // Turbo Streams auto-render
     }

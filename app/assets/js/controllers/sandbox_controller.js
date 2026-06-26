@@ -169,8 +169,7 @@ export default class extends Controller {
       parts.push(this._escapeHTML(text.slice(lastIndex)));
     }
 
-    const html =
-      parts.length > 0 ? parts.join("") : this._escapeHTML(text);
+    const html = parts.length > 0 ? parts.join("") : this._escapeHTML(text);
 
     return { html, count };
   }
@@ -306,8 +305,7 @@ export default class extends Controller {
             raw,
             label: "quantifier",
             description: `Repeat ${match[1]} times`,
-            colorClass:
-              "bg-orange-500/20 border-orange-500/40 text-orange-300",
+            colorClass: "bg-orange-500/20 border-orange-500/40 text-orange-300",
           });
           i += raw.length;
           continue;
@@ -346,7 +344,8 @@ export default class extends Controller {
         tokens.push({
           raw: "^",
           label: "start",
-          description: "Matches the start of the string (or line in multiline mode)",
+          description:
+            "Matches the start of the string (or line in multiline mode)",
           colorClass: "bg-red-500/20 border-red-500/40 text-red-300",
         });
         i++;
@@ -357,7 +356,8 @@ export default class extends Controller {
         tokens.push({
           raw: "$",
           label: "end",
-          description: "Matches the end of the string (or line in multiline mode)",
+          description:
+            "Matches the end of the string (or line in multiline mode)",
           colorClass: "bg-red-500/20 border-red-500/40 text-red-300",
         });
         i++;
@@ -392,10 +392,7 @@ export default class extends Controller {
       // Collect consecutive literals into one token for cleaner display
       let literal = ch;
       i++;
-      while (
-        i < pattern.length &&
-        !"\\[](){}+*?^$.|".includes(pattern[i])
-      ) {
+      while (i < pattern.length && !"\\[](){}+*?^$.|".includes(pattern[i])) {
         literal += pattern[i];
         i++;
       }
@@ -475,8 +472,7 @@ export default class extends Controller {
 
   _setMatchCount(n) {
     if (this.hasMatchCountTarget) {
-      this.matchCountTarget.textContent =
-        n === 1 ? "1 match" : `${n} matches`;
+      this.matchCountTarget.textContent = n === 1 ? "1 match" : `${n} matches`;
     }
   }
 

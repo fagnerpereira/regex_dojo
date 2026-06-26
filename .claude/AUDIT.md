@@ -11,39 +11,41 @@
 1. **Dependency Injection (DI)**
    - Correctly using `include Deps["repos.dojo_repo"]` in actions
    - No magic Rails-style singletons; explicit dependencies
-   - *Rating*: Excellent
+   - _Rating_: Excellent
 
 2. **Repository Pattern**
    - Clean, explicit data layer (`dojo_repo.rb`)
    - Methods like `find_challenge_by_id`, `record_solved_kata` are well-named
    - Queries are clear and testable
-   - *Rating*: Good
+   - _Rating_: Good
 
 3. **Business Logic Separation (Validator)**
    - `Validator` class in `lib/regex_dojo/` is a standalone, testable object
    - No knowledge of HTTP/Rails concerns
    - Easy to reuse and unit test
-   - *Rating*: Good
+   - _Rating_: Good
 
 4. **Phlex Components**
    - Using Phlex for views (modern, functional approach vs Rails ERB templates)
    - Layout component is clean and composable
-   - *Rating*: Good
+   - _Rating_: Good
 
 5. **Test Structure**
    - Specs organized by type (actions, requests, lib)
    - Database cleaning strategy in place
    - RSpec configured correctly for Hanami
-   - *Rating*: Good
+   - _Rating_: Good
 
 ---
 
 ## Issues & Anti-Patterns ❌
 
 ### 1. **Action Logic Too Complex** (CRITICAL)
+
 **File**: `app/actions/kata/check.rb` (lines 12-105)
 
 **Problem**:
+
 - The action is a 94-line "god method" mixing concerns:
   - HTTP request parsing ✓ (action's job)
   - Regex validation ✗ (should be operation)
@@ -53,15 +55,18 @@
 - Not using Hanami's Dry::Operation pattern
 
 **Rails vs Hanami approach**:
+
 - **Rails**: Often dumps all logic in controller (you complained about this!)
 - **Hanami**: Should extract to Dry::Operation (monad-based, composable, testable)
 
 **Why it matters for you**:
+
 - An operation is self-contained, versioned, and can be called from multiple places (action, async job, CLI)
 - Makes testing easier: test the operation independently, then test action's orchestration
 - Better error handling via `Success()` / `Failure()` monads (which your code already includes!)
 
 **Example refactor**:
+
 ```ruby
 # lib/regex_dojo/operations/validate_kata.rb
 module RegexDojo
@@ -88,9 +93,11 @@ end
 ---
 
 ### 2. **Session ID Retrieval Repeated** (MODERATE)
+
 **Files**: `app/actions/home/index.rb`, `app/actions/kata/check.rb`
 
 **Problem**:
+
 ```ruby
 # Repeated in multiple places:
 session_id = request.session[:session_id] || request.session["session_id"]
@@ -102,14 +109,17 @@ Extract to a helper or create a session strategy class. Hanami should use immuta
 ---
 
 ### 3. **No Request Validation** (MODERATE)
+
 **File**: `app/actions/kata/check.rb` (line 30)
 
 **Problem**:
+
 ```ruby
 pattern = body[:pattern].to_s.strip  # Silent coercion, no validation contract
 ```
 
 Should use **Dry::Schema** or **Dry::Validation**:
+
 ```ruby
 KataCheckSchema = Dry::Schema.Params do
   required(:pattern).filled(:string)
@@ -121,9 +131,11 @@ end
 ---
 
 ### 4. **Manual Error Responses** (MODERATE)
+
 **Files**: `app/actions/kata/check.rb` (lines 16-20, 32-37, 43-49)
 
 **Problem**:
+
 ```ruby
 response.status = 404
 response.format = :json
@@ -133,6 +145,7 @@ return
 
 **Better Hanami approach**:
 Use action's built-in error handling:
+
 ```ruby
 raise NotFoundError, "Challenge not found"
 ```
@@ -142,6 +155,7 @@ Hanami routes error classes to HTTP status codes automatically.
 ---
 
 ### 5. **Duplicate XP Logic** (MODERATE)
+
 **Files**: `app/actions/kata/check.rb` (lines 75-79) & `app/repos/dojo_repo.rb` (lines 77-81)
 
 **Problem**:
@@ -152,18 +166,21 @@ XP calculation is defined in two places. DRY violation.
 ---
 
 ### 6. **No Type Safety** (LOW)
+
 **Files**: Throughout (`dojo_repo.rb`, actions, views)
 
 **Problem**:
 No use of Dry::Types for type coercion/validation. Relying on implicit conversions.
 
 **Example**:
+
 ```ruby
 def record_solved_kata(user_id, kata_id, xp_gained)
   # What if user_id is a string? What if xp_gained is negative?
 ```
 
 **Hanami approach**:
+
 ```ruby
 module Types
   include Dry::Types(default: :nominal)
@@ -176,6 +193,7 @@ end
 ---
 
 ### 7. **View Composition Could Be Stronger** (LOW)
+
 **Files**: `app/views/home/dashboard.rb`, `app/views/components/*.rb`
 
 **Problem**:
@@ -185,14 +203,15 @@ Good use of Phlex, but components could be more composable (pass blocks, slots, 
 
 ## Test Coverage Assessment
 
-| Category | Coverage | Status |
-|----------|----------|--------|
-| Validator (lib) | ✅ 4 tests | Good |
-| Actions | ✅ 2 tests | Minimal (no error cases) |
-| Integration | ✅ 1 test | Basic |
-| **Total** | 7 tests | **Need more edge cases** |
+| Category        | Coverage   | Status                   |
+| --------------- | ---------- | ------------------------ |
+| Validator (lib) | ✅ 4 tests | Good                     |
+| Actions         | ✅ 2 tests | Minimal (no error cases) |
+| Integration     | ✅ 1 test  | Basic                    |
+| **Total**       | 7 tests    | **Need more edge cases** |
 
 **Missing tests**:
+
 - Regex validation failures
 - XP award edge cases (already solved, multiple attempts)
 - Session handling edge cases

@@ -19,6 +19,7 @@ You are a pragmatic Rails/Phlex architect for the **Anonymous Pix** app (Rails 7
 ## Output
 
 A short, scannable design:
+
 - **Boundaries** — what changes, what stays.
 - **Where code goes** — exact file paths, following the conventions in `CLAUDE.md` (Phlex `Views::*` pages / `Ui::*` components, controller fetches data, multi-step flows in `app/services/` POROs).
 - **First failing test** — the spec to write first (path + the behavior it asserts).

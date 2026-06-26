@@ -7,63 +7,68 @@
 
 @theme {
   /* ---- Base / ink: 4-step elevation ---- */
-  --color-dojo-void:    #07090E;  /* page base, deepest */
-  --color-dojo-bg:      #0B0E14;  /* app bg / input wells */
-  --color-dojo-surface: #12161F;  /* raised cards */
-  --color-dojo-raised:  #1A2030;  /* hover / nested surface */
-  --color-dojo-border:        #232A38;  /* hairline */
-  --color-dojo-border-strong: #313B4D;  /* focus/active border */
+  --color-dojo-void: #07090e; /* page base, deepest */
+  --color-dojo-bg: #0b0e14; /* app bg / input wells */
+  --color-dojo-surface: #12161f; /* raised cards */
+  --color-dojo-raised: #1a2030; /* hover / nested surface */
+  --color-dojo-border: #232a38; /* hairline */
+  --color-dojo-border-strong: #313b4d; /* focus/active border */
 
   /* ---- Text ramp ---- */
-  --color-text-hi:    #EAF0F7;  /* headings, regex input */
-  --color-text-mid:   #AEB8C7;  /* body */
-  --color-text-lo:    #6B7689;  /* labels, captions, uppercase mono */
-  --color-text-faint: #3C4350;  /* placeholders, disabled */
+  --color-text-hi: #eaf0f7; /* headings, regex input */
+  --color-text-mid: #aeb8c7; /* body */
+  --color-text-lo: #6b7689; /* labels, captions, uppercase mono */
+  --color-text-faint: #3c4350; /* placeholders, disabled */
 
   /* ---- Neon accents (tuned for glow legibility on near-black) ---- */
-  --color-dojo-cyan:   #2DE2E6;  /* HOUSE: focus, active, Dojo */
-  --color-dojo-purple: #A855F7;  /* mastery, XP, Sandbox */
-  --color-dojo-gold:   #F5B53C;  /* rewards, XP numbers, Blitz */
-  --color-dojo-green:  #34D399;  /* PASS only */
-  --color-dojo-red:    #FB5B5B;  /* FAIL / timer danger only */
-  --color-dojo-pink:   #F472B6;  /* codex anchors + token type */
-  --color-dojo-blue:   #4D8DFF;  /* codex flags + token type */
+  --color-dojo-cyan: #2de2e6; /* HOUSE: focus, active, Dojo */
+  --color-dojo-purple: #a855f7; /* mastery, XP, Sandbox */
+  --color-dojo-gold: #f5b53c; /* rewards, XP numbers, Blitz */
+  --color-dojo-green: #34d399; /* PASS only */
+  --color-dojo-red: #fb5b5b; /* FAIL / timer danger only */
+  --color-dojo-pink: #f472b6; /* codex anchors + token type */
+  --color-dojo-blue: #4d8dff; /* codex flags + token type */
 
   /* ---- Belt colors ---- */
-  --color-belt-white:  #EAF0F7;
-  --color-belt-yellow: #F5B53C;
-  --color-belt-orange: #F59E42;
-  --color-belt-green:  #34D399;
-  --color-belt-blue:   #4D8DFF;
-  --color-belt-purple: #A855F7;
-  --color-belt-brown:  #A1724B;
-  --color-belt-black:  #1A2030;
+  --color-belt-white: #eaf0f7;
+  --color-belt-yellow: #f5b53c;
+  --color-belt-orange: #f59e42;
+  --color-belt-green: #34d399;
+  --color-belt-blue: #4d8dff;
+  --color-belt-purple: #a855f7;
+  --color-belt-brown: #a1724b;
+  --color-belt-black: #1a2030;
 
   /* ---- Functional glass / glow ---- */
-  --glass-fill:   rgba(18, 22, 31, 0.55);
+  --glass-fill: rgba(18, 22, 31, 0.55);
   --glass-stroke: rgba(255, 255, 255, 0.07);
-  --glass-hi:     rgba(255, 255, 255, 0.04);
-  --glow-cyan:    rgba(45, 226, 230, 0.35);
-  --glow-purple:  rgba(168, 85, 247, 0.40);
-  --glow-gold:    rgba(245, 181, 60, 0.35);
+  --glass-hi: rgba(255, 255, 255, 0.04);
+  --glow-cyan: rgba(45, 226, 230, 0.35);
+  --glow-purple: rgba(168, 85, 247, 0.4);
+  --glow-gold: rgba(245, 181, 60, 0.35);
 
   /* ---- Radius tiers ---- */
-  --r-sm:   8px;
-  --r-md:   14px;
-  --r-lg:   20px;
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
   --r-full: 9999px;
 
   /* ---- Shadow / elevation ---- */
-  --shadow-card:   0 1px 0 var(--glass-hi) inset, 0 8px 24px -12px rgba(0,0,0,0.7);
-  --shadow-raised: 0 1px 0 var(--glass-hi) inset, 0 16px 40px -16px rgba(0,0,0,0.8);
-  --shadow-glow-cyan:   0 0 0 1px rgba(45,226,230,0.25), 0 0 24px -4px var(--glow-cyan);
-  --shadow-glow-purple: 0 0 0 1px rgba(168,85,247,0.30), 0 0 24px -4px var(--glow-purple);
-  --shadow-glow-gold:   0 0 0 1px rgba(245,181,60,0.30),  0 0 24px -4px var(--glow-gold);
+  --shadow-card:
+    0 1px 0 var(--glass-hi) inset, 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+  --shadow-raised:
+    0 1px 0 var(--glass-hi) inset, 0 16px 40px -16px rgba(0, 0, 0, 0.8);
+  --shadow-glow-cyan:
+    0 0 0 1px rgba(45, 226, 230, 0.25), 0 0 24px -4px var(--glow-cyan);
+  --shadow-glow-purple:
+    0 0 0 1px rgba(168, 85, 247, 0.3), 0 0 24px -4px var(--glow-purple);
+  --shadow-glow-gold:
+    0 0 0 1px rgba(245, 181, 60, 0.3), 0 0 24px -4px var(--glow-gold);
 
   /* ---- Motion easing & duration ---- */
-  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-snap:   cubic-bezier(0.2, 0, 0, 1);
+  --ease-snap: cubic-bezier(0.2, 0, 0, 1);
   --t-fast: 120ms;
   --t-base: 200ms;
   --t-slow: 360ms;
@@ -87,77 +92,154 @@
    ============================================================ */
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  75% { transform: translateX(3px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
 }
 
 @keyframes pop {
-  0% { transform: scale(0.92); opacity: 0; }
-  60% { transform: scale(1.03); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-up {
-  from { transform: translateY(8px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 @keyframes xp-pop {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  50% { transform: translateY(-20px) scale(1.3); opacity: 0.9; }
-  100% { transform: translateY(-40px) scale(1); opacity: 0; }
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.3);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-40px) scale(1);
+    opacity: 0;
+  }
 }
 
 /* One-shot per-second tick for blitz timer under threshold */
 @keyframes tick {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.12); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* One-shot shine sweep for belt bar / reward moments */
 @keyframes shine-sweep {
-  0% { transform: translateX(-120%); }
-  100% { transform: translateX(220%); }
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
 }
 
 /* One-shot settle for a passing test case */
 @keyframes settle {
-  0% { transform: scale(0.98); }
-  60% { transform: scale(1.015); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.98);
+  }
+  60% {
+    transform: scale(1.015);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* One-shot nudge for a failing test case */
 @keyframes nudge {
-  0%, 100% { transform: translateX(0); }
-  30% { transform: translateX(-3px); }
-  70% { transform: translateX(3px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(-3px);
+  }
+  70% {
+    transform: translateX(3px);
+  }
 }
 
 /* Reward card pop */
 @keyframes reward-pop {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.03); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Celebration confetti / belt sweep helpers */
 @keyframes celebrate-sweep {
-  0% { opacity: 0; transform: translateX(-100%) skewX(-12deg); }
-  20% { opacity: 1; }
-  100% { opacity: 0; transform: translateX(200%) skewX(-12deg); }
+  0% {
+    opacity: 0;
+    transform: translateX(-100%) skewX(-12deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(200%) skewX(-12deg);
+  }
 }
 
 /* ============================================================
@@ -172,8 +254,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background:
-    radial-gradient(120% 80% at 50% -10%, rgba(45,226,230,0.06), transparent 60%),
-    radial-gradient(100% 60% at 50% 110%, rgba(168,85,247,0.05), transparent 60%),
+    radial-gradient(
+      120% 80% at 50% -10%,
+      rgba(45, 226, 230, 0.06),
+      transparent 60%
+    ),
+    radial-gradient(
+      100% 60% at 50% 110%,
+      rgba(168, 85, 247, 0.05),
+      transparent 60%
+    ),
     var(--color-dojo-bg);
 }
 
@@ -185,14 +275,20 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(circle at 50% 30%, black, transparent 85%);
-  -webkit-mask-image: radial-gradient(circle at 50% 30%, black, transparent 85%);
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 30%,
+    black,
+    transparent 85%
+  );
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--color-text-hi);
 }
 
@@ -277,9 +373,10 @@ h1, h2, h3 {
   border-radius: var(--r-lg);
   padding: 1.5rem;
   box-shadow: var(--shadow-card);
-  transition: transform var(--t-base) var(--ease-out),
-              border-color var(--t-base) var(--ease-out),
-              box-shadow var(--t-base) var(--ease-out);
+  transition:
+    transform var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
 }
 .kata-card:hover {
   transform: translateY(-2px);
@@ -301,8 +398,9 @@ h1, h2, h3 {
   border: 1px solid transparent;
   cursor: pointer;
   text-align: left;
-  transition: background var(--t-base) var(--ease-out),
-              color var(--t-base) var(--ease-out);
+  transition:
+    background var(--t-base) var(--ease-out),
+    color var(--t-base) var(--ease-out);
 }
 .kata-rail-item::before {
   content: "";
@@ -343,12 +441,13 @@ h1, h2, h3 {
   font-weight: 500;
   font-size: 1.125rem;
   outline: none;
-  transition: border-color var(--t-fast) var(--ease-snap),
-              box-shadow var(--t-fast) var(--ease-snap);
+  transition:
+    border-color var(--t-fast) var(--ease-snap),
+    box-shadow var(--t-fast) var(--ease-snap);
 }
 .regex-input:focus {
   border-color: var(--color-dojo-border-strong);
-  box-shadow: 0 0 0 3px rgba(45, 226, 230, 0.30);
+  box-shadow: 0 0 0 3px rgba(45, 226, 230, 0.3);
 }
 .regex-input::placeholder {
   color: var(--color-text-faint);
@@ -370,9 +469,10 @@ h1, h2, h3 {
   border-radius: var(--r-md);
   box-shadow: 0 1px 0 var(--glass-hi) inset;
   cursor: pointer;
-  transition: transform var(--t-base) var(--ease-out),
-              box-shadow var(--t-base) var(--ease-out),
-              background var(--t-base) var(--ease-out);
+  transition:
+    transform var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
+    background var(--t-base) var(--ease-out);
 }
 .btn-dojo:hover {
   transform: translateY(-1px);
@@ -388,17 +488,31 @@ h1, h2, h3 {
   box-shadow: none;
 }
 /* Room modifiers */
-.btn-dojo.btn-purple { background: var(--color-dojo-purple); color: #fff; }
-.btn-dojo.btn-purple:hover { box-shadow: var(--shadow-glow-purple); }
-.btn-dojo.btn-gold { background: var(--color-dojo-gold); color: var(--color-dojo-void); }
-.btn-dojo.btn-gold:hover { box-shadow: var(--shadow-glow-gold); }
+.btn-dojo.btn-purple {
+  background: var(--color-dojo-purple);
+  color: #fff;
+}
+.btn-dojo.btn-purple:hover {
+  box-shadow: var(--shadow-glow-purple);
+}
+.btn-dojo.btn-gold {
+  background: var(--color-dojo-gold);
+  color: var(--color-dojo-void);
+}
+.btn-dojo.btn-gold:hover {
+  box-shadow: var(--shadow-glow-gold);
+}
 
 /* Belt progress bar — cyan→purple fill, no resting glow */
 .belt-bar {
   position: relative;
   overflow: hidden;
   border-radius: var(--r-full);
-  background: linear-gradient(90deg, var(--color-dojo-cyan), var(--color-dojo-purple));
+  background: linear-gradient(
+    90deg,
+    var(--color-dojo-cyan),
+    var(--color-dojo-purple)
+  );
   transition: width var(--t-slow) var(--ease-out);
 }
 /* One-shot shine sweep on XP gain (toggle .gained) */
@@ -407,7 +521,12 @@ h1, h2, h3 {
   position: absolute;
   inset: 0;
   width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
   animation: shine-sweep 0.6s var(--ease-out);
 }
 
@@ -422,7 +541,11 @@ h1, h2, h3 {
 .combo-meter > .combo-fill {
   height: 100%;
   border-radius: var(--r-full);
-  background: linear-gradient(90deg, var(--color-dojo-gold), var(--color-dojo-red));
+  background: linear-gradient(
+    90deg,
+    var(--color-dojo-gold),
+    var(--color-dojo-red)
+  );
   transition: width var(--t-base) var(--ease-out);
 }
 
@@ -440,9 +563,10 @@ h1, h2, h3 {
   background: transparent;
   cursor: pointer;
   border-radius: var(--r-sm) var(--r-sm) 0 0;
-  transition: color var(--t-base) var(--ease-snap),
-              background var(--t-base) var(--ease-snap),
-              border-color var(--t-base) var(--ease-snap);
+  transition:
+    color var(--t-base) var(--ease-snap),
+    background var(--t-base) var(--ease-snap),
+    border-color var(--t-base) var(--ease-snap);
 }
 .tab-btn:hover {
   color: var(--color-text-hi);
@@ -472,8 +596,9 @@ mark.regex-match {
   padding: 0.75rem;
   font-family: var(--font-mono);
   font-size: 0.875rem;
-  transition: border-color var(--t-base) var(--ease-out),
-              background var(--t-base) var(--ease-out);
+  transition:
+    border-color var(--t-base) var(--ease-out),
+    background var(--t-base) var(--ease-out);
 }
 .test-case-card.pass {
   border-color: rgba(52, 211, 153, 0.4);
@@ -503,7 +628,9 @@ mark.regex-match {
   padding: 1rem;
   box-shadow: var(--shadow-glow-cyan);
   font-family: var(--font-mono);
-  animation: reward-pop 0.4s var(--ease-spring), slide-up 0.36s var(--ease-out);
+  animation:
+    reward-pop 0.4s var(--ease-spring),
+    slide-up 0.36s var(--ease-out);
 }
 
 /* Explainer token chips — filled tint on raised surface, muted-but-legible */
@@ -578,9 +705,10 @@ mark.regex-match {
   padding: 1rem;
   cursor: pointer;
   box-shadow: var(--shadow-card);
-  transition: transform var(--t-base) var(--ease-out),
-              border-color var(--t-base) var(--ease-out),
-              box-shadow var(--t-base) var(--ease-out);
+  transition:
+    transform var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
 }
 .codex-card:hover {
   transform: translateY(-2px);
@@ -632,12 +760,13 @@ mark.regex-match {
   font-size: 0.875rem;
   resize: vertical;
   outline: none;
-  transition: border-color var(--t-fast) var(--ease-snap),
-              box-shadow var(--t-fast) var(--ease-snap);
+  transition:
+    border-color var(--t-fast) var(--ease-snap),
+    box-shadow var(--t-fast) var(--ease-snap);
 }
 .sandbox-textarea:focus {
   border-color: var(--color-dojo-border-strong);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.30);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
 }
 
 /* Flag toggle buttons (sanctioned mono uppercase label) */
@@ -700,7 +829,12 @@ mark.regex-match {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(110deg, transparent 30%, rgba(245,181,60,0.25) 50%, transparent 70%);
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(245, 181, 60, 0.25) 50%,
+    transparent 70%
+  );
   animation: celebrate-sweep 0.6s var(--ease-out);
 }
 
@@ -714,7 +848,9 @@ mark.regex-match {
    ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+  *,
+  ::before,
+  ::after {
     animation: none !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
