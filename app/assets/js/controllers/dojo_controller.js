@@ -31,9 +31,13 @@ export default class extends Controller {
     this.testCases = [];
     this.hintVisible = false;
 
-    // Auto-select the first kata on page load
+    // Restore last selected kata from localStorage, or load the first one
     if (this.kataButtonTargets.length > 0) {
-      this._loadKataFromButton(this.kataButtonTargets[0]);
+      const savedKataId = localStorage.getItem("regex_dojo_current_kata_id");
+      const targetButton = savedKataId
+        ? this.kataButtonTargets.find(btn => btn.dataset.kataId === savedKataId)
+        : null;
+      this._loadKataFromButton(targetButton || this.kataButtonTargets[0]);
     }
   }
 
@@ -211,6 +215,9 @@ export default class extends Controller {
       btn.classList.toggle("border-dojo-violet", isActive);
       btn.classList.toggle("border-transparent", !isActive);
     });
+
+    // Persist the current kata ID so page reloads restore it
+    localStorage.setItem("regex_dojo_current_kata_id", this.currentKata.id);
   }
 
   // ── Private: Test cases ────────────────────────────────────────────────────
