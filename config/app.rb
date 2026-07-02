@@ -21,5 +21,9 @@ module RegexDojo
     # response CSP header, and `content_security_policy_nonce` exposes it to views.
     config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
     config.actions.content_security_policy[:script_src] += " 'nonce'"
+
+    environment(:development) do
+      config.logger.stream = root.join("log").join("development.log")
+    end
   end
 end

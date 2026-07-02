@@ -26,21 +26,62 @@ module RegexDojo
           end
 
           # Load user progress to mark solved katas
-          solved_katas = dojo_repo.get_user_progress(user.id)
+          solved_kata_ids = dojo_repo.get_user_progress(user.id)
             .select { |p| p.solved }
             .map { |p| p.kata_id }
 
           # Load challenges from database
           challenges = dojo_repo.get_challenges_for_view
-          blitz_challenges = dojo_repo.get_blitz_challenges_for_view
+
+          # Calculate belt progress percentage
+          xp = user.xp
+          belt_percent = if xp >= 370
+            100
+          elsif xp >= 265
+            (((xp - 265) / 105.0) * 100).round
+          elsif xp >= 160
+            (((xp - 160) / 105.0) * 100).round
+          elsif xp >= 75
+            (((xp - 75) / 85.0) * 100).round
+          else
+            ((xp / 75.0) * 100).round
+          end
+          belt_percent = belt_percent.clamp(0, 100)
+
+          # Calculate submission accuracy
+          total_subs = dojo_repo.submissions.count
+          passing_subs = dojo_repo.submissions.where(is_passing: true).count
+          accuracy = (total_subs > 0) ? ((passing_subs.to_f / total_subs) * 100).round : 100
+
+          # User rank on the leaderboard
+          rank = dojo_repo.users.where { xp > user.xp }.count + 1
+
+          # Wrap user model in a presenter struct
+          user_presenter = Struct.new(
+            :id, :session_id, :xp, :belt, :streak, :katas_solved, :accuracy, :rank, :belt_percent, :initials
+          ).new(
+            user.id,
+            user.session_id,
+            user.xp,
+            user.belt,
+            user.streak,
+            solved_kata_ids.size,
+            accuracy,
+            rank,
+            belt_percent,
+            user.session_id[0..1].upcase
+          )
+
+          # Query top users for leaderboard
+          top_users = dojo_repo.top_users(10)
 
           # Render the full Phlex page
           layout = Views::Layout.new
-          dashboard = Views::Home::Dashboard.new(
-            user: user,
-            solved_kata_ids: solved_katas,
+          dashboard = Components::Screens::AppShell.new(
+            user: user_presenter,
+            top_users: top_users,
             challenges: challenges,
-            blitz_challenges: blitz_challenges
+            solved_kata_ids: solved_kata_ids
           )
 
           # Render the dashboard *into* the layout's buffer. `render` writes

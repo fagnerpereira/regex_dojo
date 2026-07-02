@@ -111,6 +111,10 @@ module RegexDojo
       def get_blitz_challenges_for_view
         get_challenges_for_view.select { |c| c[:difficulty].to_s.downcase != "hard" }
       end
+
+      def top_users(limit = 10)
+        users.order { xp.desc }.limit(limit).to_a
+      end
     end
   end
 end

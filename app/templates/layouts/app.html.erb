@@ -12,6 +12,7 @@
 
   <body>
     <%= yield %>
+
     <script src="<%= asset_url("app.js") %>" nonce="<%= content_security_policy_nonce %>" type="text/javascript"></script>
   </body>
 </html>

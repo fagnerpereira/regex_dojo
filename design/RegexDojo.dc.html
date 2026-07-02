@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="design_doc_mode" content="canvas">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#f4f0fb;font-family:"Inter",system-ui,sans-serif;color:#211b3a}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+  .disp{font-family:"Baloo 2",system-ui,sans-serif}
+  /* gallery shell */
+  .g{max-width:1240px;margin:0 auto;padding:52px 32px 96px}
+  .ghead{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+  .glogo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;box-shadow:0 8px 20px rgba(124,58,237,.35)}
+  .ghead h1{font-family:"Baloo 2";font-size:34px;font-weight:800;letter-spacing:-.01em}
+  .gsub{font-size:14px;color:#6b6488;max-width:680px;line-height:1.6;margin-bottom:38px}
+  .sec{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .snum{font:700 11px "JetBrains Mono",monospace;background:#211b3a;color:#fff;padding:4px 9px;border-radius:6px}
+  .sec h2{font-family:"Baloo 2";font-size:19px;font-weight:700}
+  .sec span{font-size:12.5px;color:#9a93b5}
+  .block{margin-bottom:74px}
+  .row{display:flex;gap:26px;flex-wrap:wrap}
+  .card{background:#fff;border-radius:26px;border:1px solid #efeaf9;box-shadow:0 2px 4px rgba(60,30,120,.05),0 14px 40px rgba(60,30,120,.07);overflow:hidden}
+  /* app chrome */
+  .app{width:100%;max-width:1180px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;height:66px;padding:0 26px;background:#fff;border-bottom:1px solid #f0ebfa}
+  .brand{display:flex;align-items:center;gap:10px;font-family:"Baloo 2";font-weight:800;font-size:19px}
+  .brand-ic{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px}
+  .nav{display:flex;gap:4px}
+  .nav a{font-size:13.5px;font-weight:600;color:#6b6488;text-decoration:none;padding:8px 14px;border-radius:11px}
+  .nav a:hover{background:#f5f0ff;color:#7c3aed}
+  .nav a.on{background:#7c3aed;color:#fff}
+  .streak{display:flex;align-items:center;gap:7px;background:#fff7ed;color:#c2410c;font-weight:700;font-size:13px;padding:7px 13px;border-radius:12px;border:1px solid #fed7aa}
+  .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f472b6,#db2777);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;border:none;border-radius:14px;cursor:pointer;font-size:14px;font-family:"Inter";transition:.14s}
+  .btn-p{background:#7c3aed;color:#fff;padding:12px 22px;box-shadow:0 6px 16px rgba(124,58,237,.3)}
+  .btn-p:hover{background:#6d28d9;transform:translateY(-1px)}
+  .btn-g{background:#f5f0ff;color:#6d28d9;padding:11px 18px}
+  .btn-g:hover{background:#ece3ff}
+  /* belt chip */
+  .belt{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+  /* regex editor */
+  .editor{background:#1c1830;border-radius:16px;padding:16px 18px;font-family:"JetBrains Mono",monospace;font-size:16px;color:#e9e4ff}
+  .re-slash{color:#7c6aa8}
+  .re-tok{color:#a78bfa}
+  .re-lit{color:#fbbf24}
+  .re-cls{color:#34d399}
+  .flags{color:#f472b6}
+  mark{background:#fde68a;color:#7c2d12;border-radius:4px;padding:1px 2px;font-weight:600}
+  mark.b{background:#a7f3d0;color:#065f46}
+  mark.c{background:#bfdbfe;color:#1e3a8a}
+  /* skill node */
+  .node{width:120px;height:120px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-weight:700;position:relative}
+  /* focus tweak */
+  .g[data-focus]:not([data-focus="all"]) .block{display:none}
+  [data-focus="onboarding"] [data-screen="onboarding"],
+  [data-focus="home"] [data-screen="home"],
+  [data-focus="playground"] [data-screen="playground"],
+  [data-focus="lesson"] [data-screen="lesson"],
+  [data-focus="tree"] [data-screen="tree"],
+  [data-focus="leaderboard"] [data-screen="leaderboard"],
+  [data-focus="profile"] [data-screen="profile"]{display:block!important}
+  .route-tag{margin-left:auto;background:#eef2ff;color:#4338ca;white-space:nowrap}
+  /* scheme: neon-dojo */
+  [data-scheme="neon"]{background:#0e0a1f!important;color:#e9e4ff}
+  [data-scheme="neon"] .ghead h1,[data-scheme="neon"] .sec h2{color:#f3effe}
+  [data-scheme="neon"] .gsub,[data-scheme="neon"] .sec span{color:#8b83ad}
+  [data-scheme="neon"] .card{background:#1a1530;border-color:#2c2350;box-shadow:0 0 0 1px rgba(139,92,246,.15),0 14px 40px rgba(0,0,0,.5)}
+  [data-scheme="neon"] .topbar{background:#1a1530;border-bottom-color:#2c2350}
+  [data-scheme="neon"] .brand,[data-scheme="neon"] .snum{color:#f3effe}
+  [data-scheme="neon"] .nav a{color:#9a90c0}
+  [data-scheme="neon"] .nav a:hover{background:#241c42;color:#c4b5fd}
+  [data-scheme="neon"] [style*="background:#fff"]{background:#221b3d!important}
+  [data-scheme="neon"] [style*="background:#faf7ff"],[data-scheme="neon"] [style*="background:#f9f6ff"],[data-scheme="neon"] [style*="background:#f5f0ff"]{background:#241c42!important}
+  [data-scheme="neon"] [style*="color:#211b3a"],[data-scheme="neon"] [style*="color:#2a2350"]{color:#e9e4ff!important}
+  [data-scheme="neon"] [style*="color:#6b6488"]{color:#9a90c0!important}
+  [data-scheme="neon"] [style*="border-color:#f0ebfa"],[data-scheme="neon"] [style*="border:1px solid #efeaf9"]{border-color:#2c2350!important}
+</style>
+</helmet>
+
+<div class="g" data-focus="{{ focus }}" data-scheme="{{ scheme }}">
+  <div class="ghead">
+    <div class="glogo disp">道</div>
+    <div>
+      <h1>RegexDojo</h1>
+    </div>
+  </div>
+  <p class="gsub">A playful, gamified way to master regular expressions — earn belts, keep your streak, and battle through challenges from white belt to black. Desktop app · {{ screenCount }} screens.</p>
+
+  <!-- ═══════════ ONBOARDING ═══════════ -->
+  <div class="block" data-screen="onboarding">
+    <div class="sec"><span class="snum">01</span><h2>Onboarding</h2><span>one route, two steps shown together</span><span class="pill mono route-tag">/onboarding</span></div>
+    <div class="row">
+      <div class="card app" style="flex:1 1 0;max-width:560px;min-width:320px;min-height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:56px 48px;background:linear-gradient(160deg,#f6f1ff,#fff)">
+        <div class="disp" style="font-size:64px;width:110px;height:110px;border-radius:32px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 40px rgba(124,58,237,.4);margin-bottom:28px">道</div>
+        <p class="pill" style="background:#f5f0ff;color:#6d28d9;margin-bottom:18px;align-self:flex-start">STEP 1 OF 2 · WELCOME</p>
+        <h3 class="disp" style="font-size:34px;font-weight:800;letter-spacing:-.01em;margin-bottom:12px">Welcome to the Dojo</h3>
+        <p style="font-size:15px;color:#6b6488;line-height:1.6;max-width:380px;margin-bottom:32px">Master regex one kata at a time. Match patterns, defeat challenges, and climb the belts.</p>
+        <div style="display:flex;gap:8px;margin-bottom:32px">
+          <span style="width:26px;height:6px;border-radius:3px;background:#7c3aed"></span>
+          <span style="width:8px;height:6px;border-radius:3px;background:#e2d8f7"></span>
+          <span style="width:8px;height:6px;border-radius:3px;background:#e2d8f7"></span>
+        </div>
+        <button class="btn btn-p" style="width:280px;padding:15px">Begin training →</button>
+      </div>
+      <div class="card app" style="flex:1 1 0;max-width:560px;min-width:320px;min-height:560px;padding:44px 44px">
+        <p class="pill" style="background:#f5f0ff;color:#6d28d9;margin-bottom:18px">STEP 2 OF 2 · CHOOSE YOUR LEVEL</p>
+        <h3 class="disp" style="font-size:26px;font-weight:800;margin-bottom:6px">Where do you stand?</h3>
+        <p style="font-size:13.5px;color:#6b6488;margin-bottom:26px">We'll place you at the right belt. You can retest anytime.</p>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:16px;padding:20px;border-radius:18px;border:2px solid #7c3aed;background:#faf7ff;cursor:pointer">
+            <span style="width:44px;height:44px;border-radius:12px;background:#fff;border:2px solid #e2d8f7;flex:none"></span>
+            <div style="flex:1"><div style="font-weight:700;font-size:15px">Brand new</div><div style="font-size:12.5px;color:#6b6488">Never written a regex — start at white belt</div></div>
+            <span style="color:#7c3aed;font-size:20px">◉</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;padding:20px;border-radius:18px;border:2px solid #efeaf9;cursor:pointer">
+            <span style="width:44px;height:44px;border-radius:12px;background:#22c55e;flex:none"></span>
+            <div style="flex:1"><div style="font-weight:700;font-size:15px">I know the basics</div><div style="font-size:12.5px;color:#6b6488">Anchors, classes, quantifiers — green belt</div></div>
+            <span style="color:#cabce8;font-size:20px">○</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;padding:20px;border-radius:18px;border:2px solid #efeaf9;cursor:pointer">
+            <span style="width:44px;height:44px;border-radius:12px;background:#1c1830;flex:none"></span>
+            <div style="flex:1"><div style="font-weight:700;font-size:15px">Regex veteran</div><div style="font-size:12.5px;color:#6b6488">Lookaheads, backrefs — take the black-belt test</div></div>
+            <span style="color:#cabce8;font-size:20px">○</span>
+          </div>
+        </div>
+        <button class="btn btn-p" style="width:100%;margin-top:26px;padding:14px">Place me →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ HOME / DASHBOARD ═══════════ -->
+  <div class="block" data-screen="home">
+    <div class="sec"><span class="snum">02</span><h2>Home · Dashboard</h2><span>daily kata, streak, progress</span><span class="pill mono route-tag">/ (root)</span></div>
+    <div class="card app">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:28px">
+          <div class="brand"><span class="brand-ic disp">道</span>RegexDojo</div>
+          <nav class="nav"><a class="on">Dojo</a><a>Playground</a><a>Challenges</a><a>Leaderboard</a></nav>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="streak">🔥 12 day streak</span>
+          <span class="av">RS</span>
+        </div>
+      </div>
+      <div style="padding:30px;background:#faf7ff">
+        <div style="display:flex;gap:22px;margin-bottom:22px">
+          <div style="flex:1.6;border-radius:22px;padding:30px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;position:relative;overflow:hidden">
+            <span class="pill" style="background:rgba(255,255,255,.18);color:#fff;margin-bottom:16px">☀️ DAILY KATA</span>
+            <h3 class="disp" style="font-size:26px;font-weight:800;margin-bottom:8px;max-width:360px">Match every valid hex color code</h3>
+            <p style="font-size:13.5px;opacity:.85;margin-bottom:22px;max-width:340px">Handle #fff and #ffffff, reject bad ones. +150 XP if you nail it first try.</p>
+            <button class="btn" style="background:#fff;color:#6d28d9;padding:13px 24px">Start today's kata →</button>
+            <div class="disp" style="position:absolute;right:-10px;bottom:-24px;font-size:130px;opacity:.13">忍</div>
+          </div>
+          <div style="flex:1;border-radius:22px;padding:26px;background:#fff;border:1px solid #efeaf9;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
+            <div style="position:relative;width:120px;height:120px;margin-bottom:14px">
+              <svg viewBox="0 0 120 120" style="width:120px;height:120px;transform:rotate(-90deg)"><circle cx="60" cy="60" r="52" fill="none" stroke="#f0ebfa" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" stroke="#22c55e" stroke-width="12" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="98"/></svg>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="disp" style="font-size:30px;font-weight:800">70%</span><span style="font-size:11px;color:#6b6488;font-weight:600">Green belt</span></div>
+            </div>
+            <p style="font-size:12.5px;color:#6b6488">14 of 20 katas to <b style="color:#211b3a">Blue belt</b></p>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:22px">
+          <div style="flex:1;background:#fff;border:1px solid #efeaf9;border-radius:18px;padding:20px"><div style="font-size:12px;color:#6b6488;font-weight:600;margin-bottom:6px">Total XP</div><div class="disp" style="font-size:28px;font-weight:800;color:#7c3aed">8,420</div></div>
+          <div style="flex:1;background:#fff;border:1px solid #efeaf9;border-radius:18px;padding:20px"><div style="font-size:12px;color:#6b6488;font-weight:600;margin-bottom:6px">Katas solved</div><div class="disp" style="font-size:28px;font-weight:800;color:#f59e0b">137</div></div>
+          <div style="flex:1;background:#fff;border:1px solid #efeaf9;border-radius:18px;padding:20px"><div style="font-size:12px;color:#6b6488;font-weight:600;margin-bottom:6px">Accuracy</div><div class="disp" style="font-size:28px;font-weight:800;color:#22c55e">91%</div></div>
+          <div style="flex:1;background:#fff;border:1px solid #efeaf9;border-radius:18px;padding:20px"><div style="font-size:12px;color:#6b6488;font-weight:600;margin-bottom:6px">World rank</div><div class="disp" style="font-size:28px;font-weight:800;color:#ec4899">#312</div></div>
+        </div>
+        <div style="background:#fff;border:1px solid #efeaf9;border-radius:20px;padding:24px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h4 class="disp" style="font-size:17px;font-weight:700">Continue your path</h4><a style="font-size:13px;color:#7c3aed;font-weight:700;text-decoration:none">View all →</a></div>
+          <div style="display:flex;gap:14px">
+            <div style="flex:1;border:1px solid #f0ebfa;border-radius:16px;padding:18px;background:#faf7ff">
+              <span class="pill" style="background:#dcfce7;color:#15803d;margin-bottom:12px">✓ 3/5 DONE</span>
+              <div style="font-weight:700;font-size:14.5px;margin-bottom:4px">Character Classes</div>
+              <div style="font-size:12px;color:#6b6488;margin-bottom:12px">Ranges, negation, shorthands</div>
+              <div style="height:7px;background:#eadff9;border-radius:4px;overflow:hidden"><div style="width:60%;height:100%;background:#22c55e"></div></div>
+            </div>
+            <div style="flex:1;border:1px solid #f0ebfa;border-radius:16px;padding:18px">
+              <span class="pill" style="background:#fef3c7;color:#b45309;margin-bottom:12px">▶ IN PROGRESS</span>
+              <div style="font-weight:700;font-size:14.5px;margin-bottom:4px">Quantifiers &amp; Greed</div>
+              <div style="font-size:12px;color:#6b6488;margin-bottom:12px">*, +, ?, {n,m}, lazy vs greedy</div>
+              <div style="height:7px;background:#eadff9;border-radius:4px;overflow:hidden"><div style="width:30%;height:100%;background:#f59e0b"></div></div>
+            </div>
+            <div style="flex:1;border:1px solid #f0ebfa;border-radius:16px;padding:18px;opacity:.65">
+              <span class="pill" style="background:#f1eafc;color:#7c3aed;margin-bottom:12px">🔒 LOCKED</span>
+              <div style="font-weight:700;font-size:14.5px;margin-bottom:4px">Groups &amp; Backrefs</div>
+              <div style="font-size:12px;color:#6b6488;margin-bottom:12px">Capturing, named, \1 refs</div>
+              <div style="height:7px;background:#eadff9;border-radius:4px;overflow:hidden"><div style="width:0%;height:100%;background:#7c3aed"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PLAYGROUND — 3 VARIATIONS ═══════════ -->
+  <div class="block" data-screen="playground">
+    <div class="sec"><span class="snum">03</span><h2>Playground</h2><span>type a pattern, see matches update live</span><span class="pill mono route-tag">/playground</span></div>
+    <div class="row">
+      <div class="card app">
+          <div class="topbar">
+            <div class="brand"><span class="brand-ic disp">道</span>Playground</div>
+            <div style="display:flex;gap:8px"><button class="btn btn-g" onClick="{{ resetPlayground }}">↺ Reset</button><button class="btn btn-p" style="padding:11px 18px">Run tests</button></div>
+          </div>
+          <div style="display:flex">
+            <div style="flex:1;padding:26px;border-right:1px solid #f0ebfa">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <span style="font-size:12px;font-weight:700;color:#6b6488">PATTERN</span>
+                <div style="display:flex;gap:6px">
+                  <span class="pill mono" style="cursor:pointer;background:{{ gPillBg }};color:{{ gPillColor }}" onClick="{{ toggleG }}">g</span>
+                  <span class="pill mono" style="cursor:pointer;background:{{ iPillBg }};color:{{ iPillColor }}" onClick="{{ toggleI }}">i</span>
+                  <span class="pill mono" style="cursor:pointer;background:{{ mPillBg }};color:{{ mPillColor }}" onClick="{{ toggleM }}">m</span>
+                </div>
+              </div>
+              <div class="editor mono" style="margin-bottom:22px;display:flex;align-items:center;gap:2px">
+                <span class="re-slash">/</span>
+                <div style="position:relative;flex:1;min-width:0;display:flex;align-items:center">
+                  <div style="position:absolute;inset:0;white-space:pre;overflow:hidden;pointer-events:none;font:inherit;display:flex;align-items:center"><sc-for list="{{ patternTokens }}" as="tok" hint-placeholder-count="1"><span class="{{ tok.cls }}">{{ tok.text }}</span></sc-for></div>
+                  <input class="mono" value="{{ pattern }}" onChange="{{ onPatternChange }}" spellCheck="false" autoCorrect="off" autoCapitalize="off" style="position:relative;width:100%;background:transparent;border:none;outline:none;color:transparent;caret-color:#e9e4ff;font:inherit" /></div>
+                <span class="re-slash">/</span><span class="flags">{{ flags }}</span>
+              </div>
+              <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+                <div style="margin:-14px 0 18px;padding:10px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;color:#b91c1c;font-size:12.5px;font-weight:600" class="mono">⚠ {{ error }}</div>
+              </sc-if>
+              <span style="font-size:12px;font-weight:700;color:#6b6488">TEST STRING <span style="font-weight:500;color:#9a93b5">· edit directly, matches highlight live</span></span>
+              <div class="mono" style="position:relative;display:grid;margin-top:10px;background:#faf7ff;border:1px solid #efeaf9;border-radius:14px">
+                <div style="grid-area:1/1;padding:16px;font-size:14px;line-height:1.8;color:#2a2350;white-space:pre-wrap;word-break:break-word;pointer-events:none;min-height:110px"><sc-for list="{{ segments }}" as="seg" hint-placeholder-count="1"><sc-if value="{{ seg.isMatch }}" hint-placeholder-val="{{ false }}"><mark>{{ seg.text }}</mark></sc-if><sc-if value="{{ seg.isPlain }}" hint-placeholder-val="{{ true }}"><span>{{ seg.text }}</span></sc-if></sc-for></div>
+                <textarea value="{{ testString }}" onChange="{{ onTestChange }}" spellCheck="false" style="grid-area:1/1;width:100%;background:transparent;border:none;outline:none;padding:16px;font-size:14px;line-height:1.8;color:transparent;caret-color:#2a2350;resize:vertical;min-height:110px;font:inherit"></textarea>
+              </div>
+            </div>
+            <div style="width:360px;padding:26px;background:#faf7ff">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span style="font-size:12px;font-weight:700;color:#6b6488">MATCHES</span><span class="pill" style="background:{{ matchBadgeBg }};color:{{ matchBadgeColor }}">{{ matchCountLabel }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto">
+                <sc-for list="{{ matches }}" as="m" hint-placeholder-count="3">
+                  <div style="background:#fff;border:1px solid #efeaf9;border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between"><span class="mono" style="font-size:13px;font-weight:600">{{ m.text }}</span><span class="mono" style="font-size:11px;color:#9a93b5">{{ m.range }}</span></div>
+                </sc-for>
+                <sc-if value="{{ noMatches }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:16px;text-align:center;font-size:12.5px;color:#9a93b5">No matches yet — try a pattern above.</div>
+                </sc-if>
+              </div>
+              <sc-if value="{{ successBanner }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:16px;padding:14px;background:#eefdf3;border:1px solid #bbf7d0;border-radius:12px;font-size:12.5px;color:#15803d;font-weight:600">✓ {{ matchCountLabel }} — pattern is valid</div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LESSON / CHALLENGE DETAIL ═══════════ -->
+  <div class="block" data-screen="lesson">
+    <div class="sec"><span class="snum">04</span><h2>Lesson · Challenge detail</h2><span>brief, editor, live check</span><span class="pill mono route-tag">/challenges/:id</span></div>
+    <div class="card app">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:16px"><button class="btn btn-g" style="padding:9px 14px">← Back</button><div style="font-family:'Baloo 2';font-weight:700;font-size:16px">Quantifiers &amp; Greed · Kata 4</div></div>
+        <div style="display:flex;align-items:center;gap:12px"><span class="belt" style="background:#fef3c7;color:#b45309">🟡 Green belt</span><span class="pill" style="background:#f5f0ff;color:#6d28d9">+120 XP</span></div>
+      </div>
+      <div style="display:flex">
+        <div style="width:420px;padding:30px;border-right:1px solid #f0ebfa">
+          <span class="pill" style="background:#fff7ed;color:#c2410c;margin-bottom:16px">⚔️ CHALLENGE</span>
+          <h3 class="disp" style="font-size:23px;font-weight:800;margin-bottom:12px;line-height:1.25">Grab the text inside the first pair of quotes — and stop there</h3>
+          <p style="font-size:13.5px;color:#6b6488;line-height:1.7;margin-bottom:20px">Greedy quantifiers gobble everything. Use a <b style="color:#211b3a">lazy</b> quantifier so your match ends at the first closing quote, not the last.</p>
+          <div style="background:#faf7ff;border:1px solid #efeaf9;border-radius:14px;padding:16px;margin-bottom:18px">
+            <div style="font-size:11.5px;font-weight:700;color:#6b6488;margin-bottom:8px">💡 HINT</div>
+            <p class="mono" style="font-size:12.5px;color:#2a2350;line-height:1.6">Add <span style="background:#eadff9;padding:1px 5px;border-radius:4px">?</span> after <span style="background:#eadff9;padding:1px 5px;border-radius:4px">*</span> or <span style="background:#eadff9;padding:1px 5px;border-radius:4px">+</span> to make it lazy.</p>
+          </div>
+          <div style="display:flex;gap:8px;font-size:12px;color:#9a93b5"><span>▲ 2,140 solved</span><span>·</span><span>68% first try</span></div>
+        </div>
+        <div style="flex:1;padding:30px;background:#faf7ff">
+          <span style="font-size:12px;font-weight:700;color:#6b6488">YOUR PATTERN</span>
+          <div class="editor" style="margin:10px 0 8px"><span class="re-slash">/</span><span class="re-lit">"</span><span class="re-cls">.</span><span class="re-tok">*?</span><span class="re-lit">"</span><span class="re-slash">/</span></div>
+          <div style="font-size:12px;color:#22c55e;font-weight:700;margin-bottom:18px">✓ lazy quantifier detected</div>
+          <span style="font-size:12px;font-weight:700;color:#6b6488">TEST CASES</span>
+          <div style="display:flex;flex-direction:column;gap:8px;margin:10px 0 20px">
+            <div class="mono" style="background:#fff;border:1px solid #efeaf9;border-radius:12px;padding:13px 15px;font-size:13px;display:flex;justify-content:space-between;align-items:center">say <mark>"hi"</mark> then <span style="opacity:.5">"bye"</span><span style="color:#22c55e;font-weight:700">✓ pass</span></div>
+            <div class="mono" style="background:#fff;border:1px solid #efeaf9;border-radius:12px;padding:13px 15px;font-size:13px;display:flex;justify-content:space-between;align-items:center"><mark>"just one"</mark><span style="color:#22c55e;font-weight:700">✓ pass</span></div>
+            <div class="mono" style="background:#fff;border:1px solid #efeaf9;border-radius:12px;padding:13px 15px;font-size:13px;display:flex;justify-content:space-between;align-items:center"><mark>"a"</mark>, <mark>"b"</mark>, <mark>"c"</mark><span style="color:#22c55e;font-weight:700">✓ pass</span></div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-p" style="flex:1;padding:14px">Submit solution ✓</button>
+            <button class="btn btn-g">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ CHALLENGE SKILL TREE ═══════════ -->
+  <div class="block" data-screen="tree">
+    <div class="sec"><span class="snum">05</span><h2>Challenges · Skill tree</h2><span>belt path from white to black</span><span class="pill mono route-tag">/challenges</span></div>
+    <div class="card app" style="padding:36px 40px;background:linear-gradient(180deg,#faf7ff,#fff)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:34px">
+        <h3 class="disp" style="font-size:22px;font-weight:800">Your belt path</h3>
+        <div style="display:flex;gap:8px"><span class="belt" style="background:#dcfce7;color:#15803d">14/20 to Blue</span></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;position:relative">
+        <div style="position:absolute;top:60px;left:60px;right:60px;height:4px;background:#eadff9;border-radius:2px;z-index:0"></div>
+        <div style="position:absolute;top:60px;left:60px;width:52%;height:4px;background:linear-gradient(90deg,#22c55e,#7c3aed);border-radius:2px;z-index:0"></div>
+
+        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div class="node" style="background:#fff;border:3px solid #22c55e;color:#15803d"><span style="font-size:30px">🥋</span><span style="font-size:11px">White</span></div>
+          <span class="pill" style="background:#dcfce7;color:#15803d">✓ Done</span>
+        </div>
+        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div class="node" style="background:#fff;border:3px solid #22c55e;color:#15803d"><span style="font-size:30px">🥋</span><span style="font-size:11px">Yellow</span></div>
+          <span class="pill" style="background:#dcfce7;color:#15803d">✓ Done</span>
+        </div>
+        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div class="node" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;box-shadow:0 12px 28px rgba(124,58,237,.4)"><span style="font-size:32px">🥋</span><span style="font-size:11px">Green</span><span style="position:absolute;top:-8px;right:-8px;background:#f59e0b;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px">70%</span></div>
+          <span class="pill" style="background:#f5f0ff;color:#6d28d9">▶ Now</span>
+        </div>
+        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div class="node" style="background:#f6f1ff;border:3px solid #efeaf9;color:#cabce8"><span style="font-size:30px">🔒</span><span style="font-size:11px">Blue</span></div>
+          <span class="pill" style="background:#f1eafc;color:#9a93b5">Locked</span>
+        </div>
+        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div class="node" style="background:#f6f1ff;border:3px solid #efeaf9;color:#cabce8"><span style="font-size:30px">🔒</span><span style="font-size:11px">Brown</span></div>
+          <span class="pill" style="background:#f1eafc;color:#9a93b5">Locked</span>
+        </div>
+        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div class="node" style="background:#1c1830;color:#fff"><span style="font-size:30px">🖤</span><span style="font-size:11px">Black</span></div>
+          <span class="pill" style="background:#211b3a;color:#fff">Final</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:38px">
+        <div style="flex:1;border:1px solid #f0ebfa;border-radius:16px;padding:18px;background:#fff"><div style="font-weight:700;font-size:14px;margin-bottom:8px">🟢 Character Classes</div><div style="height:6px;background:#eadff9;border-radius:3px;overflow:hidden;margin-bottom:6px"><div style="width:100%;height:100%;background:#22c55e"></div></div><div style="font-size:11.5px;color:#6b6488">5/5 katas</div></div>
+        <div style="flex:1;border:2px solid #7c3aed;border-radius:16px;padding:18px;background:#faf7ff"><div style="font-weight:700;font-size:14px;margin-bottom:8px">🟡 Quantifiers &amp; Greed</div><div style="height:6px;background:#eadff9;border-radius:3px;overflow:hidden;margin-bottom:6px"><div style="width:30%;height:100%;background:#f59e0b"></div></div><div style="font-size:11.5px;color:#6b6488">recommended next · 2/6</div></div>
+        <div style="flex:1;border:1px solid #f0ebfa;border-radius:16px;padding:18px;background:#fff;opacity:.6"><div style="font-weight:700;font-size:14px;margin-bottom:8px">🔒 Anchors &amp; Boundaries</div><div style="height:6px;background:#eadff9;border-radius:3px;overflow:hidden;margin-bottom:6px"><div style="width:0%;height:100%;background:#7c3aed"></div></div><div style="font-size:11.5px;color:#6b6488">0/4 katas</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LEADERBOARD ═══════════ -->
+  <div class="block" data-screen="leaderboard">
+    <div class="sec"><span class="snum">06</span><h2>Leaderboard</h2><span>ranks · weekly &amp; all-time</span><span class="pill mono route-tag">/leaderboard</span></div>
+    <div class="row">
+      <div class="card app" style="max-width:640px">
+        <div style="padding:24px 28px;border-bottom:1px solid #f0ebfa;display:flex;justify-content:space-between;align-items:center"><h3 class="disp" style="font-size:18px;font-weight:800">🏆 Weekly leaderboard</h3><div style="display:flex;gap:6px"><span class="pill" style="background:#7c3aed;color:#fff">Week</span><span class="pill" style="background:#f5f0ff;color:#9a93b5">All-time</span></div></div>
+        <div style="padding:16px 20px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#fffbeb,#fef3c7)"><span class="disp" style="font-size:20px;width:28px;text-align:center">🥇</span><span class="av" style="background:linear-gradient(135deg,#fbbf24,#d97706)">KM</span><div style="flex:1"><div style="font-weight:700;font-size:14px">Kenji Matsuda</div><div style="font-size:11.5px;color:#b45309;font-weight:600">🖤 Black belt</div></div><span class="disp" style="font-weight:800;color:#b45309">3,120 XP</span></div>
+          <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:#faf7ff"><span class="disp" style="font-size:18px;width:28px;text-align:center">🥈</span><span class="av" style="background:linear-gradient(135deg,#94a3b8,#475569)">AL</span><div style="flex:1"><div style="font-weight:700;font-size:14px">Ana Lima</div><div style="font-size:11.5px;color:#6b6488">🤎 Brown belt</div></div><span class="disp" style="font-weight:800;color:#6b6488">2,880 XP</span></div>
+          <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:#faf7ff"><span class="disp" style="font-size:18px;width:28px;text-align:center">🥉</span><span class="av" style="background:linear-gradient(135deg,#f59e0b,#b45309)">TP</span><div style="flex:1"><div style="font-weight:700;font-size:14px">Théo Park</div><div style="font-size:11.5px;color:#6b6488">🔵 Blue belt</div></div><span class="disp" style="font-weight:800;color:#6b6488">2,410 XP</span></div>
+          <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;border:2px solid #7c3aed;background:#fff"><span class="disp" style="font-size:15px;width:28px;text-align:center;color:#7c3aed;font-weight:800">12</span><span class="av">RS</span><div style="flex:1"><div style="font-weight:700;font-size:14px">You · Rin Sato</div><div style="font-size:11.5px;color:#7c3aed;font-weight:600">🟢 Green belt · ▲ 3 this week</div></div><span class="disp" style="font-weight:800;color:#7c3aed">1,640 XP</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PROFILE ═══════════ -->
+  <div class="block" data-screen="profile">
+    <div class="sec"><span class="snum">07</span><h2>Profile</h2><span>stats · badges</span><span class="pill mono route-tag">/profile</span></div>
+    <div class="row">
+      <div class="card app" style="max-width:640px">
+        <div style="padding:30px 28px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;display:flex;align-items:center;gap:18px">
+          <span class="av" style="width:64px;height:64px;font-size:24px;background:linear-gradient(135deg,#f472b6,#db2777);border:3px solid rgba(255,255,255,.4)">RS</span>
+          <div style="flex:1"><h3 class="disp" style="font-size:22px;font-weight:800">Rin Sato</h3><div style="font-size:12.5px;opacity:.85">🟢 Green belt · Joined Mar 2026 · 🔥 12 day streak</div></div>
+          <button class="btn" style="background:rgba(255,255,255,.2);color:#fff;padding:10px 16px">Edit</button>
+        </div>
+        <div style="padding:24px 28px">
+          <div style="display:flex;gap:12px;margin-bottom:24px">
+            <div style="flex:1;text-align:center;padding:16px;background:#faf7ff;border-radius:14px"><div class="disp" style="font-size:24px;font-weight:800;color:#7c3aed">137</div><div style="font-size:11px;color:#6b6488;font-weight:600">Katas</div></div>
+            <div style="flex:1;text-align:center;padding:16px;background:#faf7ff;border-radius:14px"><div class="disp" style="font-size:24px;font-weight:800;color:#f59e0b">8,420</div><div style="font-size:11px;color:#6b6488;font-weight:600">XP</div></div>
+            <div style="flex:1;text-align:center;padding:16px;background:#faf7ff;border-radius:14px"><div class="disp" style="font-size:24px;font-weight:800;color:#22c55e">91%</div><div style="font-size:11px;color:#6b6488;font-weight:600">Accuracy</div></div>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#6b6488;margin-bottom:12px">BADGES EARNED</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <div style="text-align:center;width:76px"><div style="width:56px;height:56px;margin:0 auto 6px;border-radius:16px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:26px">🔥</div><div style="font-size:10.5px;color:#6b6488;font-weight:600">Streak x12</div></div>
+            <div style="text-align:center;width:76px"><div style="width:56px;height:56px;margin:0 auto 6px;border-radius:16px;background:#dcfce7;display:flex;align-items:center;justify-content:center;font-size:26px">🎯</div><div style="font-size:10.5px;color:#6b6488;font-weight:600">Sharpshooter</div></div>
+            <div style="text-align:center;width:76px"><div style="width:56px;height:56px;margin:0 auto 6px;border-radius:16px;background:#f5f0ff;display:flex;align-items:center;justify-content:center;font-size:26px">⚡</div><div style="font-size:10.5px;color:#6b6488;font-weight:600">Speed demon</div></div>
+            <div style="text-align:center;width:76px"><div style="width:56px;height:56px;margin:0 auto 6px;border-radius:16px;background:#fce7f3;display:flex;align-items:center;justify-content:center;font-size:26px">🧩</div><div style="font-size:10.5px;color:#6b6488;font-weight:600">Group guru</div></div>
+            <div style="text-align:center;width:76px"><div style="width:56px;height:56px;margin:0 auto 6px;border-radius:16px;background:#f1eafc;display:flex;align-items:center;justify-content:center;font-size:26px;opacity:.4">🔒</div><div style="font-size:10.5px;color:#9a93b5;font-weight:600">Lookahead</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1300,&quot;height&quot;:900},&quot;focus&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;all&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;onboarding&quot;,&quot;home&quot;,&quot;playground&quot;,&quot;lesson&quot;,&quot;tree&quot;,&quot;leaderboard&quot;,&quot;profile&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;View&quot;},&quot;scheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;playful&quot;,&quot;options&quot;:[&quot;playful&quot;,&quot;neon&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;View&quot;}}">
+class Component extends DCLogic {
+  state = {
+    pattern: String.raw`#([a-f0-9]{6}|[a-f0-9]{3})\b`,
+    flags: "gi",
+    testString: "bg: #fff; color: #1c1830;\nborder: #7c3aed; shadow: #ggg999;\naccent: #f59e0b; text: #211b3a",
+  };
+
+  tokenizePattern(str) {
+    const tokens = [];
+    const push = (text, cls) => { if (text) tokens.push({ text, cls }); };
+    let i = 0;
+    while (i < str.length) {
+      const c = str[i];
+      if (c === "\\" && i + 1 < str.length) { push(str.slice(i, i + 2), "re-tok"); i += 2; continue; }
+      if (c === "[") {
+        let j = i + 1;
+        while (j < str.length && str[j] !== "]") { if (str[j] === "\\") j++; j++; }
+        j = Math.min(j + 1, str.length);
+        push(str.slice(i, j), "re-cls"); i = j; continue;
+      }
+      if (c === "(" || c === ")" || c === "|") { push(c, "re-tok"); i++; continue; }
+      if (c === "{") {
+        let j = i + 1;
+        while (j < str.length && str[j] !== "}") j++;
+        j = Math.min(j + 1, str.length);
+        push(str.slice(i, j), "re-lit"); i = j; continue;
+      }
+      if (c === "*" || c === "+" || c === "?") { push(c, "re-lit"); i++; continue; }
+      let j = i;
+      while (j < str.length && !"\\[(){}*+|?".includes(str[j])) j++;
+      if (j === i) j = i + 1;
+      push(str.slice(i, j), ""); i = j;
+    }
+    return tokens;
+  }
+
+  toggleFlag(f) {
+    this.setState((s) => {
+      const has = s.flags.includes(f);
+      let flags = has ? s.flags.replace(f, "") : s.flags + f;
+      // keep canonical order g,i,m
+      flags = ["g", "i", "m"].filter((c) => flags.includes(c)).join("");
+      return { flags };
+    });
+  }
+
+  renderVals() {
+    const { pattern, flags, testString } = this.state;
+    let error = null;
+    let matches = [];
+    let segments = [{ text: testString, isMatch: false, isPlain: true }];
+
+    if (pattern) {
+      try {
+        const re = new RegExp(pattern, flags.includes("g") ? flags : flags + "g");
+        let m;
+        const found = [];
+        let guard = 0;
+        while ((m = re.exec(testString)) !== null && guard < 500) {
+          found.push({ text: m[0], start: m.index, end: m.index + m[0].length, range: `${m.index}:${m.index + m[0].length}` });
+          if (m[0].length === 0) re.lastIndex++;
+          guard++;
+        }
+        matches = found;
+
+        if (found.length) {
+          segments = [];
+          let cursor = 0;
+          for (const f of found) {
+            if (f.start > cursor) segments.push({ text: testString.slice(cursor, f.start), isMatch: false, isPlain: true });
+            segments.push({ text: f.text, isMatch: true, isPlain: false });
+            cursor = f.end;
+          }
+          if (cursor < testString.length) segments.push({ text: testString.slice(cursor), isMatch: false, isPlain: true });
+        }
+      } catch (e) {
+        error = e.message;
+      }
+    }
+
+    const on = { background: "#7c3aed", color: "#fff" };
+    const off = { background: "#f5f0ff", color: "#6d28d9" };
+
+    return {
+      focus: this.props.focus ?? "all",
+      scheme: this.props.scheme ?? "playful",
+      screenCount: 7,
+
+      pattern,
+      patternTokens: this.tokenizePattern(pattern),
+      flags,
+      testString,
+      error,
+      matches,
+      segments,
+      noMatches: !error && matches.length === 0,
+      successBanner: !error && matches.length > 0,
+      matchCountLabel: error ? "—" : `${matches.length} found`,
+      matchBadgeBg: error ? "#fef2f2" : matches.length ? "#dcfce7" : "#f5f0ff",
+      matchBadgeColor: error ? "#b91c1c" : matches.length ? "#15803d" : "#9a93b5",
+
+      gPillBg: flags.includes("g") ? on.background : off.background,
+      gPillColor: flags.includes("g") ? on.color : off.color,
+      iPillBg: flags.includes("i") ? on.background : off.background,
+      iPillColor: flags.includes("i") ? on.color : off.color,
+      mPillBg: flags.includes("m") ? on.background : off.background,
+      mPillColor: flags.includes("m") ? on.color : off.color,
+
+      toggleG: () => this.toggleFlag("g"),
+      toggleI: () => this.toggleFlag("i"),
+      toggleM: () => this.toggleFlag("m"),
+      onPatternChange: (e) => this.setState({ pattern: e.target.value }),
+      onTestChange: (e) => this.setState({ testString: e.target.value }),
+      resetPlayground: () =>
+        this.setState({
+          pattern: String.raw`#([a-f0-9]{6}|[a-f0-9]{3})\b`,
+          flags: "gi",
+          testString: "bg: #fff; color: #1c1830;\nborder: #7c3aed; shadow: #ggg999;\naccent: #f59e0b; text: #211b3a",
+        }),
+    };
+  }
+}
+</script>
+</body>
+</html>

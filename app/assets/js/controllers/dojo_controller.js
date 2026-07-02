@@ -207,8 +207,8 @@ export default class extends Controller {
     // Highlight active sidebar button
     this.kataButtonTargets.forEach((btn) => {
       const isActive = btn.dataset.kataId === this.currentKata.id;
-      btn.classList.toggle("bg-dojo-bg", isActive);
-      btn.classList.toggle("border-dojo-border", isActive);
+      btn.classList.toggle("bg-dojo-violet-light", isActive);
+      btn.classList.toggle("border-dojo-violet", isActive);
       btn.classList.toggle("border-transparent", !isActive);
     });
   }
@@ -226,7 +226,7 @@ export default class extends Controller {
     testCases.forEach((tc, index) => {
       const card = document.createElement("div");
       card.className =
-        "test-case-card flex items-center gap-3 bg-dojo-bg/60 border border-dojo-border/60 p-3 rounded-lg transition-all duration-200";
+        "test-case-card flex items-center gap-3 bg-dojo-violet-wash border border-dojo-violet-border p-3 rounded-lg transition-all duration-200";
       card.dataset.testCaseIndex = index;
 
       const statusIcon = document.createElement("span");
@@ -237,11 +237,11 @@ export default class extends Controller {
       details.className = "flex flex-col flex-1 min-w-0";
 
       const input = document.createElement("span");
-      input.className = "text-xs font-mono text-gray-300 truncate";
+      input.className = "text-xs font-mono text-dojo-ink truncate";
       input.textContent = `"${tc.input}"`;
 
       const expected = document.createElement("span");
-      expected.className = "text-[10px] font-mono text-gray-500 mt-0.5";
+      expected.className = "text-[10px] font-mono text-dojo-slate mt-0.5";
       expected.textContent = tc.should_match
         ? `→ expected: "${tc.expected_match || ""}"`
         : "→ expected: no match";
@@ -287,11 +287,11 @@ export default class extends Controller {
       icon.textContent = passed ? "✅" : "❌";
       card.classList.toggle("border-green-500/30", passed);
       card.classList.toggle("border-red-500/30", !passed);
-      card.classList.toggle("border-dojo-border/60", false);
+      card.classList.toggle("border-dojo-violet-border", false);
 
       const userMatchSpan = document.createElement("span");
       userMatchSpan.className = `user-match-result text-[10px] font-mono mt-0.5 ${
-        passed ? "text-dojo-green" : "text-dojo-red font-bold"
+        passed ? "text-dojo-success-text" : "text-dojo-danger-text font-bold"
       }`;
       userMatchSpan.textContent =
         userMatch !== null ? `got: "${userMatch}"` : "got: no match";
@@ -327,7 +327,7 @@ export default class extends Controller {
       const oldUserMatch = details.querySelector(".user-match-result");
       if (oldUserMatch) oldUserMatch.remove();
       card.classList.remove("border-green-500/30", "border-red-500/30");
-      card.classList.add("border-dojo-border/60");
+      card.classList.add("border-dojo-violet-border");
     });
   }
 
@@ -413,36 +413,24 @@ export default class extends Controller {
       if (beltBadge.textContent.trim() !== newBeltText) {
         beltBadge.textContent = newBeltText;
 
+        // Mirrors Components::Hud::BELT_STYLES (light theme)
         const beltStyles = {
-          white: [
-            "text-white",
-            "border-white/20",
-            "bg-white/5",
-            "shadow-white/5",
-          ],
+          white: ["text-dojo-slate", "border-dojo-violet-border", "bg-white"],
           yellow: [
-            "text-dojo-gold",
-            "border-dojo-gold/20",
-            "bg-dojo-gold/5",
-            "shadow-dojo-gold/5",
+            "text-dojo-warning-text",
+            "border-dojo-warning/30",
+            "bg-dojo-warning-bg",
           ],
-          orange: [
-            "text-orange-400",
-            "border-orange-400/20",
-            "bg-orange-400/5",
-            "shadow-orange-400/5",
-          ],
+          orange: ["text-orange-700", "border-orange-200", "bg-orange-50"],
           green: [
-            "text-dojo-green",
-            "border-dojo-green/20",
-            "bg-dojo-green/5",
-            "shadow-dojo-green/5",
+            "text-dojo-success-text",
+            "border-dojo-success/30",
+            "bg-dojo-success-bg",
           ],
           black: [
-            "text-purple-400",
-            "border-purple-400/20",
-            "bg-purple-400/5",
-            "shadow-purple-400/5",
+            "text-dojo-violet",
+            "border-dojo-violet/30",
+            "bg-dojo-violet-light",
           ],
         };
 
@@ -453,9 +441,9 @@ export default class extends Controller {
 
         // Add corresponding style classes
         const newClasses = beltStyles[data.belt.toLowerCase()] || [
-          "text-dojo-cyan",
-          "border-dojo-border",
-          "bg-dojo-bg",
+          "text-dojo-slate",
+          "border-dojo-violet-border",
+          "bg-white",
         ];
         beltBadge.classList.add(...newClasses);
 
@@ -481,7 +469,13 @@ export default class extends Controller {
     const banner = document.createElement("div");
     banner.className =
       "fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-green-500/90 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-bounce";
-    banner.innerHTML = `<span class="text-2xl">✅</span> Kata Solved! <span class="text-dojo-gold font-mono">+${xp} XP</span>`;
+    const icon = document.createElement("span");
+    icon.className = "text-2xl";
+    icon.textContent = "✅";
+    const xpSpan = document.createElement("span");
+    xpSpan.className = "text-amber-200 font-mono";
+    xpSpan.textContent = `+${xp} XP`;
+    banner.append(icon, " Kata Solved! ", xpSpan);
     document.body.appendChild(banner);
 
     // Remove banner after 2.5 seconds
@@ -510,7 +504,7 @@ export default class extends Controller {
     if (!hudBar) return;
 
     // Find the XP label (format: "120/200 XP")
-    const xpLabel = hudBar.querySelector(".text-dojo-gold");
+    const xpLabel = hudBar.querySelector("#hud-xp-label");
     if (!xpLabel) return;
 
     const match = xpLabel.textContent.match(/(\d+)\/(\d+)\s*XP/);

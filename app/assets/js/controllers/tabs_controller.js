@@ -15,17 +15,27 @@ export default class extends Controller {
   static targets = ["tab", "panel"];
 
   connect() {
-    // Activate the first tab by default
-    const firstTab = this.tabTargets[0];
-    if (firstTab) {
-      this._activate(firstTab.dataset.tab);
+    const onboarded = localStorage.getItem("regex_dojo_onboarded") === "true";
+    if (!onboarded) {
+      this._activate("onboarding");
+    } else {
+      const activeTab = localStorage.getItem("regex_dojo_active_tab") || "home";
+      this._activate(activeTab);
     }
   }
 
   switch(event) {
     event.preventDefault();
     const tabName = event.currentTarget.dataset.tab;
+    localStorage.setItem("regex_dojo_active_tab", tabName);
     this._activate(tabName);
+  }
+
+  completeOnboarding(event) {
+    event.preventDefault();
+    localStorage.setItem("regex_dojo_onboarded", "true");
+    localStorage.setItem("regex_dojo_active_tab", "home");
+    this._activate("home");
   }
 
   // Called from codex cards to load a pattern into the sandbox
@@ -49,6 +59,16 @@ export default class extends Controller {
   }
 
   _activate(tabName) {
+    const isOnboarding = tabName === "onboarding";
+    const header = document.getElementById("global-header");
+    if (header) {
+      header.classList.toggle("hidden", isOnboarding);
+    }
+    const hud = document.getElementById("global-hud");
+    if (hud) {
+      hud.classList.toggle("hidden", isOnboarding);
+    }
+
     // Update tab button styling
     this.tabTargets.forEach((tab) => {
       const isActive = tab.dataset.tab === tabName;
