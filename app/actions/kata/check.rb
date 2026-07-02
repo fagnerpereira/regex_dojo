@@ -40,6 +40,12 @@ module RegexDojo
           begin
             regex = Regexp.new(pattern)
           rescue RegexpError => e
+            # Log the failed submission attempt before returning error
+            dojo_repo.create_submission(
+              challenge_id: challenge.id,
+              user_pattern: pattern,
+              is_passing: false
+            )
             response.format = :json
             response.body = {
               passing: false,
