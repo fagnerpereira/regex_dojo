@@ -5,8 +5,9 @@ require "phlex"
 module RegexDojo
   module Views
     class Layout < Phlex::HTML
-      def initialize(title: "🥋 RegexDojo — Gamified Regex Learning")
+      def initialize(title: "🥋 RegexDojo — Gamified Regex Learning", csrf_token: nil)
         @title = title
+        @csrf_token = csrf_token
       end
 
       def view_template
@@ -17,6 +18,14 @@ module RegexDojo
             meta(charset: "utf-8")
             meta(name: "viewport", content: "width=device-width, initial-scale=1")
             title { @title }
+
+            # @rails/request.js reads these two meta tags to attach an
+            # X-CSRF-Token header on POST/PATCH/DELETE — without them Hanami's
+            # CSRFProtection rejects every state-changing request.
+            if @csrf_token
+              meta(name: "csrf-param", content: "_csrf_token")
+              meta(name: "csrf-token", content: @csrf_token)
+            end
 
             # Google Fonts: Inter for UI, JetBrains Mono for Code
             link(rel: "preconnect", href: "https://fonts.googleapis.com")

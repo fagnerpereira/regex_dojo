@@ -75,8 +75,11 @@ module RegexDojo
           # Query top users for leaderboard
           top_users = dojo_repo.top_users(10)
 
-          # Render the full Phlex page
-          layout = Views::Layout.new
+          # Render the full Phlex page. Session-stored CSRF token, generated
+          # the same way Hanami::Action::CSRFProtection does, so the layout
+          # can always emit the meta tags @rails/request.js relies on.
+          csrf_token = request.session[Hanami::Action::CSRFProtection::CSRF_TOKEN] ||= SecureRandom.hex(32)
+          layout = Views::Layout.new(csrf_token: csrf_token)
           dashboard = Components::Screens::AppShell.new(
             user: user_presenter,
             top_users: top_users,
