@@ -4,7 +4,7 @@ RSpec.describe "Belt progression based on XP", :db do
   let(:dojo_repo) { Hanami.app["repos.dojo_repo"] }
 
   it "updates belt as user earns XP milestones" do
-    user = dojo_repo.create_user(session_id: "belt-test")
+    dojo_repo.create_user(session_id: "belt-test")
     user = dojo_repo.find_user_by_session_id("belt-test")
     expect(user.belt).to eq("white")
     expect(user.xp).to eq(0)
@@ -42,7 +42,7 @@ RSpec.describe "Belt progression based on XP", :db do
   end
 
   it "respects belt thresholds exactly" do
-    user = dojo_repo.create_user(session_id: "threshold-test")
+    dojo_repo.create_user(session_id: "threshold-test")
     user = dojo_repo.find_user_by_session_id("threshold-test")
 
     # Reach exactly 74 XP (1 below yellow threshold)

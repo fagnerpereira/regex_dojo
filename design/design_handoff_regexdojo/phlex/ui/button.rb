@@ -4,7 +4,7 @@ module UI
       primary: "bg-dojo-violet text-white shadow-btn-primary hover:bg-dojo-violet-dark hover:-translate-y-px px-6 py-3",
       ghost: "bg-dojo-violet-light text-dojo-violet-dark hover:bg-violet-100 px-5 py-3",
       "on-gradient": "bg-white/20 text-white hover:bg-white/30 px-4 py-2.5",
-      "on-white": "bg-white text-dojo-violet-dark hover:bg-violet-50 px-6 py-3",
+      "on-white": "bg-white text-dojo-violet-dark hover:bg-violet-50 px-6 py-3"
     }.freeze
 
     def initialize(variant: :primary, full_width: false, **attrs)
@@ -24,7 +24,7 @@ module UI
         "inline-flex items-center justify-center gap-2 rounded-2xl font-bold text-sm",
         "font-sans transition-all duration-150 cursor-pointer border-0",
         @full_width ? "w-full" : nil,
-        VARIANTS.fetch(@variant),
+        VARIANTS.fetch(@variant)
       ].compact.join(" ")
     end
   end

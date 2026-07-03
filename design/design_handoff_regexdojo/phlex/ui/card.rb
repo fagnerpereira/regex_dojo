@@ -15,7 +15,7 @@ module UI
     def classes
       [
         "bg-white rounded-card border border-dojo-violet-border shadow-card overflow-hidden",
-        @max_w ? "w-full #{@max_w} min-w-[320px] flex-1" : "w-full",
+        @max_w ? "w-full #{@max_w} min-w-[320px] flex-1" : "w-full"
       ].join(" ")
     end
   end

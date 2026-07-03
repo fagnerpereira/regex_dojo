@@ -57,15 +57,18 @@ module Screens
             svg(viewBox: "0 0 120 120", class: "w-[120px] h-[120px] -rotate-90") do |s|
               s.circle(cx: "60", cy: "60", r: "52", fill: "none", stroke: "#f0ebfa", "stroke-width": "12")
               s.circle(cx: "60", cy: "60", r: "52", fill: "none", stroke: "#22c55e", "stroke-width": "12",
-                       "stroke-linecap": "round", "stroke-dasharray": "327",
-                       "stroke-dashoffset": (327 * (1 - @user.belt_percent / 100.0)).to_s)
+                "stroke-linecap": "round", "stroke-dasharray": "327",
+                "stroke-dashoffset": (327 * (1 - @user.belt_percent / 100.0)).to_s)
             end
             div(class: "absolute inset-0 flex flex-col items-center justify-center") do
               span(class: "font-display text-3xl font-extrabold") { "#{@user.belt_percent}%" }
               span(class: "text-[11px] text-dojo-slate font-semibold") { "Green belt" }
             end
           end
-          p(class: "text-xs text-dojo-slate") { plain "14 of 20 katas to " ; strong(class: "text-dojo-ink") { "Blue belt" } }
+          p(class: "text-xs text-dojo-slate") {
+            plain "14 of 20 katas to "
+            strong(class: "text-dojo-ink") { "Blue belt" }
+          }
         end
       end
     end
