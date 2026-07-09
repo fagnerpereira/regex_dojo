@@ -6,3 +6,6 @@ public/*
 node_modules/
 db/*.sqlite
 spec/examples.txt
+
+# Local doc-fetch cache (agent-skills sdd-cache hook)
+.claude/sdd-cache/
