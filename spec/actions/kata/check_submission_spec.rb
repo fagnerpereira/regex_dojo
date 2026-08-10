@@ -11,7 +11,7 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
     dojo_repo.find_user_by_session_id(session_id)
   end
 
-  def make_request(pattern:, kata_id: 1)
+  def make_request(pattern:, kata_id: 31)
     {
       "REQUEST_METHOD" => "POST",
       "router.params" => {id: kata_id},

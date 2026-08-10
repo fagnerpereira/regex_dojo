@@ -49,9 +49,14 @@ CREATE TABLE `submissions`(
   `is_passing` boolean DEFAULT(0) NOT NULL,
   `submitted_at` datetime DEFAULT(datetime(CURRENT_TIMESTAMP, 'localtime')) NOT NULL
 );
+CREATE UNIQUE INDEX `idx_progress_user_kata_unique` ON `progress`(
+  `user_id`,
+  `kata_id`
+);
 INSERT INTO schema_migrations (filename) VALUES
 ('20260622184408_create_dojo_tables.rb'),
 ('20260622195442_create_challenges.rb'),
 ('20260622195449_create_test_cases.rb'),
 ('20260622195455_create_submissions.rb'),
-('20260623090000_add_details_to_challenges.rb');
+('20260623090000_add_details_to_challenges.rb'),
+('20260808000001_add_unique_index_to_progress.rb');

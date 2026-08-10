@@ -11,7 +11,7 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
     dojo_repo.find_user_by_session_id(session_id)
   end
 
-  def check_kata(kata_id: 1, pattern: "ruby")
+  def check_kata(kata_id: 31, pattern: "ruby")
     params = {
       "REQUEST_METHOD" => "POST",
       "router.params" => {id: kata_id},
@@ -23,13 +23,13 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
 
   it "correctly tracks XP across multiple kata solves" do
     # First kata (Easy = 25 XP)
-    response1 = check_kata(kata_id: 1, pattern: "ruby")
+    response1 = check_kata(kata_id: 31, pattern: "ruby")
     body1 = JSON.parse(response1.body.join)
     expect(body1["xp_awarded"]).to eq(25)
     expect(body1["total_xp"]).to eq(25)
 
     # Second kata (Easy = 25 XP)
-    response2 = check_kata(kata_id: 2, pattern: "c.t")
+    response2 = check_kata(kata_id: 32, pattern: "c.t")
     body2 = JSON.parse(response2.body.join)
     expect(body2["xp_awarded"]).to eq(25)
     expect(body2["total_xp"]).to eq(50) # 25 + 25
@@ -40,7 +40,7 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
   end
 
   it "returns current belt based on XP" do
-    response = check_kata(kata_id: 1, pattern: "ruby")
+    response = check_kata(kata_id: 31, pattern: "ruby")
     body = JSON.parse(response.body.join)
 
     # Initial user should be white belt
@@ -48,8 +48,8 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
   end
 
   it "logs every submission regardless of pass/fail" do
-    check_kata(kata_id: 1, pattern: "ruby")
-    check_kata(kata_id: 1, pattern: "invalid(regex")
+    check_kata(kata_id: 31, pattern: "ruby")
+    check_kata(kata_id: 31, pattern: "invalid(regex")
 
     submissions = dojo_repo.submissions
     expect(submissions.count).to eq(2)

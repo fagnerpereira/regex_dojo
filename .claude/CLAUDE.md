@@ -11,22 +11,23 @@ Built with **Hanami 3.0**, **Phlex** (component views), **SQLite**, and **RSpec*
 ## Architecture at a Glance
 
 - **Actions** (in `app/actions/`): HTTP handlers inheriting `RegexDojo::Action`; use Hanami DI to access `dojo_repo`
-- **Views** (in `app/views/`): Phlex components; rendered as `Layout.call { |l| Component.call }`
+- **Views** (in `app/views/`): Phlex 2 components; entry method is `view_template` (never `template`); compose with `layout.call { |l| l.render(component) }` (never nest `.call` — it HTML-escapes)
 - **Repo** (in `app/repos/dojo_repo.rb`): Data layer; queries via Hanami ROM/Sequel relations
-- **Relations** (in `app/relations/`): Database schema definitions (users, progress, challenges, submissions, blitz_scores, test_cases)
-- **Lib** (in `lib/regex_dojo/`): Business logic (kata validation, scoring, pool management)
+- **Relations** (in `app/relations/`): `schema(infer: true)` from the SQLite schema (users, progress, challenges, submissions, blitz_scores, test_cases)
+- **Lib** (in `lib/regex_dojo/`): `validator.rb` is the single source of truth for regex grading (capture-group rule, ReDoS timeout); the Stimulus controllers mirror its rule
 
 **Key Pattern**: Action → loads data via dojo_repo → renders Phlex → sends HTML
 
 ## Core Files & Their Roles
 
-| File                          | Purpose                                                                 |
-| ----------------------------- | ----------------------------------------------------------------------- |
-| `config/routes.rb`            | Routes: `GET /` (home), `POST /kata/:id/check` (validate regex)         |
-| `config/challenges.json`      | Kata definitions (id, difficulty, title, description, hint, test_cases) |
-| `config/app.rb`               | App config (sessions, cookies, middleware)                              |
-| `app/action.rb`               | Base action with `Dry::Monads[:result]` included                        |
-| `lib/regex_dojo/kata_pool.rb` | Loads and manages challenges in memory                                  |
+| File | Purpose |
+|------|---------|
+| `config/routes.rb` | Routes: `GET /` (home), `POST /kata/:id/check` (validate regex) |
+| `config/challenges.json` | Kata master data (ids 31–45, difficulty, title, concept/lesson/task, hint, test_cases) |
+| `config/db/seeds.rb` | Loads challenges.json into SQLite with explicit ids (id-stable reseeds) |
+| `config/app.rb` | App config (sessions, cookies, middleware; CSRF auto-enabled by sessions) |
+| `app/action.rb` | Base action; `current_user(request)` find-or-creates the guest user |
+| `lib/regex_dojo/validator.rb` | Regex grading: capture-group rule, 200-char cap, 0.2s Regexp timeout |
 
 ## Development Workflow
 
@@ -48,10 +49,11 @@ bundle exec hanami db reset                                        # Drop & recr
 
 ## Testing Approach (Aligns with Global TDD)
 
-- **Spec layout**: `spec/actions/`, `spec/lib/`, `spec/support/`
+- **Spec layout**: `spec/actions/`, `spec/requests/`, `spec/repos/`, `spec/views/`, `spec/lib/`, `spec/db/`
 - **spec/spec_helper.rb**: Sets `HANAMI_ENV=test`, loads app, auto-loads `spec/support/**/*.rb`
-- **Capybara integration**: Available for request specs; actions can be tested as HTTP handlers
-- **Test data**: Fixtures in `spec/support/` (helpers, factories if added later)
+- **DB cleaning**: specs under `spec/(requests|actions|repos|features)/` get the `:db` tag automatically (transaction rollback per example); tag `:db` manually elsewhere
+- **Test data**: seeded from `config/db/seeds.rb` in `before :suite` (challenge ids 31–45); no fixtures/factories
+- **Linter**: `bundle exec standardrb` (in the bundle); quality gate is standardrb + rspec
 
 ## Sessions & Guest Users
 
@@ -61,10 +63,10 @@ bundle exec hanami db reset                                        # Drop & recr
 
 ## Challenges & Katas
 
-- Loaded from `config/challenges.json` → cached in `KataPool` (in-memory)
-- Each challenge: id, difficulty, title, description, hint, test_cases
-- Test cases: `{ input: "...", expected_match: "..." }` (single match or null)
-- Stored in DB via `challenges` relation; linked to test_cases
+- Master copy: `config/challenges.json` → seeded into SQLite by `config/db/seeds.rb` (explicit ids 31–45); the app reads only the DB
+- Each challenge: id, difficulty, title, concept, description, lesson, task, hint, test_cases
+- Test cases: `{ input: "...", expected_match: "..." }` — `null` expected_match means "must NOT match"
+- Grading: full match, unless the pattern has a capture group — then the first participating capture is graded (see `lib/regex_dojo/validator.rb`)
 
 ## Regex Validation
 
@@ -95,8 +97,8 @@ Your global setup covers:
 
 - **DB**: Relations in `app/relations/` define schema; Sequel under the hood; queries lazy & chainable
 - **DI**: `include Deps["repos.dojo_repo"]` injects dojo_repo into actions
-- **Sessions**: Hanami Action provides `request.session` (cookie-based, expires after 30 days by config)
-- **No migrations**: Schema driven by relations; use `hanami db prepare` or `hanami db reset`
+- **Sessions**: Hanami Action provides `request.session` (cookie-based, expires after 30 days by config); sessions ON means CSRF is enforced on POST — the layout must render the `csrf-token` meta tag (test env skips CSRF checks entirely, so specs can't catch its absence)
+- **Migrations**: live in `config/db/migrate/` (ROM::SQL); run `hanami db migrate`; relations infer the schema from the DB
 - **Routes**: Simple DSL in `config/routes.rb`; supports `get`, `post`, `put`, `delete`, `:id` params, etc.
 
 ---

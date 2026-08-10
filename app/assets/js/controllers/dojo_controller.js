@@ -152,7 +152,9 @@ export default class extends Controller {
         let errorMsg = "Pattern rejected by server.";
         try {
           const data = await response.json;
-          if (data && data.error) errorMsg = data.error;
+          if (data && (data.error_message || data.error)) {
+            errorMsg = data.error_message || data.error;
+          }
         } catch (_) {
           // ignore parse error
         }
@@ -196,8 +198,8 @@ export default class extends Controller {
     // Populate the right panel
     this.conceptTarget.textContent = this.currentKata.concept;
     this.titleTarget.textContent = this.currentKata.title;
-    this.lessonTarget.innerHTML = this.currentKata.lesson;
-    this.taskTarget.innerHTML = this.currentKata.task;
+    this.lessonTarget.textContent = this.currentKata.lesson;
+    this.taskTarget.textContent = this.currentKata.task;
     this.xpBadgeTarget.textContent = `+${this.currentKata.xp} XP`;
     this.highlightAreaTarget.textContent = this.currentKata.testString;
 
@@ -211,8 +213,8 @@ export default class extends Controller {
     // Highlight active sidebar button
     this.kataButtonTargets.forEach((btn) => {
       const isActive = btn.dataset.kataId === this.currentKata.id;
-      btn.classList.toggle("bg-dojo-violet-light", isActive);
-      btn.classList.toggle("border-dojo-violet", isActive);
+      btn.classList.toggle("bg-dojo-bg", isActive);
+      btn.classList.toggle("border-dojo-border", isActive);
       btn.classList.toggle("border-transparent", !isActive);
     });
 
@@ -233,7 +235,7 @@ export default class extends Controller {
     testCases.forEach((tc, index) => {
       const card = document.createElement("div");
       card.className =
-        "test-case-card flex items-center gap-3 bg-dojo-violet-wash border border-dojo-violet-border p-3 rounded-lg transition-all duration-200";
+        "test-case-card flex items-center gap-3 bg-dojo-bg/60 border border-dojo-border/60 p-3 rounded-lg transition-all duration-200";
       card.dataset.testCaseIndex = index;
 
       const statusIcon = document.createElement("span");
@@ -244,14 +246,14 @@ export default class extends Controller {
       details.className = "flex flex-col flex-1 min-w-0";
 
       const input = document.createElement("span");
-      input.className = "text-xs font-mono text-dojo-ink truncate";
+      input.className = "text-xs font-mono text-gray-300 truncate";
       input.textContent = `"${tc.input}"`;
 
       const expected = document.createElement("span");
-      expected.className = "text-[10px] font-mono text-dojo-slate mt-0.5";
+      expected.className = "text-[10px] font-mono text-gray-500 mt-0.5";
       expected.textContent = tc.should_match
-        ? `→ expected: "${tc.expected_match || ""}"`
-        : "→ expected: no match";
+        ? `→ should extract "${tc.expected_match}"`
+        : "→ should NOT match";
 
       details.appendChild(input);
       details.appendChild(expected);
@@ -274,35 +276,13 @@ export default class extends Controller {
       if (!card) return;
 
       const icon = card.querySelector(".test-case-icon");
-      const details = card.querySelector("div");
 
-      // Remove any existing user-match span
-      const oldUserMatch = details.querySelector(".user-match-result");
-      if (oldUserMatch) oldUserMatch.remove();
-
-      let userMatch = null;
-      let passed = false;
-      try {
-        const re = new RegExp(rawPattern);
-        const matchData = tc.input.match(re);
-        userMatch = matchData ? matchData[0] : null;
-        passed = userMatch === (tc.expected_match || null);
-      } catch (_) {
-        passed = false;
-      }
+      const passed = this._gradeTestCase(rawPattern, tc);
 
       icon.textContent = passed ? "✅" : "❌";
       card.classList.toggle("border-green-500/30", passed);
       card.classList.toggle("border-red-500/30", !passed);
-      card.classList.toggle("border-dojo-violet-border", false);
-
-      const userMatchSpan = document.createElement("span");
-      userMatchSpan.className = `user-match-result text-[10px] font-mono mt-0.5 ${
-        passed ? "text-dojo-success-text" : "text-dojo-danger-text font-bold"
-      }`;
-      userMatchSpan.textContent =
-        userMatch !== null ? `got: "${userMatch}"` : "got: no match";
-      details.appendChild(userMatchSpan);
+      card.classList.toggle("border-dojo-border/60", false);
     });
   }
 
@@ -310,16 +290,29 @@ export default class extends Controller {
    * Returns true if all test cases pass for the given pattern.
    */
   _allTestCasesPass(rawPattern) {
-    return this.testCases.every((tc) => {
-      try {
-        const re = new RegExp(rawPattern);
-        const matchData = tc.input.match(re);
-        const userMatch = matchData ? matchData[0] : null;
-        return userMatch === (tc.expected_match || null);
-      } catch (_) {
-        return false;
-      }
-    });
+    return this.testCases.every((tc) => this._gradeTestCase(rawPattern, tc));
+  }
+
+  /**
+   * Grade one test case with the SAME rule as the server (RegexDojo::Validator):
+   * the graded value is the first participating capture group if the pattern
+   * has one, otherwise the full match; it must equal expected_match exactly
+   * (null expected_match means "must not match").
+   */
+  _gradeTestCase(rawPattern, tc) {
+    let match;
+    try {
+      match = new RegExp(rawPattern).exec(tc.input);
+    } catch (_) {
+      return false;
+    }
+
+    const actual = match
+      ? (match.slice(1).find((group) => group !== undefined) ?? match[0])
+      : null;
+    const expected = tc.expected_match ?? null;
+
+    return actual === expected;
   }
 
   /**
@@ -330,11 +323,8 @@ export default class extends Controller {
     cards.forEach((card) => {
       const icon = card.querySelector(".test-case-icon");
       if (icon) icon.textContent = "⬜";
-      const details = card.querySelector("div");
-      const oldUserMatch = details.querySelector(".user-match-result");
-      if (oldUserMatch) oldUserMatch.remove();
       card.classList.remove("border-green-500/30", "border-red-500/30");
-      card.classList.add("border-dojo-violet-border");
+      card.classList.add("border-dojo-border/60");
     });
   }
 
@@ -403,64 +393,15 @@ export default class extends Controller {
     // Clear error state
     this._clearError();
 
-    // Show success banner
-    const xpGained = data?.xp_awarded ?? this.currentKata.xp;
+    // Show success banner (server reports 0 XP for a re-solve)
+    const xpGained = data?.xp_awarded ?? 0;
     this._showSuccessBanner(xpGained);
 
     // Shake-success animation on the card
     this._shakeCard("shake-success");
 
-    // Update HUD XP display
-    this._updateHudXP(xpGained);
-
-    // Update HUD belt badge dynamically
-    const beltBadge = document.getElementById("hud-belt-badge");
-    if (beltBadge && data.belt) {
-      const newBeltText = `${data.belt.charAt(0).toUpperCase() + data.belt.slice(1)} Belt`;
-      if (beltBadge.textContent.trim() !== newBeltText) {
-        beltBadge.textContent = newBeltText;
-
-        // Mirrors Components::Hud::BELT_STYLES (light theme)
-        const beltStyles = {
-          white: ["text-dojo-slate", "border-dojo-violet-border", "bg-white"],
-          yellow: [
-            "text-dojo-warning-text",
-            "border-dojo-warning/30",
-            "bg-dojo-warning-bg",
-          ],
-          orange: ["text-orange-700", "border-orange-200", "bg-orange-50"],
-          green: [
-            "text-dojo-success-text",
-            "border-dojo-success/30",
-            "bg-dojo-success-bg",
-          ],
-          black: [
-            "text-dojo-violet",
-            "border-dojo-violet/30",
-            "bg-dojo-violet-light",
-          ],
-        };
-
-        // Reset any existing belt classes
-        Object.values(beltStyles)
-          .flat()
-          .forEach((cls) => beltBadge.classList.remove(cls));
-
-        // Add corresponding style classes
-        const newClasses = beltStyles[data.belt.toLowerCase()] || [
-          "text-dojo-slate",
-          "border-dojo-violet-border",
-          "bg-white",
-        ];
-        beltBadge.classList.add(...newClasses);
-
-        // Play level up celebration bounce
-        beltBadge.classList.add("animate-bounce");
-        setTimeout(() => {
-          beltBadge.classList.remove("animate-bounce");
-        }, 2500);
-      }
-    }
+    // Update HUD from the server's authoritative total
+    this._updateHudXP(data?.total_xp);
 
     // Mark the sidebar button as completed
     this._markKataComplete(this.currentKata.id);
@@ -479,10 +420,12 @@ export default class extends Controller {
     const icon = document.createElement("span");
     icon.className = "text-2xl";
     icon.textContent = "✅";
-    const xpSpan = document.createElement("span");
-    xpSpan.className = "text-amber-200 font-mono";
-    xpSpan.textContent = `+${xp} XP`;
-    banner.append(icon, " Kata Solved! ", xpSpan);
+
+    const xpBadge = document.createElement("span");
+    xpBadge.className = "text-dojo-gold font-mono";
+    xpBadge.textContent = xp > 0 ? `+${xp} XP` : "already solved";
+
+    banner.append(icon, " Kata Solved! ", xpBadge);
     document.body.appendChild(banner);
 
     // Remove banner after 2.5 seconds
@@ -505,25 +448,30 @@ export default class extends Controller {
     );
   }
 
-  _updateHudXP(xpGained) {
+  _updateHudXP(totalXP) {
+    if (typeof totalXP !== "number") return;
+
     // Find the HUD XP display (outside this controller's scope)
     const hudBar = document.getElementById("hud-bar");
     if (!hudBar) return;
 
     // Find the XP label (format: "120/200 XP")
-    const xpLabel = hudBar.querySelector("#hud-xp-label");
+    const xpLabel = hudBar.querySelector(".text-dojo-gold");
     if (!xpLabel) return;
 
     const match = xpLabel.textContent.match(/(\d+)\/(\d+)\s*XP/);
     if (match) {
-      const currentXP = parseInt(match[1], 10) + xpGained;
+      const currentXP = totalXP;
       const maxXP = parseInt(match[2], 10);
       xpLabel.textContent = `${currentXP}/${maxXP} XP`;
 
       // Update progress bar width
       const progressBar = hudBar.querySelector(".belt-bar");
       if (progressBar) {
-        const percentage = Math.min(Math.round((currentXP / maxXP) * 100), 100);
+        const percentage = Math.min(
+          Math.round((currentXP / maxXP) * 100),
+          100,
+        );
         progressBar.style.width = `${percentage}%`;
       }
     }
