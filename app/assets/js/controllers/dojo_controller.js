@@ -148,7 +148,9 @@ export default class extends Controller {
         let errorMsg = "Pattern rejected by server.";
         try {
           const data = await response.json;
-          if (data && data.error) errorMsg = data.error;
+          if (data && (data.error_message || data.error)) {
+            errorMsg = data.error_message || data.error;
+          }
         } catch (_) {
           // ignore parse error
         }
@@ -243,7 +245,7 @@ export default class extends Controller {
       const expected = document.createElement("span");
       expected.className = "text-[10px] font-mono text-gray-500 mt-0.5";
       expected.textContent = tc.should_match
-        ? "→ should match"
+        ? `→ should extract "${tc.expected_match}"`
         : "→ should NOT match";
 
       details.appendChild(input);
@@ -268,16 +270,7 @@ export default class extends Controller {
 
       const icon = card.querySelector(".test-case-icon");
 
-      let matched;
-      try {
-        const re = new RegExp(rawPattern);
-        matched = re.test(tc.input);
-      } catch (_) {
-        matched = false;
-      }
-
-      const passed =
-        (tc.should_match && matched) || (!tc.should_match && !matched);
+      const passed = this._gradeTestCase(rawPattern, tc);
 
       icon.textContent = passed ? "✅" : "❌";
       card.classList.toggle("border-green-500/30", passed);
@@ -290,15 +283,29 @@ export default class extends Controller {
    * Returns true if all test cases pass for the given pattern.
    */
   _allTestCasesPass(rawPattern) {
-    return this.testCases.every((tc) => {
-      try {
-        const re = new RegExp(rawPattern);
-        const matched = re.test(tc.input);
-        return (tc.should_match && matched) || (!tc.should_match && !matched);
-      } catch (_) {
-        return false;
-      }
-    });
+    return this.testCases.every((tc) => this._gradeTestCase(rawPattern, tc));
+  }
+
+  /**
+   * Grade one test case with the SAME rule as the server (RegexDojo::Validator):
+   * the graded value is the first participating capture group if the pattern
+   * has one, otherwise the full match; it must equal expected_match exactly
+   * (null expected_match means "must not match").
+   */
+  _gradeTestCase(rawPattern, tc) {
+    let match;
+    try {
+      match = new RegExp(rawPattern).exec(tc.input);
+    } catch (_) {
+      return false;
+    }
+
+    const actual = match
+      ? (match.slice(1).find((group) => group !== undefined) ?? match[0])
+      : null;
+    const expected = tc.expected_match ?? null;
+
+    return actual === expected;
   }
 
   /**
@@ -379,15 +386,15 @@ export default class extends Controller {
     // Clear error state
     this._clearError();
 
-    // Show success banner
-    const xpGained = data?.xp ?? this.currentKata.xp;
+    // Show success banner (server reports 0 XP for a re-solve)
+    const xpGained = data?.xp_awarded ?? 0;
     this._showSuccessBanner(xpGained);
 
     // Shake-success animation on the card
     this._shakeCard("shake-success");
 
-    // Update HUD XP display
-    this._updateHudXP(xpGained);
+    // Update HUD from the server's authoritative total
+    this._updateHudXP(data?.total_xp);
 
     // Mark the sidebar button as completed
     this._markKataComplete(this.currentKata.id);
@@ -403,7 +410,15 @@ export default class extends Controller {
     const banner = document.createElement("div");
     banner.className =
       "fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-green-500/90 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-bounce";
-    banner.innerHTML = `<span class="text-2xl">✅</span> Kata Solved! <span class="text-dojo-gold font-mono">+${xp} XP</span>`;
+    const icon = document.createElement("span");
+    icon.className = "text-2xl";
+    icon.textContent = "✅";
+
+    const xpBadge = document.createElement("span");
+    xpBadge.className = "text-dojo-gold font-mono";
+    xpBadge.textContent = xp > 0 ? `+${xp} XP` : "already solved";
+
+    banner.append(icon, " Kata Solved! ", xpBadge);
     document.body.appendChild(banner);
 
     // Remove banner after 2.5 seconds
@@ -426,7 +441,9 @@ export default class extends Controller {
     );
   }
 
-  _updateHudXP(xpGained) {
+  _updateHudXP(totalXP) {
+    if (typeof totalXP !== "number") return;
+
     // Find the HUD XP display (outside this controller's scope)
     const hudBar = document.getElementById("hud-bar");
     if (!hudBar) return;
@@ -437,7 +454,7 @@ export default class extends Controller {
 
     const match = xpLabel.textContent.match(/(\d+)\/(\d+)\s*XP/);
     if (match) {
-      const currentXP = parseInt(match[1], 10) + xpGained;
+      const currentXP = totalXP;
       const maxXP = parseInt(match[2], 10);
       xpLabel.textContent = `${currentXP}/${maxXP} XP`;
 

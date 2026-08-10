@@ -1,76 +1,358 @@
 [
   {
-    "id": 1,
+    "id": 31,
     "difficulty": "Easy",
-    "title": "Literal Matching",
-    "description": "Find and match the exact word 'hanami' in the input string (case-sensitive).",
-    "hint": "Literal characters in regular expressions match themselves exactly. Just type the letters in sequence.",
+    "title": "Literal Characters",
+    "concept": "🥋 Literal Matches",
+    "description": "A regular expression (regex) is a pattern used to find text. The simplest pattern is a literal match. The pattern <code>ruby</code> matches the letters 'r', 'u', 'b', 'y' in that exact sequence, and is <strong>case-sensitive</strong>.",
+    "lesson": "A regular expression (regex) is a pattern used to find text. The simplest pattern is a literal match. The pattern <code>ruby</code> matches the letters 'r', 'u', 'b', 'y' in that exact sequence, and is <strong>case-sensitive</strong>.",
+    "task": "Match the word <code>ruby</code> (lowercase) in the target string.",
+    "hint": "Literal patterns match themselves. Type exactly 'ruby' to pass.",
     "test_cases": [
-      { "input": "welcome to hanami framework", "expected_match": "hanami" },
-      { "input": "HANAMI is cool", "expected_match": null },
-      { "input": "ruby on rails", "expected_match": null }
+      {
+        "input": "welcome to ruby dojo",
+        "expected_match": "ruby"
+      },
+      {
+        "input": "Ruby is elegant",
+        "expected_match": null
+      },
+      {
+        "input": "python is fine too",
+        "expected_match": null
+      }
     ]
   },
   {
-    "id": 2,
+    "id": 32,
     "difficulty": "Easy",
-    "title": "Matching Area Codes",
-    "description": "Extract a 3-digit phone area code enclosed in parentheses. Example: '(123)' should extract '123'.",
-    "hint": "Parentheses are special metacharacters in regex. To match literal parentheses, escape them with backslashes like \\( and \\). Use \\d with a quantifier like \\d{3} to match digits.",
+    "title": "Wildcard Dot",
+    "concept": "🔮 Wildcard Dot (.)",
+    "description": "The dot <code>.</code> is a wildcard character that matches <strong>any single character</strong> (letters, digits, symbols, spaces) except a newline. For example, <code>d.g</code> matches 'dog', 'dig', 'dug', or even 'd#g'.",
+    "lesson": "The dot <code>.</code> is a wildcard character that matches <strong>any single character</strong> (letters, digits, symbols, spaces) except a newline. For example, <code>d.g</code> matches 'dog', 'dig', 'dug', or even 'd#g'.",
+    "task": "Match <code>cat</code>, <code>cot</code>, and <code>cut</code> with a single pattern using the wildcard dot.",
+    "hint": "Replace the middle vowel with a dot: c.t",
     "test_cases": [
-      { "input": "Call me at (555)-0199", "expected_match": "555" },
-      { "input": "My number is 555-0199", "expected_match": null },
-      { "input": "Area code (98) is too short", "expected_match": null }
+      {
+        "input": "the black cat",
+        "expected_match": "cat"
+      },
+      {
+        "input": "sleeping in a cot",
+        "expected_match": "cot"
+      },
+      {
+        "input": "a deep paper cut",
+        "expected_match": "cut"
+      }
     ]
   },
   {
-    "id": 3,
+    "id": 33,
+    "difficulty": "Easy",
+    "title": "Character Classes",
+    "concept": "🎯 Character Sets [abc]",
+    "description": "Square brackets <code>[...]</code> define a character class. It matches <strong>any single character</strong> enclosed within the brackets. E.g., <code>b[ae]t</code> matches 'bat' and 'bet', but not 'bit'.",
+    "lesson": "Square brackets <code>[...]</code> define a character class. It matches <strong>any single character</strong> enclosed within the brackets. E.g., <code>b[ae]t</code> matches 'bat' and 'bet', but not 'bit'.",
+    "task": "Match <code>bat</code> and <code>bet</code>, but do NOT match <code>bit</code>.",
+    "hint": "Put the permitted vowels inside brackets: b[ae]t",
+    "test_cases": [
+      {
+        "input": "baseball bat",
+        "expected_match": "bat"
+      },
+      {
+        "input": "friendly bet",
+        "expected_match": "bet"
+      },
+      {
+        "input": "a little bit",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "difficulty": "Easy",
+    "title": "Ranges in sets",
+    "concept": "📈 Character Ranges [a-z]",
+    "description": "Instead of listing every letter or number, you can specify ranges using a hyphen <code>-</code> inside square brackets. E.g., <code>[a-z]</code> matches any lowercase letter, and <code>[0-9]</code> matches any digit.",
+    "lesson": "Instead of listing every letter or number, you can specify ranges using a hyphen <code>-</code> inside square brackets. E.g., <code>[a-z]</code> matches any lowercase letter, and <code>[0-9]</code> matches any digit.",
+    "task": "Match any single lowercase letter between 'p' and 's' (p, q, r, s).",
+    "hint": "Write the character set range using a hyphen: [p-s]",
+    "test_cases": [
+      {
+        "input": "option p",
+        "expected_match": "p"
+      },
+      {
+        "input": "option r",
+        "expected_match": "r"
+      },
+      {
+        "input": "option a",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "difficulty": "Easy",
+    "title": "Negated Sets",
+    "concept": "🚫 Negation Sets [^abc]",
+    "description": "Adding a caret <code>^</code> as the first character inside square brackets negates the class. E.g., <code>[^0-9]</code> matches any single character that is <strong>NOT</strong> a digit.",
+    "lesson": "Adding a caret <code>^</code> as the first character inside square brackets negates the class. E.g., <code>[^0-9]</code> matches any single character that is <strong>NOT</strong> a digit.",
+    "task": "Match any word ending in 'ot' EXCEPT the word <code>not</code>.",
+    "hint": "Negate 'n' in the character set before 'ot': [^n]ot",
+    "test_cases": [
+      {
+        "input": "a cooking pot",
+        "expected_match": "pot"
+      },
+      {
+        "input": "slept on the cot",
+        "expected_match": "cot"
+      },
+      {
+        "input": "do not click here",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 36,
     "difficulty": "Medium",
+    "title": "Start Anchor",
+    "concept": "🏁 Start Anchor (^)",
+    "description": "Outside square brackets, the caret <code>^</code> anchors the pattern to the <strong>beginning</strong> of a line or string. E.g., <code>^cat</code> matches 'cat' only if it is the very first word.",
+    "lesson": "Outside square brackets, the caret <code>^</code> anchors the pattern to the <strong>beginning</strong> of a line or string. E.g., <code>^cat</code> matches 'cat' only if it is the very first word.",
+    "task": "Match <code>Hello</code> only when it starts the line.",
+    "hint": "Put the caret at the start of your pattern: ^Hello",
+    "test_cases": [
+      {
+        "input": "Hello friend",
+        "expected_match": "Hello"
+      },
+      {
+        "input": "well, Hello there",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "difficulty": "Medium",
+    "title": "End Anchor",
+    "concept": "🛑 End Anchor ($)",
+    "description": "The dollar sign <code>$</code> anchors the pattern to the <strong>end</strong> of a line or string. E.g., <code>dog$</code> matches 'dog' only if it is the last word in the string.",
+    "lesson": "The dollar sign <code>$</code> anchors the pattern to the <strong>end</strong> of a line or string. E.g., <code>dog$</code> matches 'dog' only if it is the last word in the string.",
+    "task": "Match <code>Dojo</code> only when it ends the line.",
+    "hint": "Put the dollar sign at the end of your pattern: Dojo$",
+    "test_cases": [
+      {
+        "input": "welcome to the Dojo",
+        "expected_match": "Dojo"
+      },
+      {
+        "input": "Dojo master class",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "difficulty": "Medium",
+    "title": "The Plus Quantifier",
+    "concept": "➕ Plus Quantifier (+)",
+    "description": "The plus <code>+</code> matches <strong>one or more</strong> repetitions of the preceding character or group. For example, <code>go+al</code> matches 'goal' and 'gooal', but not 'gal'.",
+    "lesson": "The plus <code>+</code> matches <strong>one or more</strong> repetitions of the preceding character or group. For example, <code>go+al</code> matches 'goal' and 'gooal', but not 'gal'.",
+    "task": "Match <code>hooray</code> with any number of 'o's (must have at least one 'o').",
+    "hint": "Use the plus quantifier on the 'o' character: ho+ray",
+    "test_cases": [
+      {
+        "input": "hooray!",
+        "expected_match": "hooray"
+      },
+      {
+        "input": "hooooooray!",
+        "expected_match": "hooooooray"
+      },
+      {
+        "input": "horay!",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "difficulty": "Medium",
+    "title": "The Star Quantifier",
+    "concept": "✨ Star Quantifier (*)",
+    "description": "The asterisk <code>*</code> matches <strong>zero or more</strong> repetitions of the preceding character or group. E.g., <code>ab*c</code> matches 'ac', 'abc', and 'abbc'.",
+    "lesson": "The asterisk <code>*</code> matches <strong>zero or more</strong> repetitions of the preceding character or group. E.g., <code>ab*c</code> matches 'ac', 'abc', and 'abbc'.",
+    "task": "Match <code>ac</code>, <code>abc</code>, and <code>abbc</code> with a single pattern using the star quantifier.",
+    "hint": "Place the asterisk after the optional repeating 'b': ab*c",
+    "test_cases": [
+      {
+        "input": "matched ac",
+        "expected_match": "ac"
+      },
+      {
+        "input": "matched abc",
+        "expected_match": "abc"
+      },
+      {
+        "input": "matched abbc",
+        "expected_match": "abbc"
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "difficulty": "Medium",
+    "title": "Optional Question Mark",
+    "concept": "❓ Question Mark (?)",
+    "description": "The question mark <code>?</code> makes the preceding character or group <strong>optional</strong> (matches 0 or 1 time). E.g., <code>colors?</code> matches 'color' and 'colors'.",
+    "lesson": "The question mark <code>?</code> makes the preceding character or group <strong>optional</strong> (matches 0 or 1 time). E.g., <code>colors?</code> matches 'color' and 'colors'.",
+    "task": "Match both American <code>color</code> and British <code>colour</code> spellings.",
+    "hint": "Make the 'u' character optional: colou?r",
+    "test_cases": [
+      {
+        "input": "bright color",
+        "expected_match": "color"
+      },
+      {
+        "input": "bright colour",
+        "expected_match": "colour"
+      },
+      {
+        "input": "bright colouur",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "difficulty": "Medium",
+    "title": "Range Quantifiers",
+    "concept": "🔢 Curly Braces {n,m}",
+    "description": "Curly braces <code>{n,m}</code> match between n and m repetitions of the preceding item. <code>{n}</code> matches exactly n times. <code>{n,}</code> matches n or more times.",
+    "lesson": "Curly braces <code>{n,m}</code> match between n and m repetitions of the preceding item. <code>{n}</code> matches exactly n times. <code>{n,}</code> matches n or more times.",
+    "task": "Match exactly 3 digits in a row.",
+    "hint": "Use a digit set [0-9] and the quantifier {3}.",
+    "test_cases": [
+      {
+        "input": "Code 123",
+        "expected_match": "123"
+      },
+      {
+        "input": "ID 9876",
+        "expected_match": "987"
+      },
+      {
+        "input": "Room 42",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "difficulty": "Medium",
+    "title": "Digit Shortcuts",
+    "concept": "⚡ Escape Shortcuts (\\d)",
+    "description": "Regex provides shortcuts for common character sets. <code>\\d</code> matches any single digit (equivalent to <code>[0-9]</code>). <code>\\w</code> matches any word character (alphanumeric and underscore). <code>\\s</code> matches whitespace.",
+    "lesson": "Regex provides shortcuts for common character sets. <code>\\d</code> matches any single digit (equivalent to <code>[0-9]</code>). <code>\\w</code> matches any word character (alphanumeric and underscore). <code>\\s</code> matches whitespace.",
+    "task": "Match a 3-digit number using the digit shortcut <code>\\d</code>.",
+    "hint": "Combine \\d with a curly brace quantifier: \\d{3}",
+    "test_cases": [
+      {
+        "input": "Flight 821 arrived",
+        "expected_match": "821"
+      },
+      {
+        "input": "Room 42 empty",
+        "expected_match": null
+      },
+      {
+        "input": "No number",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "difficulty": "Hard",
+    "title": "Grouping and Alternation",
+    "concept": "🌿 Grouping & Alternation (|)",
+    "description": "Parentheses <code>(...)</code> group terms, and the pipe <code>|</code> acts as an 'OR' operator. For example, <code>(red|blue)</code> matches 'red' or 'blue'.",
+    "lesson": "Parentheses <code>(...)</code> group terms, and the pipe <code>|</code> acts as an 'OR' operator. For example, <code>(red|blue)</code> matches 'red' or 'blue'.",
+    "task": "Match <code>red</code>, <code>green</code>, or <code>blue</code> using grouping and alternation.",
+    "hint": "Put the colors inside parentheses separated by pipes: (red|green|blue)",
+    "test_cases": [
+      {
+        "input": "sky is blue",
+        "expected_match": "blue"
+      },
+      {
+        "input": "apple is red",
+        "expected_match": "red"
+      },
+      {
+        "input": "grass is green",
+        "expected_match": "green"
+      },
+      {
+        "input": "yellow submarine",
+        "expected_match": null
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "difficulty": "Hard",
     "title": "Word Boundaries",
-    "description": "Match the exact word 'cat' (case-sensitive). Do not match 'cats', 'category', or 'bobcat'.",
-    "hint": "Use the word boundary anchor \\b at the start and end of the word to assert that it stands alone.",
+    "concept": "🚧 Word Boundaries (\\b)",
+    "description": "The boundary anchor <code>\\b</code> asserts a position where a word character is next to a non-word character (like spaces, punctuation, or start/end of string). E.g., <code>\\bcat\\b</code> matches 'cat' but not 'cats' or 'bobcat'.",
+    "lesson": "The boundary anchor <code>\\b</code> asserts a position where a word character is next to a non-word character (like spaces, punctuation, or start/end of string). E.g., <code>\\bcat\\b</code> matches 'cat' but not 'cats' or 'bobcat'.",
+    "task": "Match the word <code>cat</code> exactly, preventing matches inside other words.",
+    "hint": "Wrap the literal word 'cat' in word boundaries: \\bcat\\b",
     "test_cases": [
-      { "input": "the black cat slept", "expected_match": "cat" },
-      { "input": "cats are cute", "expected_match": null },
-      { "input": "a new category", "expected_match": null },
-      { "input": "wild bobcat", "expected_match": null }
+      {
+        "input": "the wild cat jumped",
+        "expected_match": "cat"
+      },
+      {
+        "input": "cats are sleeping",
+        "expected_match": null
+      },
+      {
+        "input": "wild bobcat",
+        "expected_match": null
+      }
     ]
   },
   {
-    "id": 4,
-    "difficulty": "Medium",
-    "title": "Hex Color Codes",
-    "description": "Validate 3 or 6-digit HTML hex color codes starting with '#'. E.g., '#FFF' or '#FF00AA'.",
-    "hint": "Use anchors (\\A and \\z or ^ and $) to match the full string. Use character sets like [a-fA-F0-9] and group alternatives with a pipe | character inside parentheses.",
-    "test_cases": [
-      { "input": "#FFF", "expected_match": "#FFF" },
-      { "input": "#FF00AA", "expected_match": "#FF00AA" },
-      { "input": "#GG0011", "expected_match": null },
-      { "input": "color is #FFF", "expected_match": null }
-    ]
-  },
-  {
-    "id": 5,
+    "id": 45,
     "difficulty": "Hard",
-    "title": "Protocol Extraction",
-    "description": "Extract the protocol ('http' or 'https') from a URL using a named capture group called 'protocol'.",
-    "hint": "Define a named capture group using the syntax (?<protocol>https?). Remember to match the trailing :// but do not include it inside the group.",
+    "title": "Lookahead Assertions",
+    "concept": "👁️ Positive Lookahead (?=...)",
+    "description": "A positive lookahead <code>(?=...)</code> matches a position followed by a pattern, but does NOT include it in the match result. E.g., <code>\\d+(?=px)</code> matches digits only if they are immediately followed by 'px'.",
+    "lesson": "A positive lookahead <code>(?=...)</code> matches a position followed by a pattern, but does NOT include it in the match result. E.g., <code>\\d+(?=px)</code> matches digits only if they are immediately followed by 'px'.",
+    "task": "Match any numeric value only if followed immediately by the unit <code>usd</code>.",
+    "hint": "Use digits quantifier \\d+ followed by positive lookahead (?=usd)",
     "test_cases": [
-      { "input": "https://hanamirb.org", "expected_match": "https" },
-      { "input": "http://localhost:2300", "expected_match": "http" },
-      { "input": "ftp://files.org", "expected_match": null }
-    ]
-  },
-  {
-    "id": 6,
-    "difficulty": "Hard",
-    "title": "Positive Lookahead",
-    "description": "Match any numeric value only if it is immediately followed by the unit 'px' (pixels). E.g. match '120' in '120px' but not in '120em'.",
-    "hint": "Use a positive lookahead (?=px) after matching the digits (\\d+). The lookahead asserts the condition without consuming the 'px' suffix.",
-    "test_cases": [
-      { "input": "width: 1024px", "expected_match": "1024" },
-      { "input": "font-size: 16em", "expected_match": null },
-      { "input": "100 percent", "expected_match": null }
+      {
+        "input": "Total: 250usd",
+        "expected_match": "250"
+      },
+      {
+        "input": "Price: 100eur",
+        "expected_match": null
+      },
+      {
+        "input": "Weight: 50kg",
+        "expected_match": null
+      }
     ]
   }
 ]

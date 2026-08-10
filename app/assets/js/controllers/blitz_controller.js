@@ -83,9 +83,14 @@ export default class extends Controller {
       return;
     }
 
+    // Same grading rule as the server (RegexDojo::Validator): a participating
+    // capture group wins over the full match; null expected = must not match.
     const allPassed = this.currentKata.test_cases.every((tc) => {
-      const matched = regex.test(tc.input);
-      return (tc.should_match && matched) || (!tc.should_match && !matched);
+      const match = regex.exec(tc.input);
+      const actual = match
+        ? (match.slice(1).find((group) => group !== undefined) ?? match[0])
+        : null;
+      return actual === (tc.expected_match ?? null);
     });
 
     if (allPassed) {

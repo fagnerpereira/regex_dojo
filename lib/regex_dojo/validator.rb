@@ -2,6 +2,12 @@
 
 module RegexDojo
   class Validator
+    # Safety rails: user patterns run on unauthenticated requests, so cap the
+    # compile surface and abort catastrophic backtracking before it can pin a
+    # server thread (backreference patterns bypass Ruby's regex memoization).
+    MAX_PATTERN_LENGTH = 200
+    MATCH_TIMEOUT = 0.2 # seconds
+
     class Result
       attr_reader :pattern, :test_results, :error_message
 
@@ -33,9 +39,13 @@ module RegexDojo
     def self.validate(pattern, test_cases)
       return Result.new(pattern: pattern, error_message: "Pattern cannot be empty") if pattern.to_s.strip.empty?
 
+      if pattern.to_s.length > MAX_PATTERN_LENGTH
+        return Result.new(pattern: pattern, error_message: "Pattern too long (max #{MAX_PATTERN_LENGTH} characters)")
+      end
+
       # Safely compile the regular expression
       begin
-        regex = Regexp.new(pattern)
+        regex = Regexp.new(pattern, timeout: MATCH_TIMEOUT)
       rescue RegexpError => e
         return Result.new(pattern: pattern, error_message: "Invalid regex syntax: #{e.message}")
       end
@@ -46,8 +56,7 @@ module RegexDojo
         expected = tc[:expected_match] || tc["expected_match"]
 
         # Run match
-        match_data = regex.match(input)
-        actual = match_data ? match_data[0] : nil
+        actual = graded_match(regex.match(input))
 
         passed = (actual == expected)
 
@@ -60,6 +69,17 @@ module RegexDojo
       end
 
       Result.new(pattern: pattern, test_results: test_results)
+    rescue Regexp::TimeoutError
+      Result.new(pattern: pattern, error_message: "Pattern took too long to evaluate — try a simpler pattern")
+    end
+
+    # The graded value of a match: extraction katas are answered with a capture
+    # group (numbered or named), so a participating group wins over the full
+    # match. Groupless patterns keep full-match semantics.
+    def self.graded_match(match_data)
+      return nil unless match_data
+
+      match_data.captures.compact.first || match_data[0]
     end
   end
 end

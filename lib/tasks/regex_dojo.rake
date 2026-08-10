@@ -38,17 +38,15 @@ namespace :regex do
 
     if result.passing?
       puts "\e[32m✔ SUCCESS! All test cases passed.\e[0m"
+    elsif result.error_message
+      puts "\e[31m✖ ERROR: #{result.error_message}\e[0m"
     else
-      if result.error_message
-        puts "\e[31m✖ ERROR: #{result.error_message}\e[0m"
-      else
-        puts "\e[31m✖ FAILURE: Some test cases failed.\e[0m"
-        result.test_results.each_with_index do |tr, index|
-          status = tr[:passed] ? "\e[32m✔ PASSED\e[0m" : "\e[31m✖ FAILED\e[0m"
-          puts "  Test ##{index + 1}: Input: \"#{tr[:input]}\""
-          puts "    Expected: #{tr[:expected_match].inspect}"
-          puts "    Actual:   #{tr[:actual_match].inspect} [#{status}]"
-        end
+      puts "\e[31m✖ FAILURE: Some test cases failed.\e[0m"
+      result.test_results.each_with_index do |tr, index|
+        status = tr[:passed] ? "\e[32m✔ PASSED\e[0m" : "\e[31m✖ FAILED\e[0m"
+        puts "  Test ##{index + 1}: Input: \"#{tr[:input]}\""
+        puts "    Expected: #{tr[:expected_match].inspect}"
+        puts "    Actual:   #{tr[:actual_match].inspect} [#{status}]"
       end
     end
     puts ""
