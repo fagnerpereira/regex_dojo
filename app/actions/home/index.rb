@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "securerandom"
-require_relative "../../../lib/regex_dojo/kata_pool"
 
 module RegexDojo
   module Actions
@@ -10,32 +9,24 @@ module RegexDojo
         include Deps["repos.dojo_repo"]
 
         def handle(request, response)
-          # Manage anonymous guest session
-          session_id = request.session[:session_id] || request.session["session_id"]
-
-          unless session_id
-            session_id = SecureRandom.uuid
-            request.session["session_id"] = session_id
-          end
-
-          # Find or create user
-          user = dojo_repo.find_user_by_session_id(session_id)
-          unless user
-            dojo_repo.create_user(session_id: session_id)
-            user = dojo_repo.find_user_by_session_id(session_id)
-          end
+          # Find or create the anonymous guest user for this session
+          user = current_user(request)
 
           # Load user progress to mark solved katas
           solved_katas = dojo_repo.get_user_progress(user.id)
             .select { |p| p.solved }
             .map { |p| p.kata_id }
 
-          # Load challenges from database
+          # Load challenges once; blitz is the same list minus hard katas
           challenges = dojo_repo.get_challenges_for_view
-          blitz_challenges = dojo_repo.get_blitz_challenges_for_view
+          blitz_challenges = challenges.reject { |c| c[:difficulty].to_s.downcase == "hard" }
 
-          # Render the full Phlex page
-          layout = Views::Layout.new
+          # Render the full Phlex page.
+          # hanami-action's set_csrf_token callback populates this key on every
+          # request outside the test env; ||= keeps request specs working there.
+          csrf_token = (request.session[:_csrf_token] ||= SecureRandom.hex(32))
+
+          layout = Views::Layout.new(csrf_token: csrf_token)
           dashboard = Views::Home::Dashboard.new(
             user: user,
             solved_kata_ids: solved_katas,
@@ -44,7 +35,7 @@ module RegexDojo
           )
 
           html = layout.call do |l|
-            dashboard.call
+            l.render(dashboard)
           end
 
           response.body = html

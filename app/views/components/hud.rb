@@ -10,7 +10,7 @@ module RegexDojo
           @user = user # users SQLite struct
         end
 
-        def template
+        def view_template
           div(id: "hud-bar", class: "sticky top-0 z-50 bg-dojo-surface/80 backdrop-blur-md border-b border-dojo-border py-4 px-6 shadow-lg shadow-dojo-bg/20") do
             div(class: "max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4") do
               # Logo / Title

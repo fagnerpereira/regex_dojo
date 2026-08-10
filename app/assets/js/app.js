@@ -1,4 +1,5 @@
-import "../css/app.css";
+// CSS is compiled separately by the Tailwind CLI (see Procfile.dev) — never
+// import it here; esbuild only bundles JS in this pipeline.
 
 // Hotwire Turbo — full page drive, frames, and streams
 import "@hotwired/turbo";
