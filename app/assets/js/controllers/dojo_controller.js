@@ -1,6 +1,9 @@
 import { Controller } from "@hotwired/stimulus";
 import { post } from "@rails/request.js";
 
+// Survives reloads so learners resume on the kata they were working through.
+const KATA_STORAGE_KEY = "regex_dojo_current_kata_id";
+
 /**
  * DojoController — the main kata challenge mode.
  *
@@ -31,9 +34,15 @@ export default class extends Controller {
     this.testCases = [];
     this.hintVisible = false;
 
-    // Auto-select the first kata on page load
+    // Restore last selected kata from localStorage, or load the first one
     if (this.kataButtonTargets.length > 0) {
-      this._loadKataFromButton(this.kataButtonTargets[0]);
+      const savedKataId = localStorage.getItem(KATA_STORAGE_KEY);
+      const savedButton = savedKataId
+        ? this.kataButtonTargets.find(
+            (btn) => btn.dataset.kataId === savedKataId,
+          )
+        : null;
+      this._loadKataFromButton(savedButton || this.kataButtonTargets[0]);
     }
   }
 
@@ -213,6 +222,8 @@ export default class extends Controller {
       btn.classList.toggle("border-dojo-border", isActive);
       btn.classList.toggle("border-transparent", !isActive);
     });
+
+    localStorage.setItem(KATA_STORAGE_KEY, this.currentKata.id);
   }
 
   // ── Private: Test cases ────────────────────────────────────────────────────
