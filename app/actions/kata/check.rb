@@ -23,17 +23,19 @@ module RegexDojo
           pattern = parse_body(request)[:pattern].to_s.strip
           result = RegexDojo::Validator.validate(pattern, challenge.test_cases.map(&:to_h))
 
-          if result.error_message
-            response.status = 422
-            response.body = {passing: false, error_message: result.error_message}.to_json
-            return
-          end
-
+          # Log every attempt, including patterns the validator rejects, so
+          # submission history and telemetry reflect what learners actually tried.
           dojo_repo.create_submission(
             challenge_id: challenge.id,
             user_pattern: pattern,
             is_passing: result.passing?
           )
+
+          if result.error_message
+            response.status = 422
+            response.body = {passing: false, error_message: result.error_message}.to_json
+            return
+          end
 
           user = current_user(request)
           xp_awarded = award_xp(user, challenge, result.passing?)
