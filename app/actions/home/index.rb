@@ -24,6 +24,9 @@ module RegexDojo
           # The learner's latest answer per kata, restored into the pattern input
           last_patterns = dojo_repo.latest_patterns_for_user(user.id)
 
+          # The ruby track shows one server-selected challenge at a time
+          ruby_track = dojo_repo.next_challenge_for(user.id, track: "ruby")
+
           # Render the full Phlex page.
           # hanami-action's set_csrf_token callback populates this key on every
           # request outside the test env; ||= keeps request specs working there.
@@ -35,7 +38,8 @@ module RegexDojo
             solved_kata_ids: solved_katas,
             challenges: challenges,
             blitz_challenges: blitz_challenges,
-            last_patterns: last_patterns
+            last_patterns: last_patterns,
+            ruby_track: ruby_track
           )
 
           html = layout.call do |l|

@@ -60,6 +60,40 @@ RSpec.describe "Panel components" do
     end
   end
 
+  describe "RubyPanel" do
+    let(:ruby_challenge) do
+      Struct.new(:id, :title, :concept, :hint, :payload).new(
+        id: 101, title: "Transform with map", concept: "💎 Array#map",
+        hint: "map collects block returns",
+        payload: {
+          prompt: "Double every element.",
+          setup: ["arr = [1, 2, 3]"],
+          expression: "arr.map { |x| x * 2 }",
+          expected_output: "[2, 4, 6]",
+          accepted: []
+        }.to_json
+      )
+    end
+
+    it "renders one challenge with its ruby-dojo controller" do
+      html = RegexDojo::Views::Components::RubyPanel.new(
+        challenge: ruby_challenge, solved_count: 1, total_count: 5
+      ).call
+
+      expect(html).to include('data-controller="ruby-dojo"')
+      expect(html).to include("data-ruby-dojo-challenge-id-value=\"101\"")
+      expect(html).to include("Double every element.")
+      expect(html).to include("[2, 4, 6]")
+      expect(html).to include("1/5 solved")
+    end
+
+    it "degrades gracefully when the track has no challenges" do
+      html = RegexDojo::Views::Components::RubyPanel.new(challenge: nil).call
+
+      expect(html).to include("hanami db seed")
+    end
+  end
+
   it "renders the SandboxPanel with its sandbox controller" do
     html = RegexDojo::Views::Components::SandboxPanel.new.call
 
@@ -82,5 +116,6 @@ RSpec.describe "Panel components" do
     expect(html).to include('data-controller="dojo"')
     expect(html).to include('data-controller="blitz"')
     expect(html).to include('id="hud-bar"')
+    expect(html).to include('data-tab="ruby"')
   end
 end

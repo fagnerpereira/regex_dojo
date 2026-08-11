@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
-require_relative "../../../lib/regex_dojo/validator"
+require_relative "../../../lib/regex_dojo/tracks"
 
 module RegexDojo
   module Actions
@@ -21,7 +21,7 @@ module RegexDojo
           end
 
           pattern = parse_body(request)[:pattern].to_s.strip
-          result = RegexDojo::Validator.validate(pattern, challenge.test_cases.map(&:to_h))
+          result = RegexDojo::Tracks.grader_for(challenge.track).grade(pattern, challenge)
 
           # Resolved before logging so every attempt is attributed to its author.
           user = current_user(request)
@@ -50,7 +50,7 @@ module RegexDojo
             xp_awarded: xp_awarded,
             total_xp: user.xp,
             belt: user.belt,
-            test_results: wire_results(result)
+            test_results: result.to_wire
           }.to_json
         end
 
@@ -67,19 +67,6 @@ module RegexDojo
 
           xp_value = dojo_repo.xp_for(challenge.difficulty)
           dojo_repo.record_solved_kata(user.id, challenge.id.to_s, xp_value) ? xp_value : 0
-        end
-
-        # The shape the Stimulus controllers render.
-        def wire_results(result)
-          result.test_results.map do |r|
-            {
-              input: r[:input],
-              should_match: !r[:expected_match].nil?,
-              did_match: !r[:actual_match].nil?,
-              actual_match: r[:actual_match],
-              passed: r[:passed]
-            }
-          end
         end
       end
     end

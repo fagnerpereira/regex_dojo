@@ -32,7 +32,10 @@ CREATE TABLE `challenges`(
   `updated_at` datetime DEFAULT(datetime(CURRENT_TIMESTAMP, 'localtime')) NOT NULL,
   `concept` string,
   `lesson` text,
-  `task` text
+  `task` text,
+  `track` varchar(255) DEFAULT('regex') NOT NULL,
+  `mode` varchar(255) DEFAULT('pattern') NOT NULL,
+  `payload` text
 );
 CREATE TABLE `test_cases`(
   `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -59,6 +62,7 @@ CREATE INDEX `idx_submissions_user_challenge_recent` ON `submissions`(
   `challenge_id`,
   `id`
 );
+CREATE INDEX `challenges_track_index` ON `challenges`(`track`);
 INSERT INTO schema_migrations (filename) VALUES
 ('20260622184408_create_dojo_tables.rb'),
 ('20260622195442_create_challenges.rb'),
@@ -66,4 +70,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260622195455_create_submissions.rb'),
 ('20260623090000_add_details_to_challenges.rb'),
 ('20260808000001_add_unique_index_to_progress.rb'),
-('20260810000001_add_user_to_submissions.rb');
+('20260810000001_add_user_to_submissions.rb'),
+('20260811000001_add_track_to_challenges.rb');

@@ -66,8 +66,24 @@ module RegexDojo
         )
       end
 
-      def all_challenges
-        challenges.combine(:test_cases).order(:id).to_a
+      def all_challenges(track: "regex")
+        challenges.where(track: track).combine(:test_cases).order(:id).to_a
+      end
+
+      # What the learner should work on next in a track, plus their progress
+      # through it. Phase 1 selection: first unsolved challenge by id, wrapping
+      # to the first when everything is solved. The spaced-repetition scheduler
+      # replaces these internals behind the same method.
+      def next_challenge_for(user_id, track:)
+        rows = challenges.where(track: track).order(:id).to_a
+        solved = progress.where(user_id: user_id, solved: true).to_a.map(&:kata_id)
+        current = rows.find { |c| !solved.include?(c.id.to_s) } || rows.first
+
+        {
+          challenge: current,
+          solved_count: (rows.map { |c| c.id.to_s } & solved).size,
+          total_count: rows.size
+        }
       end
 
       def find_challenge_by_id(id)

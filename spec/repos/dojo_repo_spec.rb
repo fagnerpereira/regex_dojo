@@ -166,4 +166,47 @@ RSpec.describe RegexDojo::Repos::DojoRepo do
       expect(difficulties).not_to be_empty
     end
   end
+
+  describe "track scoping" do
+    it "keeps ruby challenges out of the regex sidebar and blitz" do
+      ids = repo.get_challenges_for_view.map { |c| c[:id].to_i }
+      blitz_ids = repo.get_blitz_challenges_for_view.map { |c| c[:id].to_i }
+
+      expect(ids).to eq((31..45).to_a)
+      expect(blitz_ids).to all(be < 100)
+    end
+  end
+
+  describe "#next_challenge_for" do
+    let(:user) do
+      repo.create_user(session_id: "typist")
+      repo.find_user_by_session_id("typist")
+    end
+
+    it "serves the first ruby challenge to a fresh user, with counts" do
+      result = repo.next_challenge_for(user.id, track: "ruby")
+
+      expect(result[:challenge].id).to eq(101)
+      expect(result[:solved_count]).to eq(0)
+      expect(result[:total_count]).to eq(5)
+    end
+
+    it "advances past solved challenges" do
+      repo.record_solved_kata(user.id, "101", 25)
+
+      result = repo.next_challenge_for(user.id, track: "ruby")
+
+      expect(result[:challenge].id).to eq(102)
+      expect(result[:solved_count]).to eq(1)
+    end
+
+    it "wraps to the first challenge when everything is solved" do
+      (101..105).each { |id| repo.record_solved_kata(user.id, id.to_s, 25) }
+
+      result = repo.next_challenge_for(user.id, track: "ruby")
+
+      expect(result[:challenge].id).to eq(101)
+      expect(result[:solved_count]).to eq(5)
+    end
+  end
 end
