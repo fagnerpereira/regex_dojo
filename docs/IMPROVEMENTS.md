@@ -235,6 +235,58 @@ Ordered by phase. Each entry: **What changed / Why / Pros / Cons**.
 - **Pros**: Style debates end; agents and humans share one authority.
 - **Cons**: The mechanical reformat adds diff noise to this branch (one-time cost).
 
+## Answer persistence
+
+### 17. Your latest answer is restored per kata (and every attempt is recorded)
+
+- **What**: The pattern box now pre-fills with your most recent answer for that kata —
+  right or wrong — across navigation, reload, and browsers. Two layers:
+  - **Browser**: every keystroke saves a per-kata draft under
+    `regex_dojo_draft_pattern:<kataId>`. A new `patternChanged()` action wraps
+    `evaluatePattern()` and writes *before* any early return, so deliberately clearing
+    the box persists an empty draft instead of being ignored.
+  - **Server**: a migration adds nullable `submissions.user_id` (plus a
+    `(user_id, challenge_id, id)` index); `DojoRepo#latest_patterns_for_user` returns the
+    newest attempt per kata in **one** query; it reaches the browser as
+    `data-kata-last-pattern` on each sidebar button, following the existing
+    `data-kata-solved` precedent.
+  - On load, an unsent local draft wins over the server value (`!== null`, not
+    truthiness, so a cleared `""` beats a stale server answer); otherwise the server
+    value fills in. `evaluatePattern()` then re-runs so highlights and ⬜/✅ icons match
+    the restored pattern rather than showing neutral state.
+- **Why**: `dojo_controller.js` hard-cleared the input on *every* kata load, so solving a
+  kata and auto-advancing lost your answer permanently — the single most annoying thing
+  about using the app to actually learn. Ordering by `id` rather than `submitted_at`
+  matters: the timestamp has second granularity, so same-second attempts tie, while the
+  autoincrement id is a true total order.
+- **Pros**: Nothing you type is ever lost; a solved kata shows the pattern that won;
+  attempt history is now real data (`user_id` + index) ready for a history UI; storage
+  access is wrapped in try/catch, so private browsing no longer throws inside `connect()`
+  and kills kata loading — a pre-existing latent crash.
+- **Cons**: `submissions` grows unbounded with no retention policy; the expected answers
+  were already client-visible, and now your own past answers are too (fine for a personal
+  learning tool); the whole Stimulus half is manually verified because this repo has no
+  JS test runner.
+
+### 18. Every submit is recorded, not just winning ones
+
+- **What**: `submit()` no longer short-circuits wrong answers client-side — it POSTs every
+  attempt and lets the server decide. `current_user` is resolved *before* the submission
+  is logged so each attempt is attributed. Since a wrong-but-valid pattern returns **HTTP
+  200 with `passing: false`**, the success path is now gated on `data.passing`; a new
+  `_onFailure()` carries the shake + "keep tweaking" message. The now-unused
+  `_allTestCasesPass` helper was deleted.
+- **Why**: The client only ever POSTed patterns that already passed locally, so failing
+  attempts never reached the database — despite the comment in `check.rb` claiming every
+  attempt was logged for history. Without this, a "history of everything I tried" would
+  only ever contain correct answers.
+- **Pros**: The history is honest; the server is the single grading authority, removing
+  any chance of client/server divergence deciding whether you get XP.
+- **Cons**: One network round-trip per submit where wrong answers used to be free —
+  negligible for a local single-user app, and it buys correct data. Without the
+  `data.passing` gate this change would have fired the success banner and auto-advance on
+  every wrong answer; that gate is load-bearing.
+
 ## Deferred (future work)
 
 - **i18n**: all user-facing text in Phlex components and JS is hardcoded English.
@@ -251,5 +303,10 @@ Ordered by phase. Each entry: **What changed / Why / Pros / Cons**.
   grading logic in JS is verified manually against the server rule.
 - **Params schemas**: actions parse params/JSON manually; Hanami's `params do` contract
   blocks would give typed validation.
+- **Attempt-history UI**: the data is now captured (`submissions.user_id` + the
+  `(user_id, challenge_id, id)` index), but nothing renders a per-kata attempt timeline
+  yet. Natural next step: a collapsible list under each kata showing past attempts with
+  pass/fail markers and timestamps.
+- **Submissions retention**: the table grows without bound; no pruning or archival.
 - **CI**: no `.github/workflows` — the quality gate runs only locally.
 - **Hanami 3.0 stable**: everything is pinned to `3.0.0.rc1`; bump when stable lands.

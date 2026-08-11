@@ -74,12 +74,33 @@ module RegexDojo
         challenges.by_pk(id).combine(:test_cases).one
       end
 
-      def create_submission(challenge_id:, user_pattern:, is_passing:)
+      def create_submission(user_id:, challenge_id:, user_pattern:, is_passing:)
         submissions.command(:create).call(
+          user_id: user_id,
           challenge_id: challenge_id,
           user_pattern: user_pattern,
           is_passing: is_passing
         )
+      end
+
+      # The user's most recent attempt per kata, keyed by the String challenge
+      # id the view layer uses. One query, not one per kata.
+      #
+      # Ordered by `id`, not `submitted_at`: the timestamp has second
+      # granularity, so same-second ties are real; the autoincrement id is a
+      # true total order.
+      def latest_patterns_for_user(user_id)
+        return {} unless user_id
+
+        newest_ids = submissions.dataset
+          .where(user_id: user_id)
+          .group(:challenge_id)
+          .select { max(:id) }
+
+        submissions.dataset
+          .where(user_id: user_id, id: newest_ids)
+          .select(:challenge_id, :user_pattern)
+          .each_with_object({}) { |row, acc| acc[row[:challenge_id].to_s] = row[:user_pattern] }
       end
 
       def get_challenges_for_view

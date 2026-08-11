@@ -47,11 +47,17 @@ CREATE TABLE `submissions`(
   `challenge_id` integer NOT NULL REFERENCES `challenges` ON DELETE CASCADE,
   `user_pattern` text NOT NULL,
   `is_passing` boolean DEFAULT(0) NOT NULL,
-  `submitted_at` datetime DEFAULT(datetime(CURRENT_TIMESTAMP, 'localtime')) NOT NULL
+  `submitted_at` datetime DEFAULT(datetime(CURRENT_TIMESTAMP, 'localtime')) NOT NULL,
+  `user_id` integer NULL REFERENCES `users` ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX `idx_progress_user_kata_unique` ON `progress`(
   `user_id`,
   `kata_id`
+);
+CREATE INDEX `idx_submissions_user_challenge_recent` ON `submissions`(
+  `user_id`,
+  `challenge_id`,
+  `id`
 );
 INSERT INTO schema_migrations (filename) VALUES
 ('20260622184408_create_dojo_tables.rb'),
@@ -59,4 +65,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260622195449_create_test_cases.rb'),
 ('20260622195455_create_submissions.rb'),
 ('20260623090000_add_details_to_challenges.rb'),
-('20260808000001_add_unique_index_to_progress.rb');
+('20260808000001_add_unique_index_to_progress.rb'),
+('20260810000001_add_user_to_submissions.rb');

@@ -27,6 +27,72 @@ RSpec.describe RegexDojo::Repos::DojoRepo do
     end
   end
 
+  describe "#create_submission" do
+    let(:user) do
+      repo.create_user(session_id: "submitter")
+      repo.find_user_by_session_id("submitter")
+    end
+
+    it "attributes the attempt to the user who made it" do
+      repo.create_submission(
+        user_id: user.id, challenge_id: 31, user_pattern: "ruby", is_passing: true
+      )
+
+      expect(repo.submissions.where(user_id: user.id).count).to eq(1)
+    end
+  end
+
+  describe "#latest_patterns_for_user" do
+    let(:user) do
+      repo.create_user(session_id: "historian")
+      repo.find_user_by_session_id("historian")
+    end
+
+    def attempt(pattern, challenge_id: 31, passing: false, for_user: user)
+      repo.create_submission(
+        user_id: for_user.id,
+        challenge_id: challenge_id,
+        user_pattern: pattern,
+        is_passing: passing
+      )
+    end
+
+    it "returns an empty hash for a user with no submissions" do
+      expect(repo.latest_patterns_for_user(user.id)).to eq({})
+    end
+
+    it "keys by String challenge id, matching get_challenges_for_view" do
+      attempt("ruby")
+
+      expect(repo.latest_patterns_for_user(user.id)).to eq({"31" => "ruby"})
+    end
+
+    it "returns the newest attempt per kata, not the first" do
+      attempt("first-try")
+      attempt("second-try")
+      attempt("cat", challenge_id: 32)
+
+      expect(repo.latest_patterns_for_user(user.id))
+        .to eq({"31" => "second-try", "32" => "cat"})
+    end
+
+    it "keeps a failing attempt as the latest answer" do
+      attempt("ruby", passing: true)
+      attempt("broken-attempt", passing: false)
+
+      expect(repo.latest_patterns_for_user(user.id)["31"]).to eq("broken-attempt")
+    end
+
+    it "ignores other users' submissions" do
+      repo.create_user(session_id: "stranger")
+      stranger = repo.find_user_by_session_id("stranger")
+      attempt("mine")
+      attempt("theirs", for_user: stranger)
+
+      expect(repo.latest_patterns_for_user(user.id)).to eq({"31" => "mine"})
+    end
+  end
+
   describe "#record_solved_kata" do
     let(:user) do
       repo.create_user(session_id: "solver")

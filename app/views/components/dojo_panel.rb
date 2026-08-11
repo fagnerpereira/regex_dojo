@@ -7,10 +7,11 @@ module RegexDojo
   module Views
     module Components
       class DojoPanel < Phlex::HTML
-        def initialize(user:, solved_kata_ids: [], katas: [])
+        def initialize(user:, solved_kata_ids: [], katas: [], last_patterns: {})
           @user = user
           @solved_kata_ids = solved_kata_ids
           @katas = katas
+          @last_patterns = last_patterns
         end
 
         def view_template
@@ -36,6 +37,8 @@ module RegexDojo
                     kata_hint: kata[:hint],
                     kata_xp: kata[:xp],
                     kata_solved: solved.to_s,
+                    # Last answer this learner tried, restored into the input
+                    kata_last_pattern: @last_patterns[kata[:id]].to_s,
                     # JSON test cases for client side check
                     kata_test_cases: kata[:test_cases].to_json
                   }
@@ -106,7 +109,7 @@ module RegexDojo
                       spellcheck: "false",
                       data: {
                         dojo_target: "patternInput",
-                        action: "input->dojo#evaluatePattern"
+                        action: "input->dojo#patternChanged"
                       }
                     )
                     span(class: "absolute right-4 font-mono text-dojo-cyan select-none") { "/g" }

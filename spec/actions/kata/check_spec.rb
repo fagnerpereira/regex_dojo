@@ -103,4 +103,37 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
       call_check(id: 31, pattern: "[a-z")
     }.to change { dojo_repo.submissions.where(is_passing: false).count }.by(1)
   end
+
+  describe "attributing attempts to the learner" do
+    def submissions_for(user_id)
+      dojo_repo.submissions.where(user_id: user_id).count
+    end
+
+    it "attributes a passing submission to the current user" do
+      expect {
+        call_check(id: 31, pattern: "ruby")
+      }.to change { submissions_for(user.id) }.by(1)
+    end
+
+    it "attributes a failing submission to the current user" do
+      expect {
+        call_check(id: 31, pattern: "zzz-no-match")
+      }.to change { submissions_for(user.id) }.by(1)
+    end
+
+    it "attributes a validator-rejected submission to the current user" do
+      expect {
+        call_check(id: 31, pattern: "[a-z")
+      }.to change { submissions_for(user.id) }.by(1)
+    end
+
+    it "attributes the attempt to the guest it just created" do
+      session = {}
+
+      call_check(id: 31, pattern: "ruby", session: session)
+
+      guest = dojo_repo.find_user_by_session_id(session["session_id"])
+      expect(submissions_for(guest.id)).to eq(1)
+    end
+  end
 end

@@ -7,11 +7,12 @@ module RegexDojo
   module Views
     module Home
       class Dashboard < Phlex::HTML
-        def initialize(user:, solved_kata_ids: [], challenges: [], blitz_challenges: [])
+        def initialize(user:, solved_kata_ids: [], challenges: [], blitz_challenges: [], last_patterns: {})
           @user = user
           @solved_kata_ids = solved_kata_ids
           @challenges = challenges
           @blitz_challenges = blitz_challenges
+          @last_patterns = last_patterns
         end
 
         def view_template
@@ -34,7 +35,7 @@ module RegexDojo
             div(class: "max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex-1") do
               # Dojo Panel
               div(data: {tabs_target: "panel", tab: "dojo"}) do
-                render Views::Components::DojoPanel.new(user: @user, solved_kata_ids: @solved_kata_ids, katas: @challenges)
+                render Views::Components::DojoPanel.new(user: @user, solved_kata_ids: @solved_kata_ids, katas: @challenges, last_patterns: @last_patterns)
               end
 
               # Sandbox Panel
