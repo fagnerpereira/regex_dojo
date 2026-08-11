@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "nokogiri"
 
 # Smoke specs: each panel renders without error and mounts its Stimulus
 # controller. A cheap regression net for Phlex upgrades and refactors.
@@ -25,6 +26,38 @@ RSpec.describe "Panel components" do
 
     expect(html).to include('data-controller="dojo"')
     expect(html).to include("Literal")
+  end
+
+  describe "restoring the learner's last answer" do
+    def kata_button(last_patterns:)
+      html = RegexDojo::Views::Components::DojoPanel.new(
+        user: user, solved_kata_ids: [], katas: [kata], last_patterns: last_patterns
+      ).call
+
+      Nokogiri::HTML.fragment(html).at_css("[data-kata-id='1']")
+    end
+
+    it "renders the user's last pattern for that kata" do
+      button = kata_button(last_patterns: {"1" => 'a+\d{2}'})
+
+      expect(button["data-kata-last-pattern"]).to eq('a+\d{2}')
+    end
+
+    it "renders an empty last pattern when the user has never tried the kata" do
+      button = kata_button(last_patterns: {})
+
+      expect(button["data-kata-last-pattern"]).to eq("")
+    end
+
+    it "is threaded through the Dashboard" do
+      html = RegexDojo::Views::Home::Dashboard.new(
+        user: user, solved_kata_ids: [], challenges: [kata],
+        blitz_challenges: [], last_patterns: {"1" => "from-dashboard"}
+      ).call
+
+      button = Nokogiri::HTML.fragment(html).at_css("[data-kata-id='1']")
+      expect(button["data-kata-last-pattern"]).to eq("from-dashboard")
+    end
   end
 
   it "renders the SandboxPanel with its sandbox controller" do

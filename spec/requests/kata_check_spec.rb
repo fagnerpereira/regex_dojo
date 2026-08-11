@@ -30,4 +30,15 @@ RSpec.describe "POST /kata/:id/check", type: :request do
     expect(body[:passing]).to be(false)
     expect(body[:total_xp]).to eq(25)
   end
+
+  # Proves the whole server chain: attempt → submissions.user_id →
+  # latest_patterns_for_user → data attribute the Stimulus controller reads.
+  it "serves the last attempted pattern back on the next page load" do
+    get "/"
+    post_pattern(31, "my-wrong-answer")
+
+    get "/"
+
+    expect(last_response.body).to include('data-kata-last-pattern="my-wrong-answer"')
+  end
 end

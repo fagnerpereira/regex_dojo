@@ -23,9 +23,13 @@ module RegexDojo
           pattern = parse_body(request)[:pattern].to_s.strip
           result = RegexDojo::Validator.validate(pattern, challenge.test_cases.map(&:to_h))
 
+          # Resolved before logging so every attempt is attributed to its author.
+          user = current_user(request)
+
           # Log every attempt, including patterns the validator rejects, so
           # submission history and telemetry reflect what learners actually tried.
           dojo_repo.create_submission(
+            user_id: user.id,
             challenge_id: challenge.id,
             user_pattern: pattern,
             is_passing: result.passing?
@@ -37,7 +41,6 @@ module RegexDojo
             return
           end
 
-          user = current_user(request)
           xp_awarded = award_xp(user, challenge, result.passing?)
           user = dojo_repo.find_user_by_session_id(user.session_id) # reload post-award
 
