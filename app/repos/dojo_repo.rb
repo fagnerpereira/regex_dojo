@@ -1,26 +1,19 @@
 # frozen_string_literal: true
 
+require_relative "../../lib/regex_dojo/belt_scale"
+
 module RegexDojo
   module Repos
     class DojoRepo < RegexDojo::DB::Repo
       XP_BY_DIFFICULTY = {"hard" => 50, "medium" => 35}.freeze
       DEFAULT_XP = 25
 
-      # Cumulative XP thresholds, highest first — the first one reached wins.
-      BELTS = [
-        [370, "black"],
-        [265, "green"],
-        [160, "orange"],
-        [75, "yellow"],
-        [0, "white"]
-      ].freeze
-
       def xp_for(difficulty)
         XP_BY_DIFFICULTY.fetch(difficulty.to_s.downcase, DEFAULT_XP)
       end
 
       def belt_for(xp)
-        BELTS.find { |threshold, _belt| xp >= threshold }.last
+        RegexDojo::BeltScale.for(xp)
       end
 
       def find_user_by_session_id(session_id)

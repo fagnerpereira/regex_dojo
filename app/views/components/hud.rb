@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "phlex"
+require_relative "../../../lib/regex_dojo/belt_scale"
 
 module RegexDojo
   module Views
@@ -26,13 +27,10 @@ module RegexDojo
                   "#{@user[:belt].capitalize} Belt"
                 end
 
-                # Progress Bar
+                # Progress Bar — full bar means the top belt is reached, so the
+                # ceiling tracks BeltScale rather than a literal of its own.
                 div(class: "flex-grow bg-dojo-bg border border-dojo-border h-4 rounded-full overflow-hidden p-[2px] relative") do
-                  # Determine percentage based on current belt levels
-                  # Let's say White Belt requires 200 XP to level up to Yellow.
-                  # Simple math for MVP: % of current level (max 200 XP for White)
-                  xp_limit = 200
-                  percentage = [(@user[:xp].to_f / xp_limit * 100).round, 100].min
+                  percentage = [(@user[:xp].to_f / BeltScale::MAX_XP * 100).round, 100].min
 
                   div(
                     class: "belt-bar h-full rounded-full transition-all duration-500",
@@ -40,9 +38,10 @@ module RegexDojo
                   )
                 end
 
-                # XP Label
+                # XP Label — dojo_controller._updateHudXP parses the ceiling
+                # back out of this text, so it must stay "<xp>/<max> XP".
                 span(class: "font-mono text-sm text-dojo-gold min-w-[70px] text-right") do
-                  "#{@user[:xp]}/200 XP"
+                  "#{@user[:xp]}/#{BeltScale::MAX_XP} XP"
                 end
               end
 
