@@ -6,8 +6,21 @@ module RegexDojo
       XP_BY_DIFFICULTY = {"hard" => 50, "medium" => 35}.freeze
       DEFAULT_XP = 25
 
+      # Cumulative XP thresholds, highest first — the first one reached wins.
+      BELTS = [
+        [370, "black"],
+        [265, "green"],
+        [160, "orange"],
+        [75, "yellow"],
+        [0, "white"]
+      ].freeze
+
       def xp_for(difficulty)
         XP_BY_DIFFICULTY.fetch(difficulty.to_s.downcase, DEFAULT_XP)
+      end
+
+      def belt_for(xp)
+        BELTS.find { |threshold, _belt| xp >= threshold }.last
       end
 
       def find_user_by_session_id(session_id)
@@ -35,16 +48,9 @@ module RegexDojo
               xp_gained: xp_gained
             )
 
-            user = users.by_pk(user_id).one
-            new_xp = user.xp + xp_gained
+            new_xp = users.by_pk(user_id).one.xp + xp_gained
 
-            # Simple Belt progression for MVP
-            new_belt = user.belt
-            if new_xp >= 200 && user.belt == "white"
-              new_belt = "yellow"
-            end
-
-            users.by_pk(user_id).command(:update).call(xp: new_xp, belt: new_belt)
+            users.by_pk(user_id).command(:update).call(xp: new_xp, belt: belt_for(new_xp))
             solved = true
           end
         end
