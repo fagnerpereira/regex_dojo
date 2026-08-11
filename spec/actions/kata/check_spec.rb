@@ -104,6 +104,51 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
     }.to change { dojo_repo.submissions.where(is_passing: false).count }.by(1)
   end
 
+  describe "grading the ruby track" do
+    it "passes the reference expression and awards XP" do
+      response = call_check(id: 101, pattern: "arr.map { |x| x * 2 }")
+
+      body = json(response)
+      expect(body[:passing]).to be(true)
+      expect(body[:xp_awarded]).to eq(25)
+      expect(body[:test_results]).to eq([{expected_output: "[2, 4, 6]", passed: true}])
+    end
+
+    it "passes a structurally equivalent answer with different names and spacing" do
+      response = call_check(id: 101, pattern: "arr.map { |e| e*2 }")
+
+      expect(json(response)[:passing]).to be(true)
+    end
+
+    it "passes an accepted alternate phrasing" do
+      response = call_check(id: 104, pattern: "arr.sum")
+
+      expect(json(response)[:passing]).to be(true)
+    end
+
+    it "fails a semantically different answer without an error" do
+      response = call_check(id: 101, pattern: "arr.map { |x| x + 2 }")
+
+      expect(response.status).to eq(200)
+      body = json(response)
+      expect(body[:passing]).to be(false)
+      expect(body[:error_message]).to be_nil
+    end
+
+    it "returns 422 with the parser's message for a syntax error" do
+      response = call_check(id: 101, pattern: "arr.map { |x|")
+
+      expect(response.status).to eq(422)
+      expect(json(response)[:error_message]).not_to be_empty
+    end
+
+    it "logs ruby attempts to submissions like regex ones" do
+      expect {
+        call_check(id: 101, pattern: "arr.map { |x| x * 2 }")
+      }.to change { dojo_repo.submissions.where(user_id: user.id).count }.by(1)
+    end
+  end
+
   describe "attributing attempts to the learner" do
     def submissions_for(user_id)
       dojo_repo.submissions.where(user_id: user_id).count

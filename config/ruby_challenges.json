@@ -1,0 +1,91 @@
+[
+  {
+    "id": 101,
+    "title": "Transform with map",
+    "difficulty": "Easy",
+    "concept": "💎 Array#map",
+    "description": "Using Array#map, build a new array with every element doubled.",
+    "hint": "map yields each element to the block and collects the block's return values: arr.map { |x| x * 2 }",
+    "payload": {
+      "prompt": "Using Array#map, build a new array with every element doubled.",
+      "method": "Array#map",
+      "setup": ["arr = [1, 2, 3]"],
+      "expression": "arr.map { |x| x * 2 }",
+      "expected_output": "[2, 4, 6]",
+      "accepted": ["arr.collect { |x| x * 2 }"]
+    }
+  },
+  {
+    "id": 102,
+    "title": "Filter with select",
+    "difficulty": "Easy",
+    "concept": "💎 Array#select & Symbol#to_proc",
+    "description": "Using Array#select, keep only the even numbers.",
+    "hint": "The &:method shorthand turns a symbol into a block: arr.select(&:even?)",
+    "payload": {
+      "prompt": "Using Array#select, keep only the even numbers.",
+      "method": "Array#select",
+      "setup": ["arr = [1, 2, 3, 4, 5, 6]"],
+      "expression": "arr.select(&:even?)",
+      "expected_output": "[2, 4, 6]",
+      "accepted": [
+        "arr.select { |x| x.even? }",
+        "arr.filter(&:even?)",
+        "arr.filter { |x| x.even? }"
+      ]
+    }
+  },
+  {
+    "id": 103,
+    "title": "Safe nested lookup with dig",
+    "difficulty": "Easy",
+    "concept": "💎 Hash#dig",
+    "description": "Using Hash#dig, read the nested value at :user, then :name — returning nil instead of raising when a key is missing.",
+    "hint": "dig takes one key per nesting level: h.dig(:user, :name)",
+    "payload": {
+      "prompt": "Using Hash#dig, read the nested value at :user, then :name.",
+      "method": "Hash#dig",
+      "setup": ["h = { user: { name: \"Matz\" } }"],
+      "expression": "h.dig(:user, :name)",
+      "expected_output": "\"Matz\"",
+      "accepted": []
+    }
+  },
+  {
+    "id": 104,
+    "title": "Sum it all up",
+    "difficulty": "Easy",
+    "concept": "💎 Enumerable#reduce",
+    "description": "Sum every element of the array — any idiomatic way counts.",
+    "hint": "reduce(:+) folds the array through +; Array#sum and inject(:+) say the same thing",
+    "payload": {
+      "prompt": "Sum every element of the array.",
+      "method": "Enumerable#reduce",
+      "setup": ["arr = [1, 2, 3, 4]"],
+      "expression": "arr.reduce(:+)",
+      "expected_output": "10",
+      "accepted": [
+        "arr.sum",
+        "arr.inject(:+)",
+        "arr.reduce(0) { |acc, n| acc + n }",
+        "arr.inject(0) { |acc, n| acc + n }"
+      ]
+    }
+  },
+  {
+    "id": 105,
+    "title": "Shout every name",
+    "difficulty": "Easy",
+    "concept": "💎 Symbol#to_proc",
+    "description": "Using map with the &:symbol shorthand, upcase every name in the array.",
+    "hint": "&:upcase expands to { |x| x.upcase }",
+    "payload": {
+      "prompt": "Using map with the &:symbol shorthand, upcase every name.",
+      "method": "Symbol#to_proc",
+      "setup": ["names = [\"alice\", \"bob\"]"],
+      "expression": "names.map(&:upcase)",
+      "expected_output": "[\"ALICE\", \"BOB\"]",
+      "accepted": []
+    }
+  }
+]
