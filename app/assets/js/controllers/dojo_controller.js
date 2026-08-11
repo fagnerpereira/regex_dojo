@@ -4,13 +4,18 @@ import { post } from "@rails/request.js";
 // Survives reloads so learners resume on the kata they were working through.
 const KATA_STORAGE_KEY = "regex_dojo_current_kata_id";
 
+// One draft slot per kata, so an in-progress answer survives navigation even
+// before it is ever submitted. The server copy (data-kata-last-pattern) is the
+// durable, cross-browser fallback.
+const DRAFT_KEY_PREFIX = "regex_dojo_draft_pattern:";
+
 /**
  * DojoController — the main kata challenge mode.
  *
  * Kata data is embedded on sidebar buttons via data attributes:
  *   data-kata-id, data-kata-title, data-kata-concept, data-kata-lesson,
  *   data-kata-test-string, data-kata-task, data-kata-hint, data-kata-xp,
- *   data-kata-test-cases (JSON)
+ *   data-kata-last-pattern, data-kata-test-cases (JSON)
  */
 export default class extends Controller {
   static targets = [
@@ -36,7 +41,7 @@ export default class extends Controller {
 
     // Restore last selected kata from localStorage, or load the first one
     if (this.kataButtonTargets.length > 0) {
-      const savedKataId = localStorage.getItem(KATA_STORAGE_KEY);
+      const savedKataId = this._readStorage(KATA_STORAGE_KEY);
       const savedButton = savedKataId
         ? this.kataButtonTargets.find(
             (btn) => btn.dataset.kataId === savedKataId,
@@ -56,6 +61,26 @@ export default class extends Controller {
   selectKata(event) {
     const button = event.currentTarget;
     this._loadKataFromButton(button);
+  }
+
+  /**
+   * patternChanged — bound to every keystroke in the pattern input.
+   *
+   * Saves the draft BEFORE any evaluation short-circuits, so deliberately
+   * clearing the box persists an empty draft rather than being ignored.
+   * Only this user-driven path writes storage; the restore path in
+   * _loadKataFromButton must not, or a stale local draft would permanently
+   * shadow a newer answer submitted from another browser.
+   */
+  patternChanged() {
+    if (this.currentKata) {
+      this._writeStorage(
+        this._draftKey(this.currentKata.id),
+        this.patternInputTarget.value,
+      );
+    }
+
+    this.evaluatePattern();
   }
 
   /**
@@ -108,9 +133,13 @@ export default class extends Controller {
   }
 
   /**
-   * submit — validate all test cases pass, then POST to /kata/{id}/check.
-   * On success: animate success, show XP gain, update HUD.
-   * On failure: shake the card with error animation.
+   * submit — POST the attempt to /kata/{id}/check, right or wrong.
+   *
+   * Every attempt reaches the server so the learner's history is complete;
+   * the server is the sole authority on pass/fail. Only an empty box is
+   * short-circuited, since that is not an attempt.
+   * On pass: animate success, show XP gain, update HUD.
+   * On fail: shake the card with error animation.
    */
   async submit() {
     if (!this.currentKata) return;
@@ -119,25 +148,6 @@ export default class extends Controller {
 
     if (rawPattern === "") {
       this._showError("Pattern cannot be empty.");
-      return;
-    }
-
-    // Client-side pre-check: verify all test cases pass
-    let regex;
-    try {
-      regex = new RegExp(rawPattern, "g");
-    } catch (e) {
-      this._showError(e.message);
-      return;
-    }
-
-    const allPassed = this._allTestCasesPass(rawPattern);
-
-    if (!allPassed) {
-      this._shakeCard("shake-error");
-      this._showError(
-        "Not all test cases pass yet. Keep tweaking your pattern!",
-      );
       return;
     }
 
@@ -150,8 +160,14 @@ export default class extends Controller {
       });
 
       if (response.ok) {
+        // A wrong-but-valid pattern also returns 200 — the payload, not the
+        // status, decides whether the kata was solved.
         const data = await response.json;
-        this._onSuccess(data);
+        if (data?.passing) {
+          this._onSuccess(data);
+        } else {
+          this._onFailure();
+        }
       } else {
         // Server rejected the pattern (edge cases the client might miss)
         let errorMsg = "Pattern rejected by server.";
@@ -195,9 +211,14 @@ export default class extends Controller {
       this.testCases = [];
     }
 
-    // Reset UI state
+    // Reset UI state, restoring the learner's latest answer for this kata:
+    // an unsent local draft wins over the server's last submitted pattern.
+    // `!== null` (not truthiness) so a deliberately cleared "" draft beats
+    // the older server value.
     this.hintVisible = false;
-    this.patternInputTarget.value = "";
+    const draft = this._readStorage(this._draftKey(this.currentKata.id));
+    this.patternInputTarget.value =
+      draft !== null ? draft : ds.kataLastPattern || "";
     this._clearError();
 
     // Populate the right panel
@@ -215,6 +236,11 @@ export default class extends Controller {
     // Render test case cards
     this._renderTestCases(this.testCases);
 
+    // Reflect the restored pattern in highlights and test-case icons instead
+    // of leaving them neutral. Must run AFTER _renderTestCases, which creates
+    // the .test-case-card nodes this reads.
+    this.evaluatePattern();
+
     // Highlight active sidebar button
     this.kataButtonTargets.forEach((btn) => {
       const isActive = btn.dataset.kataId === this.currentKata.id;
@@ -223,7 +249,7 @@ export default class extends Controller {
       btn.classList.toggle("border-transparent", !isActive);
     });
 
-    localStorage.setItem(KATA_STORAGE_KEY, this.currentKata.id);
+    this._writeStorage(KATA_STORAGE_KEY, this.currentKata.id);
   }
 
   // ── Private: Test cases ────────────────────────────────────────────────────
@@ -288,13 +314,6 @@ export default class extends Controller {
       card.classList.toggle("border-red-500/30", !passed);
       card.classList.toggle("border-dojo-border/60", false);
     });
-  }
-
-  /**
-   * Returns true if all test cases pass for the given pattern.
-   */
-  _allTestCasesPass(rawPattern) {
-    return this.testCases.every((tc) => this._gradeTestCase(rawPattern, tc));
   }
 
   /**
@@ -392,6 +411,11 @@ export default class extends Controller {
   }
 
   // ── Private: Success / failure animations ──────────────────────────────────
+
+  _onFailure() {
+    this._shakeCard("shake-error");
+    this._showError("Not all test cases pass yet. Keep tweaking your pattern!");
+  }
 
   _onSuccess(data) {
     // Clear error state
@@ -510,5 +534,29 @@ export default class extends Controller {
     const div = document.createElement("div");
     div.textContent = str;
     return div.innerHTML;
+  }
+
+  // ── Private: Storage ───────────────────────────────────────────────────────
+  // Wrapped because localStorage throws in private browsing and when the quota
+  // is exhausted — persistence is a convenience and must never break the app.
+
+  _draftKey(kataId) {
+    return `${DRAFT_KEY_PREFIX}${kataId}`;
+  }
+
+  _readStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  _writeStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (_) {
+      // Storage unavailable — the server copy still restores on reload.
+    }
   }
 }
