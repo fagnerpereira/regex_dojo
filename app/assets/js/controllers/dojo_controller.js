@@ -472,10 +472,7 @@ export default class extends Controller {
       // Update progress bar width
       const progressBar = hudBar.querySelector(".belt-bar");
       if (progressBar) {
-        const percentage = Math.min(
-          Math.round((currentXP / maxXP) * 100),
-          100,
-        );
+        const percentage = Math.min(Math.round((currentXP / maxXP) * 100), 100);
         progressBar.style.width = `${percentage}%`;
       }
     }
