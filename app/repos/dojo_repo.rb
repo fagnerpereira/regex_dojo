@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../../lib/regex_dojo/belt_scale"
+
 module RegexDojo
   module Repos
     class DojoRepo < RegexDojo::DB::Repo
@@ -8,6 +10,10 @@ module RegexDojo
 
       def xp_for(difficulty)
         XP_BY_DIFFICULTY.fetch(difficulty.to_s.downcase, DEFAULT_XP)
+      end
+
+      def belt_for(xp)
+        RegexDojo::BeltScale.for(xp)
       end
 
       def find_user_by_session_id(session_id)
@@ -35,16 +41,9 @@ module RegexDojo
               xp_gained: xp_gained
             )
 
-            user = users.by_pk(user_id).one
-            new_xp = user.xp + xp_gained
+            new_xp = users.by_pk(user_id).one.xp + xp_gained
 
-            # Simple Belt progression for MVP
-            new_belt = user.belt
-            if new_xp >= 200 && user.belt == "white"
-              new_belt = "yellow"
-            end
-
-            users.by_pk(user_id).command(:update).call(xp: new_xp, belt: new_belt)
+            users.by_pk(user_id).command(:update).call(xp: new_xp, belt: belt_for(new_xp))
             solved = true
           end
         end

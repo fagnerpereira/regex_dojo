@@ -97,4 +97,10 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
     expect(response.status).to eq(422)
     expect(json(response)[:error_message]).to include("Invalid regex syntax")
   end
+
+  it "logs rejected patterns too, so telemetry sees every attempt" do
+    expect {
+      call_check(id: 31, pattern: "[a-z")
+    }.to change { dojo_repo.submissions.where(is_passing: false).count }.by(1)
+  end
 end

@@ -45,10 +45,10 @@ RSpec.describe RegexDojo::Repos::DojoRepo do
       expect(repo.find_user_by_session_id("solver").xp).to eq(25)
     end
 
-    it "promotes white to yellow belt at 200 XP" do
+    it "promotes the belt to match the new XP total" do
       repo.record_solved_kata(user.id, "1", 200)
 
-      expect(repo.find_user_by_session_id("solver").belt).to eq("yellow")
+      expect(repo.find_user_by_session_id("solver").belt).to eq("orange")
     end
 
     it "is backed by a DB unique index on (user_id, kata_id)" do
