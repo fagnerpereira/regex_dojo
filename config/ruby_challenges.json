@@ -9,10 +9,26 @@
     "payload": {
       "prompt": "Using Array#map, build a new array with every element doubled.",
       "method": "Array#map",
-      "setup": ["arr = [1, 2, 3]"],
+      "setup": [
+        "arr = [1, 2, 3]"
+      ],
       "expression": "arr.map { |x| x * 2 }",
       "expected_output": "[2, 4, 6]",
-      "accepted": ["arr.collect { |x| x * 2 }"]
+      "accepted": [
+        "arr.collect { |x| x * 2 }",
+        "arr.map { |x| 2 * x }",
+        "arr.collect { |x| 2 * x }"
+      ],
+      "approaches": [
+        {
+          "code": "arr.map { |x| x * 2 }",
+          "note": "map yields each element to the block and collects the return values into a NEW array — the original stays untouched."
+        },
+        {
+          "code": "arr.collect { |x| x * 2 }",
+          "note": "collect is map's exact alias; most Ruby code says map."
+        }
+      ]
     }
   },
   {
@@ -25,13 +41,32 @@
     "payload": {
       "prompt": "Using Array#select, keep only the even numbers.",
       "method": "Array#select",
-      "setup": ["arr = [1, 2, 3, 4, 5, 6]"],
+      "setup": [
+        "arr = [1, 2, 3, 4, 5, 6]"
+      ],
       "expression": "arr.select(&:even?)",
       "expected_output": "[2, 4, 6]",
       "accepted": [
         "arr.select { |x| x.even? }",
         "arr.filter(&:even?)",
-        "arr.filter { |x| x.even? }"
+        "arr.filter { |x| x.even? }",
+        "arr.select { |x| x % 2 == 0 }",
+        "arr.filter { |x| x % 2 == 0 }",
+        "arr.select { |x| (x % 2).zero? }"
+      ],
+      "approaches": [
+        {
+          "code": "arr.select(&:even?)",
+          "note": "&:even? is Symbol#to_proc — it expands to { |x| x.even? }. The idiomatic filter."
+        },
+        {
+          "code": "arr.select { |x| x.even? }",
+          "note": "Same filter with an explicit block. Predicate methods ending in ? read like questions: 'is x even?'"
+        },
+        {
+          "code": "arr.select { |x| x % 2 == 0 }",
+          "note": "The arithmetic way — works in any language, but even? states the intent directly and can't get the comparison backwards."
+        }
       ]
     }
   },
@@ -45,10 +80,22 @@
     "payload": {
       "prompt": "Using Hash#dig, read the nested value at :user, then :name.",
       "method": "Hash#dig",
-      "setup": ["h = { user: { name: \"Matz\" } }"],
+      "setup": [
+        "h = { user: { name: \"Matz\" } }"
+      ],
       "expression": "h.dig(:user, :name)",
       "expected_output": "\"Matz\"",
-      "accepted": []
+      "accepted": [],
+      "approaches": [
+        {
+          "code": "h.dig(:user, :name)",
+          "note": "dig walks one key per nesting level and returns nil at the FIRST missing key instead of raising NoMethodError."
+        },
+        {
+          "code": "h[:user] && h[:user][:name]",
+          "note": "The hand-guarded chain dig replaces — every level needs its own nil check, which is exactly the noise dig removes."
+        }
+      ]
     }
   },
   {
@@ -61,14 +108,31 @@
     "payload": {
       "prompt": "Sum every element of the array.",
       "method": "Enumerable#reduce",
-      "setup": ["arr = [1, 2, 3, 4]"],
+      "setup": [
+        "arr = [1, 2, 3, 4]"
+      ],
       "expression": "arr.reduce(:+)",
       "expected_output": "10",
       "accepted": [
         "arr.sum",
         "arr.inject(:+)",
         "arr.reduce(0) { |acc, n| acc + n }",
-        "arr.inject(0) { |acc, n| acc + n }"
+        "arr.inject(0) { |acc, n| acc + n }",
+        "arr.sum(0)"
+      ],
+      "approaches": [
+        {
+          "code": "arr.sum",
+          "note": "The direct method — says exactly what it does. Reach for it first when you really are summing."
+        },
+        {
+          "code": "arr.reduce(:+)",
+          "note": "reduce folds the array through an operator; the symbol form hands + straight to the fold."
+        },
+        {
+          "code": "arr.inject(0) { |acc, n| acc + n }",
+          "note": "The explicit fold reduce(:+) expands to: acc starts at 0 and accumulates every element. inject and reduce are aliases."
+        }
       ]
     }
   },
@@ -82,10 +146,24 @@
     "payload": {
       "prompt": "Using map with the &:symbol shorthand, upcase every name.",
       "method": "Symbol#to_proc",
-      "setup": ["names = [\"alice\", \"bob\"]"],
+      "setup": [
+        "names = [\"alice\", \"bob\"]"
+      ],
       "expression": "names.map(&:upcase)",
       "expected_output": "[\"ALICE\", \"BOB\"]",
-      "accepted": []
+      "accepted": [
+        "names.collect(&:upcase)"
+      ],
+      "approaches": [
+        {
+          "code": "names.map(&:upcase)",
+          "note": "&:upcase expands to { |name| name.upcase } — map + Symbol#to_proc is the standard one-call transform."
+        },
+        {
+          "code": "names.map { |name| name.upcase }",
+          "note": "The same transform with an explicit block — needed as soon as the block does more than one call."
+        }
+      ]
     }
   }
 ]
