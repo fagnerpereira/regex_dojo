@@ -1,5 +1,9 @@
 import { Controller } from "@hotwired/stimulus";
 
+// Survives reloads so learners come back to the tab they were working in —
+// without this, every reload resets to the first tab (the regex dojo).
+const TAB_STORAGE_KEY = "regex_dojo_active_tab";
+
 /**
  * TabsController — switches between dojo / sandbox / blitz / codex panels.
  *
@@ -15,10 +19,13 @@ export default class extends Controller {
   static targets = ["tab", "panel"];
 
   connect() {
-    // Activate the first tab by default
-    const firstTab = this.tabTargets[0];
-    if (firstTab) {
-      this._activate(firstTab.dataset.tab);
+    // Restore the last active tab, falling back to the first
+    const names = this.tabTargets.map((tab) => tab.dataset.tab);
+    const saved = this._readStorage(TAB_STORAGE_KEY);
+    const initial = saved && names.includes(saved) ? saved : names[0];
+
+    if (initial) {
+      this._activate(initial);
     }
   }
 
@@ -37,7 +44,9 @@ export default class extends Controller {
 
       // Find the sandbox pattern input and set its value
       setTimeout(() => {
-        const sandboxInput = document.querySelector('[data-sandbox-target="pattern"]');
+        const sandboxInput = document.querySelector(
+          '[data-sandbox-target="pattern"]',
+        );
         if (sandboxInput) {
           sandboxInput.value = pattern;
           sandboxInput.dispatchEvent(new Event("input", { bubbles: true }));
@@ -62,5 +71,25 @@ export default class extends Controller {
         panel.classList.add("panel-hidden");
       }
     });
+
+    this._writeStorage(TAB_STORAGE_KEY, tabName);
+  }
+
+  // localStorage throws in private browsing; tab memory is a convenience
+  // and must never break switching.
+  _readStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  _writeStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (_) {
+      // Storage unavailable — tabs still work, they just won't be remembered.
+    }
   }
 }
