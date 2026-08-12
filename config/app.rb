@@ -15,6 +15,10 @@ module RegexDojo
       expire_after: 60 * 60 * 24 * 30 # 30 days
     }
 
+    # Hanami's default CSP restricts fonts to 'self', but the layout loads
+    # Google Fonts — allow the font files it serves from fonts.gstatic.com.
+    config.actions.content_security_policy[:font_src] += " https://fonts.gstatic.com"
+
     # Allow serving static assets from public/
     require "rack/static"
     config.middleware.use Rack::Static, {
