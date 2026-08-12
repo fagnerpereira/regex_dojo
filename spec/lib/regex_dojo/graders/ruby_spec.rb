@@ -77,4 +77,75 @@ RSpec.describe RegexDojo::Graders::Ruby do
       expect(wire).to eq([{expected_output: "[2, 4, 6]", passed: true}])
     end
   end
+
+  describe "execution fallback (output-equivalent answers)" do
+    it "passes an answer that produces the expected output another way" do
+      result = described_class.validate("arr.map { |x| x + x }", payload)
+
+      expect(result.passing?).to be(true)
+      expect(result.idiomatic?).to be(false)
+    end
+
+    it "flags structurally accepted answers as idiomatic" do
+      result = described_class.validate("arr.map { |x| x * 2 }", payload)
+
+      expect(result.passing?).to be(true)
+      expect(result.idiomatic?).to be(true)
+    end
+
+    it "reports the actual output when the result differs" do
+      result = described_class.validate("arr.map { |x| x + 2 }", payload)
+
+      expect(result.passing?).to be(false)
+      expect(result.error_message).to be_nil # normal grading verdict, not a 422
+      expect(result.feedback).to include("[3, 4, 5]")
+      expect(result.feedback).to include("[2, 4, 6]")
+    end
+
+    it "reports a runtime error readably instead of crashing" do
+      result = described_class.validate("arr.frobnicate", payload)
+
+      expect(result.passing?).to be(false)
+      expect(result.feedback).to match(/undefined method/i)
+    end
+
+    it "kills runaway code instead of hanging" do
+      started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      result = described_class.validate("loop { }", payload)
+      elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
+
+      expect(result.passing?).to be(false)
+      expect(result.feedback).to match(/too long/i)
+      expect(elapsed).to be < 5
+    end
+  end
+
+  describe "suggestions" do
+    it "builds suggestions from the reference and accepted forms by default" do
+      payload["accepted"] = ["arr.collect { |x| x * 2 }"]
+      result = described_class.validate("arr.map { |x| x * 2 }", payload)
+
+      expect(result.suggestions).to eq([
+        {code: "arr.map { |x| x * 2 }", note: nil},
+        {code: "arr.collect { |x| x * 2 }", note: nil}
+      ])
+    end
+
+    it "prefers authored approaches with explanations when present" do
+      payload["approaches"] = [
+        {"code" => "arr.map { |x| x * 2 }", "note" => "map collects the block's return values"}
+      ]
+      result = described_class.validate("zzz--", payload)
+
+      expect(result.suggestions).to eq([
+        {code: "arr.map { |x| x * 2 }", note: "map collects the block's return values"}
+      ])
+    end
+
+    it "is present on failing results too" do
+      result = described_class.validate("arr.map { |x| x + 2 }", payload)
+
+      expect(result.suggestions).not_to be_empty
+    end
+  end
 end

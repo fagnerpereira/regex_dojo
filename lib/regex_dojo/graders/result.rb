@@ -18,6 +18,21 @@ module RegexDojo
         @error_message.nil? && @test_results.all? { |r| r[:passed] }
       end
 
+      # Track-agnostic extras with neutral defaults, so every grader's result
+      # answers the same trio and the check action needs no per-track branching.
+      # The ruby grader overrides all three.
+      def idiomatic?
+        true
+      end
+
+      def feedback
+        nil
+      end
+
+      def suggestions
+        []
+      end
+
       def to_h
         {
           pattern: @pattern,
