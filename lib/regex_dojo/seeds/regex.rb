@@ -28,7 +28,10 @@ module RegexDojo
               title: c["title"],
               difficulty: c["difficulty"],
               description: c["description"],
-              hint: c["hint"],
+              # The 3-layer hint (conceito → esqueleto → resposta) travels as
+              # an array in the JSON and is stored JSON-encoded in the
+              # existing hint text column — no schema change.
+              hint: c["hint"].is_a?(Array) ? JSON.generate(c["hint"]) : c["hint"],
               concept: c["concept"],
               lesson: c["lesson"],
               task: c["task"],
