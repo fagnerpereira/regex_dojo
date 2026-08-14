@@ -436,31 +436,68 @@ Ordered by phase. Each entry: **What changed / Why / Pros / Cons**.
   than being swallowed — acceptable in a free-play sandbox; the dojo and blitz
   inputs stay single-line since Enter submits there.
 
+### 27. The "Organic" redesign — one route per screen, Portuguese, calm
+
+- **What**: Full UI migration to the Organic design from
+  `design_handoff_organic_ui/` (cream/sand + terracotta/sage, Caprasimo/
+  Figtree/IBM Plex Mono, blob radii, dark mode via a server-read `theme`
+  cookie stamping `html[data-dark]`). The 5-tab dashboard became a
+  conventional multi-page app: `GET /` (Início hub), `/desafios/:id` (one
+  challenge per page, clickable progress dots), `/sandbox` (`?pattern=`
+  prefill is the Codex handoff), `/blitz` (record now in `blitz_scores` via
+  `POST /blitz/score`), `/codex`, `/ruby/:id` (wrapping prev/next links).
+  Turbo Drive smooths navigation; both tracks submit through one real form
+  flow (`Actions::Challenges::Check` → PRG 303 + flash), so XP, banners and
+  dots re-render server-side and no client code patches the header. Stimulus
+  keeps only in-page interactivity: live grading (mirroring the server's
+  capture-group rule via `js/lib/grading.js`), the shared pattern field with
+  syntax-highlight overlay, the PT tokenizer chips, the Blitz game loop.
+  All copy is Portuguese through the native Hanami i18n provider
+  (`config/i18n/pt.yml` + `en.yml` kept in key parity by a spec); challenge
+  content translated in `challenges.json`/`ruby_challenges.json` with ids,
+  difficulties, test cases and grader fields byte-identical; hints ship as
+  3 layers (conceito → esqueleto → resposta) JSON-encoded in the existing
+  hint column. Belt labels became learner-facing levels (Novato →
+  Especialista), same thresholds; the header derives the level from XP, so
+  stale stored belt strings can't leak. Lessons render their inline markup
+  server-side (fixing the old literal-`<code>` bug).
+- **Why**: The prototype was hash-routed; the project owner chose real
+  routes + Hotwire instead — less JavaScript state, native history,
+  shareable URLs, and server-rendered truth (the fragile "parse `N/M XP`
+  out of the DOM" contracts died with it).
+- **Pros**: ~3.5k lines of tabbed-dashboard code deleted; every screen has
+  request-spec coverage against a real route; state lives in the database
+  (blitz record, last attempt restore via `latest_patterns_for_user`).
+- **Cons**: Enviar is gated client-side on all tests passing, so failing
+  patterns reach `submissions` only via Enter (which always submits — a
+  deliberate trade to keep attempt history). Grader error strings are still
+  English (backend-owned). No JS test harness yet for the shared libs.
+
 ## Deferred (future work)
 
-- **i18n**: all user-facing text in Phlex components and JS is hardcoded English.
-  Per the project owner's preference, new/changed copy should move to an i18n layer
-  (the `i18n` gem is already in the Gemfile, unused). Retrofit deferred as its own pass.
-- **Blitz score persistence**: `DojoRepo#save_blitz_score` and the `blitz_scores` table
-  exist, but no route accepts a score — blitz results vanish on reload.
-- **Belt ladder**: only white → yellow at 200 XP exists; yellow is terminal.
+- **Locale switcher**: pt/en locale files ship in key parity and the header
+  carries a static "PT ▾" chip; wiring the switcher (cookie + per-request
+  locale) and translating challenge content/`js/lib/tokenizer.js` labels to
+  EN is its own pass.
 - **Streak logic**: `users.streak` is set to 1 at creation and never updated;
-  `users.last_active_at` is never touched.
-- **Asset fingerprinting**: the layout hardcodes `/assets/app.css`/`app.js`, bypassing
-  the hanami-assets manifest (works because Tailwind CLI writes those paths directly).
-- **JS test harness**: the four Stimulus controllers have no automated tests; the
-  grading logic in JS is verified manually against the server rule.
-- **Params schemas**: actions parse params/JSON manually; Hanami's `params do` contract
-  blocks would give typed validation.
-- **Attempt-history UI**: the data is now captured (`submissions.user_id` + the
-  `(user_id, challenge_id, id)` index), but nothing renders a per-kata attempt timeline
-  yet. Natural next step: a collapsible list under each kata showing past attempts with
-  pass/fail markers and timestamps.
+  `users.last_active_at` is never touched. The design calls for a streak
+  with 1 weekly protection ("streak com perdão").
+- **Grader error copy**: `Graders::Regex`/`Ruby` error/feedback strings are
+  English and surface in the error flash.
+- **Asset fingerprinting**: the layout hardcodes `/assets/app.css`/`app.js`,
+  bypassing the hanami-assets manifest (works because Tailwind CLI writes
+  those paths directly).
+- **JS test harness**: the Stimulus controllers and `js/lib/` modules have no
+  automated tests; grading parity is verified by request specs plus manual checks.
+- **Params schemas**: actions parse params/JSON manually; Hanami's `params do`
+  contract blocks would give typed validation.
+- **Attempt-history UI**: submissions are captured per user, but nothing
+  renders a per-challenge attempt timeline yet.
 - **Submissions retention**: the table grows without bound; no pruning or archival.
-- **"Next kata" affordance on the Ruby track**: with the auto-advance reload gone,
-  moving to the next challenge means reloading; an in-place swap button would be
-  smoother.
 - **Self-host the web fonts**: removes the last third-party origin from the CSP and
   makes the app fully offline.
 - **CI**: no `.github/workflows` — the quality gate runs only locally.
 - **Hanami 3.0 stable**: everything is pinned to `3.0.0.rc1`; bump when stable lands.
+- **Dead view stubs**: `app/view.rb`, `app/views/context.rb` and
+  `app/views/helpers.rb` are hanami-view scaffolding nothing uses (the app
+  renders Phlex); removable once confirmed against a stable Hanami.

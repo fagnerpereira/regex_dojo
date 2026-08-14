@@ -1,0 +1,87 @@
+pt:
+  app:
+    title: "Regex Dojo"
+  header:
+    streak:
+      one: "%{count} dia"
+      other: "%{count} dias"
+    theme_toggle: "Alternar modo noturno"
+  inicio:
+    greeting: "Bem-vindo de volta."
+    continue_kicker: "Continuar · Desafio %{position} de %{total}"
+    continue_button: "Continuar desafio"
+    target_label: "alvo"
+    track_label: "Trilha"
+    experiment_track_label: "Trilha · experimento"
+    challenges_count: "%{solved}/%{total} desafios"
+    xp_remaining: "faltam %{missing} para %{level}"
+    xp_topped: "Especialista!"
+    practice: "Praticar"
+    ruby_topic: "métodos de Array e String"
+    tools: "Ferramentas"
+    sandbox_description: "Teste qualquer padrão e veja a explicação ao vivo, símbolo por símbolo."
+    blitz_description: "30 segundos no relógio. Revisão mista dos conceitos que você já viu."
+    codex_description: "Referência completa de regex. Toque num cartão para testar no Sandbox."
+  desafio:
+    back: "Início"
+    context: "Regex · Desafio %{position} de %{total}"
+    worth: "vale %{xp} XP"
+    placeholder: "digite o padrão…"
+    pattern_label: "Padrão"
+    explanation_label: "explicação ao vivo"
+    codex_link: "codex ↗"
+    tokens_placeholder: "digite para ver cada símbolo explicado"
+    should_match: "deve combinar \"%{expected}\""
+    should_not_match: "não deve combinar"
+    submit: "Enviar"
+    hint: "Dica"
+    next: "Próximo desafio"
+    track_complete: "Trilha concluída · voltar ao início"
+    success: "Correto! +%{xp} XP"
+    success_already: "Correto! Já resolvido — sem XP novo"
+    failing: "Ainda não — os testes mostram o que o padrão capturou."
+    flags:
+      g: "global — todas as ocorrências"
+      i: "ignora maiúsculas/minúsculas"
+      m: "multilinha — ^ e $ valem por linha"
+      s: "o ponto também casa quebra de linha"
+  blitz:
+    context: "Blitz · revisão mista"
+    intro: "30 segundos. Desafios misturados de tudo que você já viu — parecer mais difícil que o normal é sinal de que está funcionando."
+    time_label: "tempo"
+    record_label: "recorde"
+    solved_label: "resolvidos"
+    start: "Começar"
+    skip: "Pular"
+    placeholder: "resolva…"
+    time_up: "Tempo!"
+    again: "De novo"
+  ruby:
+    context: "Ruby · Desafio %{position} de %{total}"
+    experiment: "experimento"
+    given_label: "dado"
+    expected_label: "resultado esperado"
+    placeholder: "escreva seu código Ruby…"
+    code_label: "Código Ruby"
+    verify: "Verificar"
+    ways_label: "formas de resolver"
+    failing: "Seu código retornaria um resultado diferente do esperado — confira o bloco."
+    previous: "Anterior"
+  codex:
+    context: "Codex · referência"
+    subtitle: "Referência completa. Toque num cartão para testar no Sandbox."
+  sandbox:
+    context: "Sandbox · teste livre"
+    subtitle: "Cole um texto, teste qualquer padrão, explore o que combina."
+    tokens_placeholder: "digite um padrão para ver a explicação"
+    test_text_label: "texto de teste"
+    copy: "copiar"
+    result_label: "resultado"
+    zero_occurrences: "0 ocorrências"
+  date:
+    formats:
+      greeting: "%A, %-d de %B"
+    day_names: [domingo, segunda-feira, terça-feira, quarta-feira, quinta-feira, sexta-feira, sábado]
+    abbr_day_names: [dom, seg, ter, qua, qui, sex, sáb]
+    month_names: [~, janeiro, fevereiro, março, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro]
+    abbr_month_names: [~, jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez]

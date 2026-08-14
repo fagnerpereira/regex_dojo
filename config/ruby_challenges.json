@@ -1,13 +1,13 @@
 [
   {
     "id": 101,
-    "title": "Transform with map",
+    "title": "Transformar com map",
     "difficulty": "Easy",
-    "concept": "💎 Array#map",
-    "description": "Using Array#map, build a new array with every element doubled.",
-    "hint": "map yields each element to the block and collects the block's return values: arr.map { |x| x * 2 }",
+    "concept": "Array#map · Novato",
+    "description": "Usando Array#map, crie um novo array com cada elemento dobrado.",
+    "hint": "map entrega cada elemento ao bloco e coleta os retornos num <strong>novo</strong> array — o original não muda. Esqueleto: <span class=\"font-mono\">arr.map { |n| … }</span>",
     "payload": {
-      "prompt": "Using Array#map, build a new array with every element doubled.",
+      "prompt": "Usando <code>Array#map</code>, crie um novo array com cada elemento dobrado.",
       "method": "Array#map",
       "setup": [
         "arr = [1, 2, 3]"
@@ -22,24 +22,24 @@
       "approaches": [
         {
           "code": "arr.map { |x| x * 2 }",
-          "note": "map yields each element to the block and collects the return values into a NEW array — the original stays untouched."
+          "note": "map entrega cada elemento ao bloco e coleta os retornos num novo array — o original não muda."
         },
         {
           "code": "arr.collect { |x| x * 2 }",
-          "note": "collect is map's exact alias; most Ruby code says map."
+          "note": "collect é sinônimo exato de map; a maioria do código Ruby usa map."
         }
       ]
     }
   },
   {
     "id": 102,
-    "title": "Filter with select",
+    "title": "Filtrar com select",
     "difficulty": "Easy",
-    "concept": "💎 Array#select & Symbol#to_proc",
-    "description": "Using Array#select, keep only the even numbers.",
-    "hint": "The &:method shorthand turns a symbol into a block: arr.select(&:even?)",
+    "concept": "Array#select · Novato",
+    "description": "Usando Array#select, mantenha apenas os números pares.",
+    "hint": "O atalho <span class=\"font-mono\">&amp;:método</span> transforma um símbolo em bloco: <span class=\"font-mono\">arr.select(&amp;:even?)</span>",
     "payload": {
-      "prompt": "Using Array#select, keep only the even numbers.",
+      "prompt": "Usando <code>Array#select</code>, mantenha apenas os números pares.",
       "method": "Array#select",
       "setup": [
         "arr = [1, 2, 3, 4, 5, 6]"
@@ -57,28 +57,28 @@
       "approaches": [
         {
           "code": "arr.select(&:even?)",
-          "note": "&:even? is Symbol#to_proc — it expands to { |x| x.even? }. The idiomatic filter."
+          "note": "&:even? é o Symbol#to_proc — expande para { |x| x.even? }. O filtro idiomático."
         },
         {
           "code": "arr.select { |x| x.even? }",
-          "note": "Same filter with an explicit block. Predicate methods ending in ? read like questions: 'is x even?'"
+          "note": "O mesmo filtro com bloco explícito. Métodos terminados em ? leem como perguntas: \"x é par?\""
         },
         {
           "code": "arr.select { |x| x % 2 == 0 }",
-          "note": "The arithmetic way — works in any language, but even? states the intent directly and can't get the comparison backwards."
+          "note": "O jeito aritmético — funciona em qualquer linguagem, mas even? declara a intenção e não inverte a comparação."
         }
       ]
     }
   },
   {
     "id": 103,
-    "title": "Safe nested lookup with dig",
+    "title": "Busca aninhada com dig",
     "difficulty": "Easy",
-    "concept": "💎 Hash#dig",
-    "description": "Using Hash#dig, read the nested value at :user, then :name — returning nil instead of raising when a key is missing.",
-    "hint": "dig takes one key per nesting level: h.dig(:user, :name)",
+    "concept": "Hash#dig · Novato",
+    "description": "Usando Hash#dig, leia o valor aninhado em :user e depois :name — devolvendo nil em vez de erro quando uma chave falta.",
+    "hint": "dig recebe uma chave por nível de aninhamento: <span class=\"font-mono\">h.dig(:user, :name)</span>",
     "payload": {
-      "prompt": "Using Hash#dig, read the nested value at :user, then :name.",
+      "prompt": "Usando <code>Hash#dig</code>, leia o valor aninhado em :user e depois :name.",
       "method": "Hash#dig",
       "setup": [
         "h = { user: { name: \"Matz\" } }"
@@ -89,24 +89,24 @@
       "approaches": [
         {
           "code": "h.dig(:user, :name)",
-          "note": "dig walks one key per nesting level and returns nil at the FIRST missing key instead of raising NoMethodError."
+          "note": "dig desce uma chave por nível e devolve nil na PRIMEIRA chave ausente, em vez de levantar NoMethodError."
         },
         {
           "code": "h[:user] && h[:user][:name]",
-          "note": "The hand-guarded chain dig replaces — every level needs its own nil check, which is exactly the noise dig removes."
+          "note": "A corrente protegida à mão que o dig substitui — cada nível precisa do próprio teste de nil, exatamente o ruído que o dig elimina."
         }
       ]
     }
   },
   {
     "id": 104,
-    "title": "Sum it all up",
+    "title": "Somar tudo",
     "difficulty": "Easy",
-    "concept": "💎 Enumerable#reduce",
-    "description": "Sum every element of the array — any idiomatic way counts.",
-    "hint": "reduce(:+) folds the array through +; Array#sum and inject(:+) say the same thing",
+    "concept": "Enumerable#reduce · Novato",
+    "description": "Some todos os elementos do array — qualquer forma idiomática vale.",
+    "hint": "reduce(:+) percorre o array acumulando com +; <span class=\"font-mono\">Array#sum</span> e inject(:+) dizem o mesmo.",
     "payload": {
-      "prompt": "Sum every element of the array.",
+      "prompt": "Some todos os elementos do array.",
       "method": "Enumerable#reduce",
       "setup": [
         "arr = [1, 2, 3, 4]"
@@ -123,28 +123,28 @@
       "approaches": [
         {
           "code": "arr.sum",
-          "note": "The direct method — says exactly what it does. Reach for it first when you really are summing."
+          "note": "O método direto — diz exatamente o que faz. Prefira-o quando a conta é mesmo uma soma."
         },
         {
           "code": "arr.reduce(:+)",
-          "note": "reduce folds the array through an operator; the symbol form hands + straight to the fold."
+          "note": "reduce percorre o array acumulando com um operador; a forma com símbolo entrega o + direto à dobra."
         },
         {
           "code": "arr.inject(0) { |acc, n| acc + n }",
-          "note": "The explicit fold reduce(:+) expands to: acc starts at 0 and accumulates every element. inject and reduce are aliases."
+          "note": "A dobra explícita que reduce(:+) resume: acc começa em 0 e acumula cada elemento. inject e reduce são sinônimos."
         }
       ]
     }
   },
   {
     "id": 105,
-    "title": "Shout every name",
+    "title": "Gritar cada nome",
     "difficulty": "Easy",
-    "concept": "💎 Symbol#to_proc",
-    "description": "Using map with the &:symbol shorthand, upcase every name in the array.",
-    "hint": "&:upcase expands to { |x| x.upcase }",
+    "concept": "Symbol#to_proc · Novato",
+    "description": "Usando map com o atalho &:símbolo, deixe cada nome em maiúsculas.",
+    "hint": "<span class=\"font-mono\">&amp;:upcase</span> expande para <span class=\"font-mono\">{ |x| x.upcase }</span>",
     "payload": {
-      "prompt": "Using map with the &:symbol shorthand, upcase every name.",
+      "prompt": "Usando map com o atalho <code>&amp;:símbolo</code>, deixe cada nome em maiúsculas.",
       "method": "Symbol#to_proc",
       "setup": [
         "names = [\"alice\", \"bob\"]"
@@ -157,11 +157,11 @@
       "approaches": [
         {
           "code": "names.map(&:upcase)",
-          "note": "&:upcase expands to { |name| name.upcase } — map + Symbol#to_proc is the standard one-call transform."
+          "note": "&:upcase expande para { |name| name.upcase } — map + Symbol#to_proc é a transformação padrão de uma chamada."
         },
         {
           "code": "names.map { |name| name.upcase }",
-          "note": "The same transform with an explicit block — needed as soon as the block does more than one call."
+          "note": "A mesma transformação com bloco explícito — necessária assim que o bloco faz mais de uma chamada."
         }
       ]
     }

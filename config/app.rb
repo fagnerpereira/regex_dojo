@@ -19,6 +19,11 @@ module RegexDojo
     # Google Fonts — allow the font files it serves from fonts.gstatic.com.
     config.actions.content_security_policy[:font_src] += " https://fonts.gstatic.com"
 
+    # Learner-facing copy lives in config/i18n/. Portuguese is the product
+    # language; English files are kept in step for a future locale switcher.
+    config.i18n.default_locale = :pt
+    config.i18n.available_locales = [:pt, :en]
+
     # Serve static assets from public/ ourselves. Hanami's implicit assets
     # middleware (mounted ahead of user middleware when assets.serve is true)
     # takes no options, and the asset paths here are unfingerprinted — so we

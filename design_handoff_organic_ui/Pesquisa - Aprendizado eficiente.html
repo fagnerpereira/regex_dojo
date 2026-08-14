@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pesquisa — Regex Dojo: aprendizado eficiente</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+.mono{font-family:"IBM Plex Mono",monospace}
+main{max-width:860px;margin:0 auto;padding:56px 44px 100px}
+a:hover{color:var(--color-accent-600)}
+.kick{font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent);font-weight:600}
+.lead{font-size:18px;line-height:1.6;max-width:60ch;color:color-mix(in srgb,var(--color-text) 80%,transparent)}
+.pull{font-family:var(--font-heading);font-size:26px;line-height:1.3;color:var(--color-accent-700);border-left:none;background:var(--color-accent-100);border-radius:22px;padding:22px 28px;margin:26px 0}
+.prin{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--color-neutral-100);border-radius:24px;overflow:hidden;margin:14px 0}
+.prin>div{padding:22px 26px}
+.prin .evi{font-size:14px;line-height:1.6}
+.prin .dec{font-size:14px;line-height:1.6;background:var(--color-accent-2-100)}
+.prin h4{margin:0 0 8px;font-size:18px}
+.prin .lbl{font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.prin .evi .lbl{color:color-mix(in srgb,var(--color-text) 45%,transparent)}
+.prin .dec .lbl{color:var(--color-accent-2-800)}
+ol.src{font-size:13px;line-height:1.9;color:color-mix(in srgb,var(--color-text) 70%,transparent)}
+ol.src a{word-break:break-all}
+.mods{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.mod{display:flex;align-items:center;gap:14px;padding:12px 18px;border-radius:16px;background:var(--color-neutral-100);font-size:14px}
+.mod .n{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--color-accent-2-200);color:var(--color-accent-2-800);font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600}
+.mod .belt{margin-left:auto;font-size:11px}
+.gap{background:var(--color-accent-100)}
+.gap .n{background:var(--color-accent-200);color:var(--color-accent-800)}
+h2{margin-top:52px}
+td,th{font-size:13.5px}
+</style>
+</head><body>
+<main>
+<div class="kick">Pesquisa · 14 de agosto de 2026</div>
+<h1 style="font-size:44px;margin:10px 0 14px">Como fazer o Regex Dojo ensinar de verdade</h1>
+<p class="lead">O que a ciência do aprendizado diz sobre praticar digitando, e o que Rubular, regex101, RegexOne e RegexR fazem bem — traduzido em decisões concretas para uma trilha calma, do zero ao avançado, confortável para TDAH, crianças e adultos.</p>
+
+<h2>Principais conclusões</h2>
+<ul style="font-size:15px;line-height:1.7;max-width:64ch">
+<li><strong>Digitar de memória é o mecanismo certo.</strong> Recuperar ativamente supera reler/reestudar em dezenas de estudos — a intuição do app está correta.</li>
+<li><strong>O que falta não é conteúdo, é agenda:</strong> revisão espaçada e prática mista (intercalada) são os dois maiores ganhos ausentes hoje.</li>
+<li><strong>Novato aprende por exemplo resolvido, não por tentativa e erro.</strong> Lição curta + exemplo + exercício, com apoio diminuindo a cada faixa.</li>
+<li><strong>Feedback imediato e específico</strong> evita consolidar erro — o highlight ao vivo deve ser o coração da tela, não um painel lateral.</li>
+<li><strong>Uma coisa por tela.</strong> Sessões de 2–5 min com fim claro; é o que estudantes com TDAH pedem e o que a teoria da carga cognitiva prescreve.</li>
+<li><strong>Streak com perdão.</strong> Sequências motivam, mas sem "proteção" viram obrigação e o rompimento derruba o aluno.</li>
+</ul>
+
+<h2>Ciência → decisão de produto</h2>
+
+<div class="prin"><div class="evi"><div class="lbl">Evidência</div><h4>Prática de recuperação</h4>Testar-se sobre o que estudou retém mais que reler ou re-estudar (efeito de testagem), com transferência para questões de aplicação (d≈0,40) <a href="#s1">[1–3]</a>. Feedback junto ao teste evita gravar o erro <a href="#s4">[4]</a>.</div><div class="dec"><div class="lbl">No Regex Dojo</div>Digitar o padrão de memória continua sendo o exercício central. A lição nunca mostra a resposta pronta no momento do exercício; o botão "Dica" revela em camadas (conceito → esqueleto → resposta).</div></div>
+
+<div class="prin"><div class="evi"><div class="lbl">Evidência</div><h4>Espaçamento</h4>Repetições espaçadas superam prática amontoada — mesmo tempo total, até o dobro de eficiência; testes espaçados amplificam o ganho <a href="#s5">[5–7]</a>.</div><div class="dec"><div class="lbl">No Regex Dojo</div>Fila "Revisão de hoje" no Início: 3–5 desafios antigos re-sorteados em intervalos crescentes (1, 3, 7, 14 dias). O streak diário passa a servir ao espaçamento, não só ao hábito.</div></div>
+
+<div class="prin"><div class="evi"><div class="lbl">Evidência</div><h4>Intercalação</h4>Misturar tipos de problema melhora retenção e a habilidade de <em>escolher</em> a técnica certa; parece mais difícil durante a prática, e alunos subestimam o método <a href="#s8">[8–10]</a>.</div><div class="dec"><div class="lbl">No Regex Dojo</div>A revisão e o Blitz misturam conceitos já vistos (nunca só o módulo atual). Um aviso curto explica: "parecer mais difícil é sinal de que está funcionando".</div></div>
+
+<div class="prin"><div class="evi"><div class="lbl">Evidência</div><h4>Exemplos resolvidos e carga cognitiva</h4>Para novatos, estudar exemplos resolvidos supera resolver problemas sem apoio; o efeito se inverte com experiência (expertise reversal) <a href="#s11">[11–13]</a>. Material mal organizado gera carga extra <a href="#s12">[12]</a>.</div><div class="dec"><div class="lbl">No Regex Dojo</div>Faixa branca/amarela: lição → exemplo resolvido comentado → exercício quase igual. Faixas altas: exercício direto, sem exemplo. Uma coluna, um conceito por tela, zero painéis simultâneos.</div></div>
+
+<div class="prin"><div class="evi"><div class="lbl">Evidência</div><h4>Feedback imediato</h4>Para conhecimento conceitual e fundacional, feedback imediato corrige antes de o erro consolidar; meta-análises recentes em ambientes digitais favorecem o imediato <a href="#s14">[14–16]</a>.</div><div class="dec"><div class="lbl">No Regex Dojo</div>Highlight ao vivo nos textos de teste + explicação token a token enquanto digita (RegexR/regex101). No erro, mostrar o que o padrão <em>de fato</em> capturou, não só "incorreto".</div></div>
+
+<div class="prin"><div class="evi"><div class="lbl">Evidência</div><h4>TDAH e foco</h4>Estudantes com TDAH preferem unidades curtas ("cinco vídeos de 10 min" a um de 50) e se beneficiam de micro-recompensas visuais e menos distratores na tela <a href="#s17">[17–18]</a>.</div><div class="dec"><div class="lbl">No Regex Dojo</div>Desafios de 2–5 min com fim explícito ("3 de 5 hoje"), tela sem cronômetro fora do Blitz, animação sóbria de acerto, e "sair salvo" a qualquer momento.</div></div>
+
+<div class="prin"><div class="evi"><div class="lbl">Evidência</div><h4>Gamificação humana</h4>Streaks retêm por aversão à perda; perder uma sequência longa desmotiva a ponto de abandono — daí o "streak freeze" do Duolingo e ligas com opt-out <a href="#s19">[19–21]</a>.</div><div class="dec"><div class="lbl">No Regex Dojo</div>Manter faixa + XP + sequência proeminentes (sua escolha), adicionando 1 proteção de sequência semanal e nunca zerando XP. Ranking só opt-in, se um dia existir.</div></div>
+
+<div class="pull">Regra de ouro: a tela de exercício tem <em>uma</em> pergunta, <em>um</em> campo e feedback vivo — todo o resto é opcional e fica a um toque de distância.</div>
+
+<h2>Trilha proposta (cobrindo "tudo de regex", sem ruído)</h2>
+<p style="max-width:64ch">A ordem abaixo segue a progressão validada do RegexOne (15 lições + problemas aplicados) <a href="#s22">[22]</a>, reordenada para casar com os 15 desafios já existentes no app e com os marcos de faixa (0 · 75 · 160 · 265 · 370 XP). Módulos marcados em terracota não existem ainda no <span class="mono">challenges.json</span>.</p>
+<div class="mods">
+<div class="mod"><span class="n">1</span>Literais, curinga <span class="mono">.</span> e escapes<span class="belt tag tag-neutral">faixa branca</span></div>
+<div class="mod"><span class="n">2</span>Classes <span class="mono">[abc] [^abc] [a-z]</span> e atalhos <span class="mono">\d \w \s</span><span class="belt tag tag-neutral">faixa branca</span></div>
+<div class="mod"><span class="n">3</span>Quantificadores <span class="mono">+ * ? {n,m}</span><span class="belt tag tag-accent">faixa amarela</span></div>
+<div class="mod gap"><span class="n">4</span>Greedy vs lazy <span class="mono">+? *?</span> — novo<span class="belt tag tag-accent">faixa amarela</span></div>
+<div class="mod"><span class="n">5</span>Âncoras <span class="mono">^ $</span> e bordas <span class="mono">\b</span><span class="belt tag tag-accent">faixa laranja</span></div>
+<div class="mod"><span class="n">6</span>Grupos, alternância e backreferences <span class="mono">(a|b) \1</span><span class="belt tag tag-accent">faixa laranja</span></div>
+<div class="mod gap"><span class="n">7</span>Grupos nomeados e não-capturantes <span class="mono">(?&lt;ano&gt;…) (?:…)</span> — novo<span class="belt tag tag-accent-2">faixa verde</span></div>
+<div class="mod"><span class="n">8</span>Lookahead e lookbehind <span class="mono">(?=…) (?&lt;=…)</span><span class="belt tag tag-accent-2">faixa verde</span></div>
+<div class="mod gap"><span class="n">9</span>Flags <span class="mono">g i m s</span> na prática — novo<span class="belt tag tag-accent-2">faixa verde</span></div>
+<div class="mod gap"><span class="n">10</span>Projetos reais: datas, e-mails, telefones, logs, URLs — novo<span class="belt tag tag-neutral" style="background:var(--color-neutral-800);color:var(--color-neutral-100)">faixa preta</span></div>
+</div>
+<p style="max-width:64ch;font-size:14px" class="text-muted">Os "projetos reais" vêm dos practice problems do RegexOne <a href="#s22">[22]</a> e fecham cada trilha com transferência: extrair dados de um log de verdade é o teste final de cada faixa.</p>
+
+<h2>O que absorver de cada referência</h2>
+<table class="table" style="max-width:760px">
+<thead><tr><th>Referência</th><th>O que tem de melhor</th><th>Entra como</th></tr></thead>
+<tbody>
+<tr><td>Rubular</td><td>Tudo em uma tela mínima, sem cadastro</td><td>Espírito do Sandbox: zero cliques até testar</td></tr>
+<tr><td>regex101</td><td>Explicação token a token + quiz</td><td>"Explicação ao vivo" sob o campo de padrão</td></tr>
+<tr><td>RegexOne</td><td>Lição curta + exercício na mesma tela, progressão validada</td><td>Estrutura da trilha e dos desafios</td></tr>
+<tr><td>RegexR</td><td>Hover liga token ↔ match ↔ explicação; cheatsheet lateral</td><td>Interações do Sandbox e do Codex</td></tr>
+</tbody>
+</table>
+
+<h2>Fontes</h2>
+<ol class="src">
+<li id="s1">Roediger & Karpicke (2006) e revisões do efeito de testagem — <a href="https://www.sciencedirect.com/science/article/abs/pii/S0959475217301810">sciencedirect.com/S0959475217301810</a></li>
+<li id="s2">Pan & Rickard, meta-análise de transferência (d=0,40) — <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6760123/">ncbi.nlm.nih.gov/PMC6760123</a></li>
+<li id="s3">Pastötter & Bäuml (2014), forward testing effect — <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3983480/">ncbi.nlm.nih.gov/PMC3983480</a></li>
+<li id="s4">Feedback em retrieval practice — <a href="https://ctl.wustl.edu/resources/using-retrieval-practice-to-increase-student-learning/">ctl.wustl.edu</a></li>
+<li id="s5">Kang (2016), Spaced repetition promotes efficient learning — <a href="https://journals.sagepub.com/doi/abs/10.1177/2372732215624708">journals.sagepub.com</a></li>
+<li id="s6">Espaçamento ~2× mais eficiente (Ebbinghaus 1885) — <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3390592/">ncbi.nlm.nih.gov/PMC3390592</a></li>
+<li id="s7">Cepeda et al. (2008), intervalos ótimos — <a href="https://thedecisionlab.com/biases/spacing-effect">thedecisionlab.com/spacing-effect</a></li>
+<li id="s8">Interleaving e contextual interference — <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8476370/">ncbi.nlm.nih.gov/PMC8476370</a></li>
+<li id="s9">Rohrer et al., interleaving em matemática (dia 1 e dia 30) — <a href="https://www.sciencedirect.com/science/article/abs/pii/S0959475222000044">sciencedirect.com/S0959475222000044</a></li>
+<li id="s10">Alunos julgam mal a intercalação — <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12383065/">ncbi.nlm.nih.gov/PMC12383065</a></li>
+<li id="s11">Worked-example effect (CLT) — <a href="https://www.tandfonline.com/doi/full/10.1080/01443410.2023.2273762">tandfonline.com</a></li>
+<li id="s12">CLT em educação de computação (revisão ACM) — <a href="https://dl.acm.org/doi/10.1145/3483843">dl.acm.org/10.1145/3483843</a></li>
+<li id="s13">Expertise reversal — <a href="https://www.scotthyoung.com/blog/2022/01/04/cognitive-load-theory/">scotthyoung.com</a></li>
+<li id="s14">Meta-análise 51 estudos (1988–2024), feedback em ambientes digitais — <a href="https://www.researchgate.net/publication/373114533_Immediate_Versus_Delayed_Feedback_on_Learning_Do_People's_Instincts_Really_Conflict_with_Reality">researchgate.net/373114533</a></li>
+<li id="s15">Feedback imediato evita consolidar erro (Hattie & Timperley) — <a href="https://arxiv.org/pdf/2506.07955">arxiv.org/2506.07955</a></li>
+<li id="s16">Nuance: delayed feedback como espaçamento — <a href="https://www.innerdrive.co.uk/blog/feedback-immediate-or-delayed/">innerdrive.co.uk</a></li>
+<li id="s17">E-learning com TDAH: unidades curtas, recompensas visuais — <a href="https://dl.acm.org/doi/full/10.1145/3663547.3759705">dl.acm.org/3663547.3759705</a></li>
+<li id="s18">Revisão de interaction design para atenção TDAH — <a href="https://link.springer.com/chapter/10.1007/978-981-96-1758-6_27">link.springer.com</a></li>
+<li id="s19">Streaks e aversão à perda — <a href="https://trophy.so/blog/duolingo-gamification-case-study">trophy.so</a></li>
+<li id="s20">Perder streak longa desmotiva; streak freeze — <a href="https://www.td.org/content/atd-blog/what-1-000-days-of-duolingo-taught-me-about-microlearning-and-gamification">td.org</a></li>
+<li id="s21">"Streak creep": gamificação vira obrigação — <a href="https://thedecisionlab.com/insights/consumer-insights/streak-creep-the-perils-of-too-much-gamification">thedecisionlab.com</a></li>
+<li id="s22">RegexOne: 15 lições + practice problems (decimais, telefones, e-mails, HTML, arquivos, trim, logs, URLs) — <a href="https://regexone.com/lesson/introduction_abcs">regexone.com</a></li>
+</ol>
+<p class="text-muted" style="font-size:13px;max-width:64ch">Notas: os números de retenção/churn do Duolingo circulam em análises de mercado, não em estudo revisado por pares — trate como indicativos. Sobre feedback, há evidência minoritária a favor do atrasado em contextos específicos (vocabulário, conceitos complexos) [16]; para fundamentos de sintaxe, o imediato segue sendo a escolha segura [14][15].</p>
+</main>
+</body></html>
