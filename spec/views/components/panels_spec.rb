@@ -100,6 +100,27 @@ RSpec.describe "Panel components" do
     expect(html).to include('data-controller="sandbox"')
   end
 
+  it "renders the sandbox pattern as a live regex literal" do
+    html = RegexDojo::Views::Components::SandboxPanel.new.call
+
+    # Trailing flags display, server-rendered with the default g flag
+    expect(html).to include('data-sandbox-target="flagsDisplay"')
+    expect(html).to match(%r{data-sandbox-target="flagsDisplay"[^>]*>/g<})
+    # The s flag button is a real target so it can light up like the others
+    expect(html).to include('data-sandbox-target="flagS"')
+    # Room for the widest display (/gims) before the input text
+    expect(html).to include("pr-16")
+  end
+
+  it "uses a growing textarea for the sandbox pattern, so long patterns stay visible" do
+    html = RegexDojo::Views::Components::SandboxPanel.new.call
+    pattern_field = Nokogiri::HTML.fragment(html).at_css('[data-sandbox-target="pattern"]')
+
+    expect(pattern_field.name).to eq("textarea")
+    expect(pattern_field["rows"]).to eq("1")
+    expect(pattern_field["class"]).to include("resize-none")
+  end
+
   it "renders the CodexPanel" do
     html = RegexDojo::Views::Components::CodexPanel.new.call
 

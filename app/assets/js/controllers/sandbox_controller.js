@@ -11,9 +11,11 @@ import { Controller } from "@hotwired/stimulus";
  *     <div data-sandbox-target="highlightArea"></div>
  *     <div data-sandbox-target="explainer"></div>
  *     <span data-sandbox-target="matchCount"></span>
+ *     <span data-sandbox-target="flagsDisplay">/g</span>
  *     <button data-sandbox-target="flagG" data-flag="g" data-action="click->sandbox#toggleFlag">g</button>
  *     <button data-sandbox-target="flagI" data-flag="i" data-action="click->sandbox#toggleFlag">i</button>
  *     <button data-sandbox-target="flagM" data-flag="m" data-action="click->sandbox#toggleFlag">m</button>
+ *     <button data-sandbox-target="flagS" data-flag="s" data-action="click->sandbox#toggleFlag">s</button>
  *     <button data-action="click->sandbox#clear">Clear</button>
  *   </div>
  */
@@ -26,6 +28,8 @@ export default class extends Controller {
     "flagG",
     "flagI",
     "flagM",
+    "flagS",
+    "flagsDisplay",
     "matchCount",
   ];
 
@@ -34,6 +38,7 @@ export default class extends Controller {
     // Flags state — "g" on by default
     this.flags = { g: true, i: false, m: false, s: false };
     this._syncFlagButtons();
+    this._autosizePattern();
   }
 
   // ── Actions ────────────────────────────────────────────────────────────────
@@ -42,6 +47,8 @@ export default class extends Controller {
    * evaluate — live matching + explanation, fired on every input event.
    */
   evaluate() {
+    this._autosizePattern();
+
     const rawPattern = this.patternTarget.value;
     const text = this.inputTarget.value;
 
@@ -82,6 +89,7 @@ export default class extends Controller {
     this.highlightAreaTarget.textContent = "";
     this._setMatchCount(0);
     this.explainerTarget.innerHTML = "";
+    this._autosizePattern();
   }
 
   /**
@@ -116,6 +124,7 @@ export default class extends Controller {
       g: this.hasFlagGTarget ? this.flagGTarget : null,
       i: this.hasFlagITarget ? this.flagITarget : null,
       m: this.hasFlagMTarget ? this.flagMTarget : null,
+      s: this.hasFlagSTarget ? this.flagSTarget : null,
     };
 
     Object.entries(mapping).forEach(([flag, el]) => {
@@ -124,6 +133,20 @@ export default class extends Controller {
       el.classList.toggle("active", isActive);
       el.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
+
+    // The pattern box reads as a real literal: /pattern/gims
+    if (this.hasFlagsDisplayTarget) {
+      this.flagsDisplayTarget.textContent = `/${this._getFlags()}`;
+    }
+  }
+
+  // Grow the one-row pattern textarea to fit its content, so long patterns
+  // wrap into view instead of scrolling off-screen. +4 covers the 2px borders
+  // (scrollHeight excludes them under border-box sizing).
+  _autosizePattern() {
+    const field = this.patternTarget;
+    field.style.height = "auto";
+    field.style.height = `${field.scrollHeight + 4}px`;
   }
 
   // ── Private: Highlighting ──────────────────────────────────────────────────
@@ -169,8 +192,7 @@ export default class extends Controller {
       parts.push(this._escapeHTML(text.slice(lastIndex)));
     }
 
-    const html =
-      parts.length > 0 ? parts.join("") : this._escapeHTML(text);
+    const html = parts.length > 0 ? parts.join("") : this._escapeHTML(text);
 
     return { html, count };
   }
@@ -306,8 +328,7 @@ export default class extends Controller {
             raw,
             label: "quantifier",
             description: `Repeat ${match[1]} times`,
-            colorClass:
-              "bg-orange-500/20 border-orange-500/40 text-orange-300",
+            colorClass: "bg-orange-500/20 border-orange-500/40 text-orange-300",
           });
           i += raw.length;
           continue;
@@ -346,7 +367,8 @@ export default class extends Controller {
         tokens.push({
           raw: "^",
           label: "start",
-          description: "Matches the start of the string (or line in multiline mode)",
+          description:
+            "Matches the start of the string (or line in multiline mode)",
           colorClass: "bg-red-500/20 border-red-500/40 text-red-300",
         });
         i++;
@@ -357,7 +379,8 @@ export default class extends Controller {
         tokens.push({
           raw: "$",
           label: "end",
-          description: "Matches the end of the string (or line in multiline mode)",
+          description:
+            "Matches the end of the string (or line in multiline mode)",
           colorClass: "bg-red-500/20 border-red-500/40 text-red-300",
         });
         i++;
@@ -392,10 +415,7 @@ export default class extends Controller {
       // Collect consecutive literals into one token for cleaner display
       let literal = ch;
       i++;
-      while (
-        i < pattern.length &&
-        !"\\[](){}+*?^$.|".includes(pattern[i])
-      ) {
+      while (i < pattern.length && !"\\[](){}+*?^$.|".includes(pattern[i])) {
         literal += pattern[i];
         i++;
       }
@@ -475,8 +495,7 @@ export default class extends Controller {
 
   _setMatchCount(n) {
     if (this.hasMatchCountTarget) {
-      this.matchCountTarget.textContent =
-        n === 1 ? "1 match" : `${n} matches`;
+      this.matchCountTarget.textContent = n === 1 ? "1 match" : `${n} matches`;
     }
   }
 

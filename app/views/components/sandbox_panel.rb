@@ -26,11 +26,15 @@ module RegexDojo
                 # Pattern Input
                 div(class: "flex flex-col gap-2") do
                   span(class: "text-xs font-mono text-gray-400 uppercase") { "Pattern:" }
-                  div(class: "relative flex items-center") do
-                    span(class: "absolute left-4 font-mono text-dojo-cyan select-none") { "/" }
-                    input(
-                      type: "text",
-                      class: "regex-input pl-8 pr-12 font-mono",
+                  div(class: "relative") do
+                    # Decorations pin to the first and last line so the field
+                    # reads as a literal even when the pattern wraps
+                    span(class: "absolute left-4 top-3 font-mono text-dojo-cyan select-none") { "/" }
+                    # A one-row textarea that auto-grows (sandbox_controller),
+                    # so a long pattern wraps instead of hiding off-screen
+                    textarea(
+                      rows: 1,
+                      class: "regex-input pl-8 pr-16 font-mono resize-none overflow-hidden",
                       placeholder: "type your regex pattern...",
                       autocomplete: "off",
                       spellcheck: "false",
@@ -39,7 +43,12 @@ module RegexDojo
                         action: "input->sandbox#evaluate"
                       }
                     )
-                    span(class: "absolute right-4 font-mono text-dojo-cyan select-none") { "/" }
+                    # Live literal tail: sandbox_controller keeps this in sync
+                    # with the toggled flags (/g, /gi, ... /gims)
+                    span(
+                      class: "absolute right-4 bottom-3 font-mono text-dojo-cyan select-none",
+                      data: {sandbox_target: "flagsDisplay"}
+                    ) { "/g" }
                   end
                 end
 
