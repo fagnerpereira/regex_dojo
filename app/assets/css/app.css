@@ -29,6 +29,21 @@
   --animate-slide-up: slide-up 0.4s ease-out;
   --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
   --animate-float: float 3s ease-in-out infinite;
+
+  /* ============================================================
+     Organic design system (design_handoff_organic_ui/PROMPT.md §1)
+     ============================================================ */
+  --color-cream: #f5ead8;
+  --color-sand: #ebddc5;
+  --color-ink: #201e1d;
+  --color-dune-100: #f9f4ed; --color-dune-200: #eee7db; --color-dune-300: #dcd3c4; --color-dune-400: #c0b6a5; --color-dune-500: #a19786; --color-dune-600: #82796a; --color-dune-700: #645c50; --color-dune-800: #474238; --color-dune-900: #2e2b25;
+  --color-terra-100: #fff2eb; --color-terra-200: #ffe1d0; --color-terra-300: #ffc6a5; --color-terra-400: #f6a06b; --color-terra-500: #d67f48; --color-terra-600: #b2622d; --color-terra-700: #8c491a; --color-terra-800: #643312; --color-terra-900: #402310;
+  --color-sage-100: #f0fae1; --color-sage-200: #e1eecc; --color-sage-300: #ccdbb2; --color-sage-400: #aebf92; --color-sage-500: #8fa073; --color-sage-600: #728157; --color-sage-700: #56633f; --color-sage-800: #3d472b; --color-sage-900: #272e1b;
+  --font-display: "Caprasimo", serif;
+  --font-body: "Figtree", sans-serif;
+  --radius-blob: 32px;
+  --shadow-soft: 0 3px 10px rgba(46, 43, 37, 0.16);
+  --shadow-lift: 0 12px 32px rgba(46, 43, 37, 0.22);
 }
 
 /* ============================================================
@@ -435,4 +450,145 @@ mark.regex-match {
   .blitz-timer {
     font-size: 2rem;
   }
+}
+
+/* ============================================================
+   Organic design system — dormant until the new screens render
+   (design_handoff_organic_ui/: PROMPT.md §1, README "Dark mode",
+   prototype lines 23–56). Old dark-theme rules above stay frozen
+   until the final swap deletes them.
+   ============================================================ */
+
+/* Dark mode: html[data-dark] re-points the theme variables, so every
+   utility that compiled to var(--color-*) follows automatically. */
+html[data-dark] {
+  --color-cream: #282420;
+  --color-sand: #35302a;
+  --color-ink: #f2ead9;
+  --color-dune-100: #2f2b25; --color-dune-200: #3b362e; --color-dune-300: #4a443a; --color-dune-700: #c0b6a5; --color-dune-800: #dcd3c4;
+  --color-terra-100: #42301f; --color-terra-600: #f6a06b; --color-terra-700: #f6a06b; --color-terra-800: #ffc6a5;
+  --color-sage-100: #333a26; --color-sage-200: #3d472b; --color-sage-700: #ccdbb2; --color-sage-800: #e1eecc; --color-sage-900: #f0fae1;
+  --shadow-soft: 0 3px 10px rgba(0, 0, 0, 0.4);
+  --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* MIGRATION BRIDGE — delete together with the old unlayered `body`/
+   `::selection` blocks in the final swap. Unlayered legacy rules outrank
+   every @layer (see the .regex-input note above), so the new pages carry
+   html.organic to win the ground styles while both UIs coexist. */
+html.organic,
+html.organic body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+html.organic ::selection {
+  background: color-mix(in srgb, var(--color-terra-500) 30%, transparent);
+  color: inherit;
+}
+
+@layer base {
+  html, body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+  }
+  :focus { outline: none; }
+  :focus-visible { outline: 2px solid var(--color-terra-500); outline-offset: 2px; }
+  ::selection { background: color-mix(in srgb, var(--color-terra-500) 30%, transparent); }
+  mark {
+    background: color-mix(in srgb, var(--color-terra-500) 30%, transparent);
+    color: inherit;
+    border-radius: 4px;
+    padding: 1px 2px;
+  }
+  code {
+    font-family: var(--font-mono);
+    background: var(--color-terra-100);
+    color: var(--color-terra-800);
+    padding: 1px 7px;
+    border-radius: 8px;
+    font-size: 0.92em;
+  }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 cursor-pointer font-display text-[15px] leading-tight rounded-full px-6 py-3 no-underline text-ink transition-colors; }
+  .btn-primary { @apply bg-terra-500 text-cream hover:bg-terra-600 active:bg-terra-700; }
+  .btn-secondary { @apply border border-ink/15 hover:bg-ink/5 active:bg-ink/10; }
+  .btn-ghost { @apply text-terra-600 px-2 hover:bg-terra-500/10 active:bg-terra-500/20; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-[12.5px] font-medium; }
+
+  /* Pattern field: transparent-text textarea stacked over a colored
+     highlight div — both share the same font metrics (.patfield). */
+  .patfield {
+    background: transparent;
+    border: none;
+    width: 100%;
+    resize: none;
+    overflow: hidden;
+    font: 500 var(--code-size, 22px) / 1.4 var(--font-mono);
+    color: var(--color-ink);
+    caret-color: var(--color-terra-500);
+  }
+  .patfield:focus,
+  .patfield:focus-visible { outline: none; }
+  .patstack { position: relative; flex: 1; display: block; }
+  .pathl {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .patta {
+    position: relative;
+    color: transparent;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .patta::placeholder { color: color-mix(in srgb, var(--color-ink) 35%, transparent); }
+  .patta::selection { color: transparent; }
+  .codesize { font-size: var(--code-size, 22px); }
+
+  .flagbtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-ink) 15%, transparent);
+    background: transparent;
+    color: var(--color-dune-700);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .flagbtn:hover { background: color-mix(in srgb, var(--color-ink) 5%, transparent); }
+  .flagbtn[data-on] {
+    background: var(--color-terra-500);
+    border-color: transparent;
+    color: var(--color-cream);
+  }
+
+  .caret {
+    display: inline-block;
+    width: 2.5px;
+    height: 1.1em;
+    background: var(--color-terra-500);
+    border-radius: 2px;
+    vertical-align: -0.15em;
+    animation: blink 1.1s steps(1) infinite;
+  }
+  .pop { animation: pop-in 0.25s ease-out; }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Prototype's entrance pop (the legacy `pop` keyframe above differs). */
+@keyframes pop-in {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
