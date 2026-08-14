@@ -6,6 +6,22 @@ pt:
       one: "%{count} dia"
       other: "%{count} dias"
     theme_toggle: "Alternar modo noturno"
+  inicio:
+    greeting: "Bem-vindo de volta."
+    continue_kicker: "Continuar · Desafio %{position} de %{total}"
+    continue_button: "Continuar desafio"
+    target_label: "alvo"
+    track_label: "Trilha"
+    experiment_track_label: "Trilha · experimento"
+    challenges_count: "%{solved}/%{total} desafios"
+    xp_remaining: "faltam %{missing} para %{level}"
+    xp_topped: "Especialista!"
+    practice: "Praticar"
+    ruby_topic: "métodos de Array e String"
+    tools: "Ferramentas"
+    sandbox_description: "Teste qualquer padrão e veja a explicação ao vivo, símbolo por símbolo."
+    blitz_description: "30 segundos no relógio. Revisão mista dos conceitos que você já viu."
+    codex_description: "Referência completa de regex. Toque num cartão para testar no Sandbox."
   date:
     formats:
       greeting: "%A, %-d de %B"

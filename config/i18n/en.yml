@@ -6,6 +6,22 @@ en:
       one: "%{count} day"
       other: "%{count} days"
     theme_toggle: "Toggle dark mode"
+  inicio:
+    greeting: "Welcome back."
+    continue_kicker: "Continue · Challenge %{position} of %{total}"
+    continue_button: "Continue challenge"
+    target_label: "target"
+    track_label: "Track"
+    experiment_track_label: "Track · experiment"
+    challenges_count: "%{solved}/%{total} challenges"
+    xp_remaining: "%{missing} to go for %{level}"
+    xp_topped: "Especialista!"
+    practice: "Practice"
+    ruby_topic: "Array and String methods"
+    tools: "Tools"
+    sandbox_description: "Test any pattern and watch the live explanation, symbol by symbol."
+    blitz_description: "30 seconds on the clock. Mixed review of the concepts you have seen."
+    codex_description: "The complete regex reference. Tap a card to try it in the Sandbox."
   date:
     formats:
       greeting: "%A, %B %-d"
