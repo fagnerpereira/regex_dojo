@@ -13,6 +13,7 @@ import DojoController from "./controllers/dojo_controller";
 import SandboxController from "./controllers/sandbox_controller";
 import BlitzController from "./controllers/blitz_controller";
 import RubyDojoController from "./controllers/ruby_dojo_controller";
+import ThemeController from "./controllers/theme_controller";
 
 const application = Application.start();
 
@@ -21,3 +22,4 @@ application.register("dojo", DojoController);
 application.register("sandbox", SandboxController);
 application.register("blitz", BlitzController);
 application.register("ruby-dojo", RubyDojoController);
+application.register("theme", ThemeController);

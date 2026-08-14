@@ -1,6 +1,11 @@
 en:
   app:
     title: "Regex Dojo"
+  header:
+    streak:
+      one: "%{count} day"
+      other: "%{count} days"
+    theme_toggle: "Toggle dark mode"
   date:
     formats:
       greeting: "%A, %B %-d"

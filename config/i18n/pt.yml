@@ -1,6 +1,11 @@
 pt:
   app:
     title: "Regex Dojo"
+  header:
+    streak:
+      one: "%{count} dia"
+      other: "%{count} dias"
+    theme_toggle: "Alternar modo noturno"
   date:
     formats:
       greeting: "%A, %-d de %B"
