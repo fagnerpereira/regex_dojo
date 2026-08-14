@@ -19,11 +19,18 @@ module RegexDojo
     # Google Fonts — allow the font files it serves from fonts.gstatic.com.
     config.actions.content_security_policy[:font_src] += " https://fonts.gstatic.com"
 
-    # Allow serving static assets from public/
+    # Serve static assets from public/ ourselves. Hanami's implicit assets
+    # middleware (mounted ahead of user middleware when assets.serve is true)
+    # takes no options, and the asset paths here are unfingerprinted — so we
+    # disable it and serve with a forced-revalidation policy (304s when
+    # unchanged). Otherwise browsers heuristically cache the assets and every
+    # CSS/JS change silently requires a hard refresh.
+    config.assets.serve = false
     require "rack/static"
     config.middleware.use Rack::Static, {
       urls: ["/assets"],
-      root: File.join(__dir__, "..", "public")
+      root: File.join(__dir__, "..", "public"),
+      header_rules: [[:all, {"cache-control" => "no-cache"}]]
     }
   end
 end
