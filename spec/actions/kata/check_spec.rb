@@ -149,6 +149,34 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
     end
   end
 
+  describe "ruby track responses" do
+    it "returns suggestions and the idiomatic flag on a structural pass" do
+      body = json(call_check(id: 102, pattern: "arr.select(&:even?)"))
+
+      expect(body[:passing]).to be(true)
+      expect(body[:idiomatic]).to be(true)
+      expect(body[:suggestions]).to be_an(Array)
+      expect(body[:suggestions]).not_to be_empty
+      expect(body[:suggestions].first).to have_key(:code)
+    end
+
+    it "passes an output-equivalent answer, flagged non-idiomatic" do
+      body = json(call_check(id: 102, pattern: "arr.select { |n| [2, 4, 6].include?(n) }"))
+
+      expect(body[:passing]).to be(true)
+      expect(body[:idiomatic]).to be(false)
+    end
+
+    it "explains a wrong result through feedback, not a 422" do
+      response = call_check(id: 102, pattern: "arr.select(&:odd?)")
+
+      expect(response.status).to eq(200)
+      body = json(response)
+      expect(body[:passing]).to be(false)
+      expect(body[:feedback]).to include("[1, 3, 5]")
+    end
+  end
+
   describe "attributing attempts to the learner" do
     def submissions_for(user_id)
       dojo_repo.submissions.where(user_id: user_id).count

@@ -287,6 +287,64 @@ Ordered by phase. Each entry: **What changed / Why / Pros / Cons**.
   `data.passing` gate this change would have fired the success banner and auto-advance on
   every wrong answer; that gate is load-bearing.
 
+## Ruby track feedback
+
+### 19. Output-equivalent answers pass, and every answer teaches the idiomatic forms
+
+- **What**: The Ruby grader now judges in two rounds. Round 1 is the existing
+  parse-only structural match against the accepted forms — the idiomatic pass. When
+  that misses, round 2 **runs the answer in a throwaway subprocess**
+  (`Graders::RubyExecutor`: separate OS process, `--disable-gems`, 2 s SIGKILL
+  timeout, hard-disabled in production) and passes it if the returned value equals
+  the expected output — flagged `idiomatic: false`. Failures now say *what your code
+  actually returned* ("Your code ran and returned [1, 3, 5] — expected [2, 4, 6]")
+  instead of the misleading "compare your result" line, and runtime errors surface
+  readably. Every graded answer — pass or fail — now carries `suggestions`: each
+  kata's authored `approaches` (code + why), rendered under the form. Accepted lists
+  were broadened too (`x % 2 == 0` and friends are legitimate general solutions).
+- **Why**: A learner whose answer produced the exact expected output was told they
+  were wrong with a message implying the *output* mismatched — the worst possible
+  feedback in a learning tool. Structure-only grading cannot enumerate every correct
+  answer; execution can confirm any of them, while the idiomatic flag preserves the
+  teaching pressure toward better forms.
+- **Pros**: Correct answers are never called wrong; wrong answers get told exactly
+  what they produced; every submission ends in a mini-lesson; hardcoded-answer
+  "cheats" (e.g. `[2,4,6].include?(n)`) now pass honestly but are immediately shown
+  the general forms — which teaches more than rejecting them did.
+- **Cons**: This **is** arbitrary code execution, deliberately: acceptable for a
+  personal localhost learning tool, mitigated by process isolation + timeout, and
+  disabled in the production env where the structural verdict stands alone. If the
+  app is ever deployed publicly, revisit before enabling. One subprocess per
+  non-structural submit (~50 ms) is the price of honest grading.
+
+### 20. Answering no longer throws you back to the regex tab
+
+- **What**: `ruby_dojo_controller` no longer calls `window.location.reload()` after a
+  correct answer — you stay on the same challenge, with the banner, suggestions, a
+  live-updated "N/5 solved" counter and HUD XP bar. Separately, `tabs_controller` now
+  remembers the active tab in localStorage (try/catch-wrapped) and restores it on
+  connect, so even a manual reload lands back on the Ruby tab.
+- **Why**: The reload existed to advance to the next server-picked challenge, but its
+  real effect was `tabs_controller.connect()` re-activating the *first* tab — the
+  regex dojo — mid-Ruby-practice. The user explicitly wants to stay on the answered
+  challenge and move on themselves.
+- **Pros**: No lost context; the reviewed answer and its suggestions stay on screen.
+- **Cons**: The next challenge no longer auto-loads — moving on currently means
+  reloading the page (now safely returning to the Ruby tab). A "Next kata" button
+  that swaps the challenge in place is the natural follow-up.
+
+### 21. Content-Security-Policy allows the Google Fonts files
+
+- **What**: `config.actions.content_security_policy[:font_src] += " https://fonts.gstatic.com"`
+  in `config/app.rb`, with a request spec pinning the header.
+- **Why**: Hanami's default CSP sets `font-src 'self'`; the layout loads Inter and
+  JetBrains Mono from Google Fonts, whose stylesheet passed (`style-src` allows
+  `https:`) but whose font files from fonts.gstatic.com were blocked — the console
+  CSP violations, and silently fallback fonts.
+- **Pros**: Clean console; the intended typography actually renders.
+- **Cons**: Third-party font dependency remains — self-hosting the two families
+  would be more offline-friendly and CSP-strict (future work).
+
 ## Deferred (future work)
 
 - **i18n**: all user-facing text in Phlex components and JS is hardcoded English.
@@ -308,5 +366,10 @@ Ordered by phase. Each entry: **What changed / Why / Pros / Cons**.
   yet. Natural next step: a collapsible list under each kata showing past attempts with
   pass/fail markers and timestamps.
 - **Submissions retention**: the table grows without bound; no pruning or archival.
+- **"Next kata" affordance on the Ruby track**: with the auto-advance reload gone,
+  moving to the next challenge means reloading; an in-place swap button would be
+  smoother.
+- **Self-host the web fonts**: removes the last third-party origin from the CSP and
+  makes the app fully offline.
 - **CI**: no `.github/workflows` — the quality gate runs only locally.
 - **Hanami 3.0 stable**: everything is pinned to `3.0.0.rc1`; bump when stable lands.

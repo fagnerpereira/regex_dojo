@@ -40,7 +40,10 @@ module RegexDojo
                   span(class: "text-xs font-mono font-semibold uppercase tracking-wider text-dojo-cyan") { @challenge.concept.to_s }
                   h2(class: "text-xl font-bold text-white mt-1") { @challenge.title }
                 end
-                span(class: "text-sm font-mono text-dojo-gold bg-dojo-gold/10 border border-dojo-gold/30 px-3 py-1 rounded") do
+                span(
+                  class: "text-sm font-mono text-dojo-gold bg-dojo-gold/10 border border-dojo-gold/30 px-3 py-1 rounded",
+                  data: {ruby_dojo_target: "solvedCounter"}
+                ) do
                   "#{@solved_count}/#{@total_count} solved"
                 end
               end
@@ -78,6 +81,13 @@ module RegexDojo
 
                 div(class: "hidden bg-dojo-red/10 border border-dojo-red/30 text-dojo-red text-xs font-mono p-3 rounded-lg", data: {ruby_dojo_target: "errorBanner"}) { "" }
                 div(class: "hidden bg-dojo-cyan/10 border border-dojo-cyan/30 text-dojo-cyan text-sm font-mono p-3 rounded-lg", data: {ruby_dojo_target: "successBanner"}) { "" }
+
+                # Filled by ruby_dojo_controller after every graded answer:
+                # the kata's approaches (code + why), shown pass or fail.
+                div(
+                  class: "hidden flex-col gap-2 bg-dojo-purple/5 border border-dojo-purple/20 p-4 rounded-lg",
+                  data: {ruby_dojo_target: "suggestions"}
+                ) { "" }
 
                 div(class: "flex items-center gap-4") do
                   button(

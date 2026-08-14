@@ -23,4 +23,11 @@ RSpec.describe "Root", type: :request do
 
     expect(last_response.body).to match(/<meta name="csrf-token" content="[a-f0-9]{64}">/)
   end
+
+  it "allows Google Fonts font files through the Content-Security-Policy" do
+    get "/"
+
+    expect(last_response.headers["Content-Security-Policy"])
+      .to match(/font-src[^;]*fonts\.gstatic\.com/)
+  end
 end

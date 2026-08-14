@@ -50,6 +50,9 @@ module RegexDojo
             xp_awarded: xp_awarded,
             total_xp: user.xp,
             belt: user.belt,
+            idiomatic: result.idiomatic?,
+            feedback: result.feedback,
+            suggestions: result.suggestions,
             test_results: result.to_wire
           }.to_json
         end
