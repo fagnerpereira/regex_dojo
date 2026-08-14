@@ -7,18 +7,24 @@ module RegexDojo
   module Views
     module Home
       class Dashboard < Phlex::HTML
-        def initialize(user:, solved_kata_ids: [], challenges: [], blitz_challenges: [], last_patterns: {}, ruby_track: {})
+        def initialize(user:, solved_kata_ids: [], challenges: [], blitz_challenges: [], last_patterns: {}, ruby_track: {}, active_tab: nil)
           @user = user
           @solved_kata_ids = solved_kata_ids
           @challenges = challenges
           @blitz_challenges = blitz_challenges
           @last_patterns = last_patterns
           @ruby_track = ruby_track
+          @active_tab = active_tab
         end
 
         def view_template
-          # Tabs controller wraps the entire dashboard
-          div(class: "flex-1 flex flex-col", data: {controller: "tabs"}) do
+          # Tabs controller wraps the entire dashboard. tabs-server-tab pins
+          # the landing tab for explicit navigations (the Next-kata link) so
+          # the choice doesn't depend on localStorage being available.
+          tabs_data = {controller: "tabs"}
+          tabs_data[:tabs_server_tab] = @active_tab if @active_tab
+
+          div(class: "flex-1 flex flex-col", data: tabs_data) do
             # HUD Bar
             render Views::Components::Hud.new(user: @user)
 
@@ -44,6 +50,7 @@ module RegexDojo
               div(class: "panel-hidden", data: {tabs_target: "panel", tab: "ruby"}) do
                 render Views::Components::RubyPanel.new(
                   challenge: @ruby_track[:challenge],
+                  solved: @ruby_track[:solved] == true,
                   solved_count: @ruby_track[:solved_count].to_i,
                   total_count: @ruby_track[:total_count].to_i
                 )

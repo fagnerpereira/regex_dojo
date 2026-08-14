@@ -72,15 +72,23 @@ module RegexDojo
 
       # What the learner should work on next in a track, plus their progress
       # through it. Phase 1 selection: first unsolved challenge by id, wrapping
-      # to the first when everything is solved. The spaced-repetition scheduler
-      # replaces these internals behind the same method.
-      def next_challenge_for(user_id, track:)
+      # to the first when everything is solved. With `after:`/`before:` (the
+      # next/previous links), strictly the adjacent challenge by id — solved or
+      # not — so the learner can always walk the whole track. The
+      # spaced-repetition scheduler replaces these internals behind the same
+      # method.
+      def next_challenge_for(user_id, track:, after: nil, before: nil)
         rows = challenges.where(track: track).order(:id).to_a
         solved = progress.where(user_id: user_id, solved: true).to_a.map(&:kata_id)
-        current = rows.find { |c| !solved.include?(c.id.to_s) } || rows.first
+
+        current = challenge_adjacent(rows, after, 1) ||
+          challenge_adjacent(rows, before, -1) ||
+          rows.find { |c| !solved.include?(c.id.to_s) } ||
+          rows.first
 
         {
           challenge: current,
+          solved: current ? solved.include?(current.id.to_s) : false,
           solved_count: (rows.map { |c| c.id.to_s } & solved).size,
           total_count: rows.size
         }
@@ -88,6 +96,13 @@ module RegexDojo
 
       def find_challenge_by_id(id)
         challenges.by_pk(id).combine(:test_cases).one
+      end
+
+      private def challenge_adjacent(rows, anchor_id, step)
+        return nil unless anchor_id
+
+        index = rows.index { |c| c.id.to_s == anchor_id.to_s }
+        rows[(index + step) % rows.size] if index
       end
 
       def create_submission(user_id:, challenge_id:, user_pattern:, is_passing:)

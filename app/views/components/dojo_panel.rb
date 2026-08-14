@@ -18,7 +18,7 @@ module RegexDojo
           div(class: "grid grid-cols-1 lg:grid-cols-12 gap-8", data: {controller: "dojo"}) do
             # Left: Challenge Navigation List (4 cols)
             div(class: "lg:col-span-4 flex flex-col gap-3 bg-dojo-surface border border-dojo-border p-4 rounded-xl max-h-[600px] overflow-y-auto") do
-              h3(class: "text-sm font-mono font-semibold uppercase tracking-wider text-dojo-cyan mb-2") { "🥋 White Belt Katas" }
+              h3(class: "text-sm font-mono font-semibold uppercase tracking-wider text-dojo-cyan mb-2") { "🥋 White Belt Challenges" }
 
               @katas.each_with_index do |kata, index|
                 solved = @solved_kata_ids.include?(kata[:id])
@@ -68,7 +68,7 @@ module RegexDojo
                 div(class: "flex items-center justify-between mt-1") do
                   div do
                     span(class: "text-xs font-mono font-semibold uppercase tracking-wider text-dojo-cyan", data: {dojo_target: "concept"}) { "" }
-                    h2(class: "text-xl font-bold text-white mt-1", data: {dojo_target: "title"}) { "Select a kata to begin →" }
+                    h2(class: "text-xl font-bold text-white mt-1", data: {dojo_target: "title"}) { "Select a challenge to begin →" }
                   end
                   span(class: "text-sm font-mono text-dojo-gold bg-dojo-gold/10 border border-dojo-gold/30 px-3 py-1 rounded", data: {dojo_target: "xpBadge"}) { "" }
                 end

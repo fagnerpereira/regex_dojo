@@ -134,25 +134,32 @@ body {
   border-color: rgba(168, 85, 247, 0.3);
 }
 
-/* Regex input field */
-.regex-input {
-  width: 100%;
-  background: var(--color-dojo-bg);
-  border: 2px solid var(--color-dojo-border);
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  color: #e6edf3;
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.regex-input:focus {
-  border-color: var(--color-dojo-purple);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
-}
-.regex-input::placeholder {
-  color: #484f58;
+/* Regex input field.
+ *
+ * Layered as a component ON PURPOSE: unlayered rules outrank every @layer,
+ * so this rule's `padding` shorthand was silently defeating the pl-8/pr-12
+ * utilities on the pattern inputs — which is why the decorative "/" overlapped
+ * the typed text. Inside @layer components, utilities win again. */
+@layer components {
+  .regex-input {
+    width: 100%;
+    background: var(--color-dojo-bg);
+    border: 2px solid var(--color-dojo-border);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #e6edf3;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .regex-input:focus {
+    border-color: var(--color-dojo-purple);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+  }
+  .regex-input::placeholder {
+    color: #484f58;
+  }
 }
 
 /* Primary action button */

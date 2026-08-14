@@ -19,10 +19,16 @@ export default class extends Controller {
   static targets = ["tab", "panel"];
 
   connect() {
-    // Restore the last active tab, falling back to the first
+    // Priority: server-pinned tab (explicit navigation intent, e.g. the
+    // Next-kata link) → last active tab from storage → first tab.
     const names = this.tabTargets.map((tab) => tab.dataset.tab);
+    const serverTab = this.element.dataset.tabsServerTab;
     const saved = this._readStorage(TAB_STORAGE_KEY);
-    const initial = saved && names.includes(saved) ? saved : names[0];
+
+    const initial =
+      (serverTab && names.includes(serverTab) && serverTab) ||
+      (saved && names.includes(saved) && saved) ||
+      names[0];
 
     if (initial) {
       this._activate(initial);
