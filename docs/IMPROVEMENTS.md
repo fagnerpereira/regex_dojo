@@ -345,6 +345,97 @@ Ordered by phase. Each entry: **What changed / Why / Pros / Cons**.
 - **Cons**: Third-party font dependency remains — self-hosting the two families
   would be more offline-friendly and CSP-strict (future work).
 
+## Sandbox & navigation polish
+
+### 22. The pattern box reads as a real regex literal, and the slash overlap is fixed
+
+- **What**: (a) The Sandbox's trailing `/` is now a live flags display — toggling
+  g/i/m/s updates it to `/g`, `/gi`, … `/gims`, exactly like writing a real regex
+  literal; the `s` button finally lights up (it was missing from the controller's
+  targets, so it silently affected matching with no visual state). (b) The
+  decorative leading `/` no longer overlaps the typed text — in all three panels
+  (sandbox, dojo, blitz).
+- **Why**: The overlap was a Tailwind v4 cascade bug, not a padding typo:
+  `.regex-input` was **unlayered** CSS whose `padding` shorthand outranked the
+  `pl-8`/`pr-12` utilities (unlayered rules beat every `@layer`). Wrapping it in
+  `@layer components` restores utility priority everywhere the class is used.
+- **Pros**: The UI teaches literal syntax passively; one root-cause CSS fix heals
+  three panels; flags state is finally honest.
+- **Cons**: Other component classes (`.kata-card`, `.flag-toggle`, …) remain
+  unlayered by choice — layering them all at once risked collateral cascade
+  shifts; migrate them opportunistically.
+
+### 23. Next-kata flow hardened (from the adversarial review)
+
+- **What**: An adversarial 3-lens review workflow confirmed 5 real issues in the
+  Next-kata diff before it shipped; all fixed: the server now pins the landing
+  tab (`data-tabs-server-tab="ruby"` when `ruby_after` is present, honored by
+  `tabs_controller` ahead of localStorage) so the link works in storage-blocked
+  private browsing; the link uses `data-turbo-action="replace"` so walking the
+  track doesn't stack history entries; `ruby_dojo_controller` scrubs the
+  one-shot `ruby_after` param via `history.replaceState`, so reloads/bookmarks
+  return to first-unsolved instead of a pinned stale cursor; an already-solved
+  kata shows a `✓ solved` badge and a completed track announces
+  "cycling for review" instead of masquerading as fresh material.
+- **Why**: The original link relied entirely on localStorage restore — exactly
+  the regex-tab bounce this branch fixed, resurrected in any storage-blocked
+  browser; and the durable query param made a one-click intent permanent.
+- **Pros**: The flow is correct without storage; Back stays one step away;
+  wrapping is honest.
+- **Cons**: Three cooperating mechanisms (server pin → storage → first tab) is
+  more moving parts than one; the priority order is documented in
+  `tabs_controller.connect()`.
+
+## Plain language
+
+### 24. "Kata" is gone from the UI; the Ruby track can also step backwards
+
+- **What**: Every learner-visible "kata" became "challenge" ("White Belt
+  Challenges", "Challenge Solved!", "Select a challenge to begin", "Challenges
+  Solved", "Next →"). A "← Previous" button joins "Next →" on the Ruby track,
+  via the same server-side stepping (`ruby_before` mirrors `ruby_after`,
+  wrapping, tab-pinned, history-replaced, one-shot). A spec asserts the ruby
+  panel's *visible text* contains no "kata"; a whole-dashboard sweep with real
+  seeded data confirmed the same across every panel.
+- **Why**: Project owner's call — themed jargon makes learners stop to decode a
+  word instead of the concept. The UI should spend attention on regex and Ruby,
+  not vocabulary.
+- **Pros**: Zero-friction copy; back-navigation makes review natural.
+- **Cons**: Internal identifiers (`kata_id` column, `data-kata-*` attributes,
+  `.kata-card` CSS, storage keys) deliberately keep their names — renaming them
+  is churn with migration risk and no learner value. The seam between visible
+  copy and internals is now pinned by the spec.
+
+### 25. Assets force revalidation — the era of "hard refresh to see changes" ends
+
+- **What**: Hanami's implicit assets middleware (mounted ahead of all user
+  middleware when `assets.serve` is true) served `/assets` with **no
+  cache-control header**, so browsers heuristically cached the unfingerprinted
+  `app.css`/`app.js` — which is why every fix in this project "didn't work"
+  until a hard refresh, including this round's flags display and slash-overlap
+  fixes that were verifiably live on the server. Disabled `config.assets.serve`
+  and made the app's own `Rack::Static` (previously dead weight behind Hanami's)
+  the single asset server, with `header_rules` forcing `cache-control: no-cache`
+  (revalidate → 304 when unchanged). Pinned by a request spec.
+- **Why**: Root cause over ritual: telling the user "hard refresh" after every
+  change was treating the symptom.
+- **Pros**: Plain reload always shows current assets; 304s keep it cheap.
+- **Cons**: No immutable caching — the real long-term fix is fingerprinted
+  assets via the hanami-assets manifest (already in Deferred).
+
+### 26. Sandbox pattern grows instead of hiding long patterns
+
+- **What**: The sandbox pattern field is now a one-row textarea that auto-grows
+  with content (`_autosizePattern` on connect/input/clear); the `/` and flags
+  decorations pin to the first and last line so a wrapped pattern still reads
+  as a literal.
+- **Why**: A long pattern (or pasted text) scrolled invisibly off a single-line
+  input — you couldn't see what you were editing.
+- **Pros**: The whole pattern is always visible; no horizontal scrolling.
+- **Cons**: Enter inserts a newline (a literal newline in the pattern) rather
+  than being swallowed — acceptable in a free-play sandbox; the dojo and blitz
+  inputs stay single-line since Enter submits there.
+
 ## Deferred (future work)
 
 - **i18n**: all user-facing text in Phlex components and JS is hardcoded English.
