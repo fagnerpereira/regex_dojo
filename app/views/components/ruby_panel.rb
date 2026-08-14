@@ -12,8 +12,9 @@ module RegexDojo
       # items, and challenge selection stays a server concern (which is where
       # the spaced-repetition scheduler plugs in later).
       class RubyPanel < Phlex::HTML
-        def initialize(challenge:, solved_count: 0, total_count: 0)
+        def initialize(challenge:, solved: false, solved_count: 0, total_count: 0)
           @challenge = challenge
+          @solved = solved
           @solved_count = solved_count
           @total_count = total_count
           @payload = challenge ? JSON.parse(challenge.payload.to_s) : {}
@@ -38,7 +39,12 @@ module RegexDojo
               div(class: "flex items-center justify-between mt-1") do
                 div do
                   span(class: "text-xs font-mono font-semibold uppercase tracking-wider text-dojo-cyan") { @challenge.concept.to_s }
-                  h2(class: "text-xl font-bold text-white mt-1") { @challenge.title }
+                  div(class: "flex items-center gap-3") do
+                    h2(class: "text-xl font-bold text-white mt-1") { @challenge.title }
+                    if @solved
+                      span(class: "text-xs font-mono text-dojo-green bg-dojo-green/10 border border-dojo-green/30 px-2 py-0.5 rounded mt-1") { "✓ solved" }
+                    end
+                  end
                 end
                 span(
                   class: "text-sm font-mono text-dojo-gold bg-dojo-gold/10 border border-dojo-gold/30 px-3 py-1 rounded",
@@ -105,6 +111,25 @@ module RegexDojo
                     class: "btn-dojo px-6 py-2.5 rounded-lg flex-1 text-center font-bold text-sm select-none shadow-md cursor-pointer",
                     data: {action: "click->ruby-dojo#submit"}
                   ) { "⚔️ Submit (⌘⏎)" }
+
+                  # Server-side stepping: the id tells next_challenge_for which
+                  # challenge to move past (wrapping), so these also work as
+                  # "skip". turbo_action replace keeps Back one step away
+                  # instead of stacking a history entry per step.
+                  a(
+                    href: "/?ruby_before=#{@challenge.id}",
+                    class: "px-4 py-2.5 border border-dojo-border hover:bg-dojo-surface hover:border-dojo-cyan/50 rounded-lg text-sm font-mono text-gray-300 transition-all whitespace-nowrap",
+                    data: {turbo_action: "replace"}
+                  ) { "← Previous" }
+                  a(
+                    href: "/?ruby_after=#{@challenge.id}",
+                    class: "px-4 py-2.5 border border-dojo-border hover:bg-dojo-surface hover:border-dojo-cyan/50 rounded-lg text-sm font-mono text-gray-300 transition-all whitespace-nowrap",
+                    data: {turbo_action: "replace"}
+                  ) { "Next →" }
+                end
+
+                if @total_count.positive? && @solved_count >= @total_count
+                  p(class: "text-xs font-mono text-dojo-gold") { "🎉 Track complete — you're revisiting challenges for review." }
                 end
               end
             end

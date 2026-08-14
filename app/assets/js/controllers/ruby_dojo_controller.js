@@ -23,6 +23,14 @@ export default class extends Controller {
 
   connect() {
     this.inputTarget.focus();
+
+    // ruby_after/ruby_before are one-shot cursors from the next/previous
+    // links. Scrub them so a reload, bookmark or session restore lands on
+    // first-unsolved selection instead of being pinned here forever.
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("ruby_after") || params.has("ruby_before")) {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
   }
 
   async submit() {

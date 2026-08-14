@@ -24,8 +24,17 @@ module RegexDojo
           # The learner's latest answer per kata, restored into the pattern input
           last_patterns = dojo_repo.latest_patterns_for_user(user.id)
 
-          # The ruby track shows one server-selected challenge at a time
-          ruby_track = dojo_repo.next_challenge_for(user.id, track: "ruby")
+          # The ruby track shows one server-selected challenge at a time;
+          # ruby_after/ruby_before come from the panel's next/previous links.
+          # Those are full navigations, so the server also pins the landing
+          # tab — the client's localStorage restore can't be relied on
+          # (private browsing).
+          ruby_after = request.params[:ruby_after]
+          ruby_before = request.params[:ruby_before]
+          ruby_track = dojo_repo.next_challenge_for(
+            user.id, track: "ruby", after: ruby_after, before: ruby_before
+          )
+          active_tab = (ruby_after || ruby_before) ? "ruby" : nil
 
           # Render the full Phlex page.
           # hanami-action's set_csrf_token callback populates this key on every
@@ -39,7 +48,8 @@ module RegexDojo
             challenges: challenges,
             blitz_challenges: blitz_challenges,
             last_patterns: last_patterns,
-            ruby_track: ruby_track
+            ruby_track: ruby_track,
+            active_tab: active_tab
           )
 
           html = layout.call do |l|

@@ -127,6 +127,48 @@ RSpec.describe RegexDojo::Repos::DojoRepo do
     end
   end
 
+  describe "#next_challenge_for with after:" do
+    let(:user) do
+      repo.create_user(session_id: "walker")
+      repo.find_user_by_session_id("walker")
+    end
+
+    it "returns the challenge following the given id, solved or not" do
+      track = repo.next_challenge_for(user.id, track: "ruby", after: "101")
+
+      expect(track[:challenge].id).to eq(102)
+    end
+
+    it "wraps to the first challenge after the last one" do
+      track = repo.next_challenge_for(user.id, track: "ruby", after: "105")
+
+      expect(track[:challenge].id).to eq(101)
+    end
+
+    it "steps back with before:, wrapping to the last from the first" do
+      expect(repo.next_challenge_for(user.id, track: "ruby", before: "102")[:challenge].id).to eq(101)
+      expect(repo.next_challenge_for(user.id, track: "ruby", before: "101")[:challenge].id).to eq(105)
+    end
+
+    it "falls back to first-unsolved when after is unknown" do
+      repo.record_solved_kata(user.id, "101", 25)
+
+      track = repo.next_challenge_for(user.id, track: "ruby", after: "999")
+
+      expect(track[:challenge].id).to eq(102)
+    end
+
+    it "reports whether the shown challenge is already solved" do
+      repo.record_solved_kata(user.id, "102", 25)
+
+      solved_view = repo.next_challenge_for(user.id, track: "ruby", after: "101")
+      fresh_view = repo.next_challenge_for(user.id, track: "ruby", after: "102")
+
+      expect(solved_view[:solved]).to be(true)
+      expect(fresh_view[:solved]).to be(false)
+    end
+  end
+
   describe "#find_challenge_by_id" do
     it "returns nil for an unknown id" do
       expect(repo.find_challenge_by_id(999_999)).to be_nil
