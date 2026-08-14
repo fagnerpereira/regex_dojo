@@ -2,9 +2,9 @@
 
 require "nokogiri"
 
-RSpec.describe "GET /inicio", type: :request do
+RSpec.describe "GET / (Início)", type: :request do
   it "renders the Organic home with greeting, hero, tracks and tools" do
-    get "/inicio"
+    get "/"
 
     expect(last_response.status).to eq(200)
     body = last_response.body
@@ -18,17 +18,17 @@ RSpec.describe "GET /inicio", type: :request do
   end
 
   it "renders the greeting date in Portuguese" do
-    get "/inicio"
+    get "/"
 
     expect(last_response.body)
       .to match(/de (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/)
   end
 
   it "advances the hero to the first unsolved challenge" do
-    get "/inicio" # creates the guest session
-    post "/kata/31/check", {pattern: "ruby"}.to_json, "CONTENT_TYPE" => "application/json"
+    get "/" # creates the guest session
+    post "/desafios/31/check", {answer: "ruby"}
 
-    get "/inicio"
+    get "/"
 
     expect(last_response.body).to include("Desafio 2 de 15")
     expect(last_response.body).to include("1/15 desafios")
@@ -37,19 +37,19 @@ RSpec.describe "GET /inicio", type: :request do
   it "stamps data-dark when the theme cookie says dark" do
     set_cookie "theme=dark"
 
-    get "/inicio"
+    get "/"
 
     expect(last_response.body).to include("data-dark")
   end
 
   it "stays light without the theme cookie" do
-    get "/inicio"
+    get "/"
 
     expect(last_response.body).not_to include("data-dark")
   end
 
   it "speaks plain language — no kata, no faixa" do
-    get "/inicio"
+    get "/"
 
     text = Nokogiri::HTML(last_response.body).text.downcase
     expect(text).not_to include("kata")

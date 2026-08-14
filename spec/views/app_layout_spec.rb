@@ -12,7 +12,7 @@ RSpec.describe RegexDojo::Views::AppLayout do
     html = render
 
     expect(html).to include("<!doctype html>")
-    expect(html).to include('<html lang="pt-BR" class="organic">')
+    expect(html).to include('<html lang="pt-BR">')
     expect(html).to include("<title>Regex Dojo</title>")
     expect(html).to include("MARKER")
   end

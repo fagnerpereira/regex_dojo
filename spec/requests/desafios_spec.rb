@@ -44,7 +44,7 @@ RSpec.describe "Desafio pages", type: :request do
     end
 
     it "restores the learner's last submitted answer for the pattern field" do
-      get "/inicio"
+      get "/"
       check(31, "my-wrong-answer")
 
       get "/desafios/31"
@@ -62,7 +62,7 @@ RSpec.describe "Desafio pages", type: :request do
     end
 
     it "advances past solved challenges" do
-      get "/inicio"
+      get "/"
       check(31, "ruby")
 
       get "/desafios"
@@ -73,7 +73,7 @@ RSpec.describe "Desafio pages", type: :request do
 
   describe "POST /desafios/:id/check" do
     it "grades, awards XP and comes back with the success banner" do
-      get "/inicio"
+      get "/"
 
       check(31, "ruby")
 
@@ -87,7 +87,7 @@ RSpec.describe "Desafio pages", type: :request do
     end
 
     it "grades capture groups by the first participating group, like the server validator" do
-      get "/inicio"
+      get "/"
 
       check(43, "(red|green|blue)")
 
@@ -96,7 +96,7 @@ RSpec.describe "Desafio pages", type: :request do
     end
 
     it "logs failing attempts without awarding XP" do
-      get "/inicio"
+      get "/"
 
       check(31, "zzz")
 
@@ -107,7 +107,7 @@ RSpec.describe "Desafio pages", type: :request do
     end
 
     it "notes an already solved challenge instead of double-awarding" do
-      get "/inicio"
+      get "/"
       check(31, "ruby")
 
       check(31, "ruby")
@@ -121,6 +121,17 @@ RSpec.describe "Desafio pages", type: :request do
       check(999, "x")
 
       expect(last_response.status).to eq(404)
+    end
+
+    it "reports validator rejections through the error flash" do
+      get "/"
+
+      check(31, "a" * 201) # over the validator's pattern length cap
+
+      expect(last_response.status).to eq(303)
+      get "/desafios/31"
+      expect(last_response.body).to include("bg-terra-100") # error box rendered
+      expect(last_response.body).to include("0/370 XP")
     end
   end
 end

@@ -61,7 +61,7 @@ RSpec.describe "Ruby track pages", type: :request do
 
   describe "POST /ruby/:id/check" do
     it "accepts an equivalent solution and shows the ways to solve" do
-      get "/inicio"
+      get "/"
 
       check(101, "arr.map { |n| n * 2 }")
 
@@ -77,7 +77,7 @@ RSpec.describe "Ruby track pages", type: :request do
     end
 
     it "reports a wrong answer without awarding XP" do
-      get "/inicio"
+      get "/"
 
       check(101, "arr.map { |n| n * 3 }")
 

@@ -26,9 +26,9 @@ module RegexDojo
           main(
             class: "max-w-[880px] mx-auto px-11 pb-24 max-md:px-6",
             data: {
-              controller: "blitz-page",
-              blitz_page_challenges_value: JSON.generate(@challenges),
-              blitz_page_best_value: @best_score
+              controller: "blitz",
+              blitz_challenges_value: JSON.generate(@challenges),
+              blitz_best_value: @best_score
             }
           ) do
             top_line
@@ -54,7 +54,7 @@ module RegexDojo
         def start_screen
           section(
             class: "bg-sand rounded-blob p-12 mt-8 text-center flex flex-col items-center gap-4 shadow-soft",
-            data: {blitz_page_target: "startScreen"}
+            data: {blitz_target: "startScreen"}
           ) do
             span(class: "w-14 h-14 rounded-full grid place-items-center bg-terra-200 text-terra-800") do
               render Components::Icon.new(:zap, classes: "w-6 h-6")
@@ -67,36 +67,36 @@ module RegexDojo
                 plain " #{t("blitz.time_label")}"
               end
               span do
-                b(class: "text-ink", data: {blitz_page_target: "best"}) { @best_score.to_s }
+                b(class: "text-ink", data: {blitz_target: "best"}) { @best_score.to_s }
                 plain " #{t("blitz.record_label")}"
               end
             end
-            button(type: "button", class: "btn btn-primary px-8", data: {action: "blitz-page#start"}) do
+            button(type: "button", class: "btn btn-primary px-8", data: {action: "blitz#start"}) do
               t("blitz.start")
             end
           end
         end
 
         def run_screen
-          section(class: "hidden mt-8", data: {blitz_page_target: "runScreen"}) do
+          section(class: "hidden mt-8", data: {blitz_target: "runScreen"}) do
             div(class: "flex items-center gap-5 mb-5") do
-              span(class: "font-display text-[40px] w-16", data: {blitz_page_target: "time"}) { "30" }
+              span(class: "font-display text-[40px] w-16", data: {blitz_target: "time"}) { "30" }
               span(class: "flex-1 h-2.5 rounded-full bg-dune-200 overflow-hidden") do
                 i(
                   class: "block h-full rounded-full bg-terra-500 transition-all duration-1000",
                   style: "width: 100%;",
-                  data: {blitz_page_target: "bar"}
+                  data: {blitz_target: "bar"}
                 )
               end
               span(class: "font-mono text-[14px]") do
-                b(data: {blitz_page_target: "score"}) { "0" }
+                b(data: {blitz_target: "score"}) { "0" }
                 plain " #{t("blitz.solved_label")}"
               end
             end
 
             div(class: "bg-sand rounded-blob p-8 flex flex-col gap-4 shadow-soft") do
-              div(class: "text-[16px]", data: {blitz_page_target: "task"})
-              div(class: "flex flex-col gap-2", data: {blitz_page_target: "testsList"})
+              div(class: "text-[16px]", data: {blitz_target: "task"})
+              div(class: "flex flex-col gap-2", data: {blitz_target: "testsList"})
 
               div(class: "flex items-center gap-2.5 bg-cream border border-ink/15 rounded-[26px] px-3 py-2 transition-colors focus-within:border-terra-500") do
                 slash_chip
@@ -108,7 +108,7 @@ module RegexDojo
                   aria_label: t("desafio.pattern_label"),
                   class: "patfield",
                   style: "--code-size: 19px;",
-                  data: {blitz_page_target: "field"}
+                  data: {blitz_target: "field"}
                 )
                 slash_chip
               end
@@ -116,7 +116,7 @@ module RegexDojo
               button(
                 type: "button",
                 class: "btn btn-ghost self-end text-[14px]",
-                data: {action: "blitz-page#skip"}
+                data: {action: "blitz#skip"}
               ) { t("blitz.skip") }
             end
           end
@@ -125,12 +125,12 @@ module RegexDojo
         def end_screen
           section(
             class: "hidden bg-sand rounded-blob p-12 mt-8 text-center flex flex-col items-center gap-4 shadow-soft",
-            data: {blitz_page_target: "endScreen"}
+            data: {blitz_target: "endScreen"}
           ) do
             h2(class: "font-display text-[32px] m-0") { t("blitz.time_up") }
-            p(class: "opacity-75 m-0", data: {blitz_page_target: "result"})
+            p(class: "opacity-75 m-0", data: {blitz_target: "result"})
             div(class: "flex gap-3") do
-              button(type: "button", class: "btn btn-primary", data: {action: "blitz-page#start"}) do
+              button(type: "button", class: "btn btn-primary", data: {action: "blitz#start"}) do
                 t("blitz.again")
               end
               a(class: "btn btn-secondary", href: "/") { t("desafio.back") }

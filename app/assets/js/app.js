@@ -8,28 +8,16 @@ import "@hotwired/turbo";
 import { Application } from "@hotwired/stimulus";
 
 // Controllers
-import TabsController from "./controllers/tabs_controller";
-import DojoController from "./controllers/dojo_controller";
-import SandboxController from "./controllers/sandbox_controller";
-import BlitzController from "./controllers/blitz_controller";
-import RubyDojoController from "./controllers/ruby_dojo_controller";
 import ThemeController from "./controllers/theme_controller";
 import DesafioController from "./controllers/desafio_controller";
-import SandboxPageController from "./controllers/sandbox_page_controller";
-import BlitzPageController from "./controllers/blitz_page_controller";
+import SandboxController from "./controllers/sandbox_controller";
+import BlitzController from "./controllers/blitz_controller";
 import RevealController from "./controllers/reveal_controller";
 
 const application = Application.start();
 
-application.register("tabs", TabsController);
-application.register("dojo", DojoController);
-application.register("sandbox", SandboxController);
-application.register("blitz", BlitzController);
-application.register("ruby-dojo", RubyDojoController);
 application.register("theme", ThemeController);
 application.register("desafio", DesafioController);
-// "-page" suffix while the legacy dashboard still owns the plain name;
-// the final swap renames these.
-application.register("sandbox-page", SandboxPageController);
-application.register("blitz-page", BlitzPageController);
+application.register("sandbox", SandboxController);
+application.register("blitz", BlitzController);
 application.register("reveal", RevealController);

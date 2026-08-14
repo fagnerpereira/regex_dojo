@@ -27,7 +27,7 @@ module RegexDojo
         end
 
         def view_template
-          main(class: "max-w-[880px] mx-auto px-11 pb-24 max-md:px-6", data: {controller: "sandbox-page"}) do
+          main(class: "max-w-[880px] mx-auto px-11 pb-24 max-md:px-6", data: {controller: "sandbox"}) do
             top_line
 
             header(class: "mt-7 mb-6") do
@@ -60,7 +60,7 @@ module RegexDojo
             div(class: "flex-1 flex items-center gap-2.5 bg-sand border border-ink/15 rounded-[28px] px-3 py-2.5 transition-colors focus-within:border-terra-500") do
               slash_chip
               span(class: "patstack") do
-                div(class: "patfield pathl", aria_hidden: true, data: {sandbox_page_target: "fieldHighlight"})
+                div(class: "patfield pathl", aria_hidden: true, data: {sandbox_target: "fieldHighlight"})
                 textarea(
                   rows: 1,
                   spellcheck: false,
@@ -68,11 +68,11 @@ module RegexDojo
                   placeholder: t("desafio.placeholder"),
                   aria_label: t("desafio.pattern_label"),
                   class: "patfield patta",
-                  data: {sandbox_page_target: "field"}
+                  data: {sandbox_target: "field"}
                 ) { @pattern }
               end
               slash_chip
-              span(class: "font-mono text-[15px] text-dune-600 pr-2", data: {sandbox_page_target: "flagsText"})
+              span(class: "font-mono text-[15px] text-dune-600 pr-2", data: {sandbox_target: "flagsText"})
             end
 
             div(class: "flex gap-1.5", role: "group", aria_label: "Flags") do
@@ -81,7 +81,7 @@ module RegexDojo
                   type: "button",
                   class: "flagbtn",
                   title: t("desafio.flags.#{flag}"),
-                  data: {flag: flag, sandbox_page_target: "flagButton"}
+                  data: {flag: flag, sandbox_target: "flagButton"}
                 ) { flag }
               end
             end
@@ -100,7 +100,7 @@ module RegexDojo
             a(href: "/codex", class: "font-mono text-[10.5px] uppercase tracking-[0.12em] text-terra-600 no-underline mr-1") do
               t("desafio.codex_link")
             end
-            span(class: "flex items-center gap-2 flex-wrap", data: {sandbox_page_target: "tokens"}) do
+            span(class: "flex items-center gap-2 flex-wrap", data: {sandbox_target: "tokens"}) do
               span(class: "text-[12.5px] text-ink/35") { t("sandbox.tokens_placeholder") }
             end
           end
@@ -114,10 +114,10 @@ module RegexDojo
             button(
               type: "button",
               class: "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] text-dune-700 border border-ink/15 bg-transparent cursor-pointer hover:bg-ink/5 transition-colors",
-              data: {action: "sandbox-page#copyText"}
+              data: {action: "sandbox#copyText"}
             ) do
               render Components::Icon.new(:copy, classes: "w-3.5 h-3.5")
-              span(data: {sandbox_page_target: "copyLabel"}) { t("sandbox.copy") }
+              span(data: {sandbox_target: "copyLabel"}) { t("sandbox.copy") }
             end
           end
 
@@ -125,7 +125,7 @@ module RegexDojo
             rows: 5,
             spellcheck: false,
             class: "w-full bg-sand border border-ink/15 rounded-[22px] px-5 py-4 font-mono text-[14px] leading-relaxed resize-y focus:border-terra-500",
-            data: {sandbox_page_target: "text", action: "input->sandbox-page#evaluate"}
+            data: {sandbox_target: "text", action: "input->sandbox#evaluate"}
           ) { DEFAULT_TEXT }
         end
 
@@ -134,14 +134,14 @@ module RegexDojo
             span(class: "font-mono text-[10.5px] uppercase tracking-[0.12em] text-ink/40") do
               t("sandbox.result_label")
             end
-            span(class: "font-mono text-[12.5px] text-terra-700", data: {sandbox_page_target: "count"}) do
+            span(class: "font-mono text-[12.5px] text-terra-700", data: {sandbox_target: "count"}) do
               t("sandbox.zero_occurrences")
             end
           end
 
           div(
             class: "bg-dune-100 rounded-[22px] px-5 py-4 font-mono text-[14px] leading-relaxed whitespace-pre-wrap min-h-[110px]",
-            data: {sandbox_page_target: "output"}
+            data: {sandbox_target: "output"}
           ) { DEFAULT_TEXT }
         end
       end

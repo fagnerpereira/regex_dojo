@@ -104,19 +104,6 @@
    Base & Typography
    ============================================================ */
 
-body {
-  background-color: var(--color-dojo-bg);
-  color: #e6edf3;
-  font-family: var(--font-ui);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-::selection {
-  background: rgba(34, 211, 238, 0.25);
-  color: var(--color-dojo-cyan);
-}
-
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -470,21 +457,6 @@ html[data-dark] {
   --color-sage-100: #333a26; --color-sage-200: #3d472b; --color-sage-700: #ccdbb2; --color-sage-800: #e1eecc; --color-sage-900: #f0fae1;
   --shadow-soft: 0 3px 10px rgba(0, 0, 0, 0.4);
   --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.5);
-}
-
-/* MIGRATION BRIDGE — delete together with the old unlayered `body`/
-   `::selection` blocks in the final swap. Unlayered legacy rules outrank
-   every @layer (see the .regex-input note above), so the new pages carry
-   html.organic to win the ground styles while both UIs coexist. */
-html.organic,
-html.organic body {
-  background: var(--color-cream);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-}
-html.organic ::selection {
-  background: color-mix(in srgb, var(--color-terra-500) 30%, transparent);
-  color: inherit;
 }
 
 @layer base {

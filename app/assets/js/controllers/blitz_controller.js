@@ -1,235 +1,164 @@
 import { Controller } from "@hotwired/stimulus";
+import { PatternField } from "../lib/pattern_field";
+import { gradeTestCase } from "../lib/grading";
+import { escapeHTML, markFirst } from "../lib/highlight";
 
-/**
- * BlitzController — timed quick-fire regex challenges.
- *
- * Katas data is loaded from a <script id="blitz-katas-data"> JSON tag
- * embedded in the Phlex BlitzPanel component.
- */
+// Blitz: 30 seconds, random non-hard challenges, grading on every
+// keystroke with automatic advance once all tests pass, Pular to skip.
+// The final score is persisted server-side (fire-and-forget POST); the
+// record shown comes from the database.
+//
+// innerHTML sinks receive escapeHTML-built strings, except the task line,
+// which is trusted seed content carrying its own inline markup.
 export default class extends Controller {
   static targets = [
     "startScreen",
-    "gamePanel",
-    "resultPanel",
-    "timer",
-    "timerBar",
+    "runScreen",
+    "endScreen",
+    "time",
+    "bar",
     "score",
-    "solvedCount",
-    "concept",
-    "kataTitle",
     "task",
-    "xpBadge",
-    "testString",
-    "patternInput",
-    "feedback",
-    "finalScore",
-    "finalSolved",
+    "testsList",
+    "field",
+    "best",
+    "result",
   ];
 
-  // ── Lifecycle ──────────────────────────────────────────────────────────────
-  connect() {
-    this.totalTime = 30;
-    this.timeRemaining = 0;
-    this.currentScore = 0;
-    this.solvedCount = 0;
-    this.currentKata = null;
-    this.timerInterval = null;
-    this.usedKataIds = new Set();
-    this.katas = [];
+  static values = { challenges: Array, best: Number };
 
-    this._loadKatasFromPage();
+  connect() {
+    this.running = false;
+    this.patternField = new PatternField({
+      textarea: this.fieldTarget,
+      onChange: () => this.evaluate(),
+    });
   }
 
   disconnect() {
-    this._stopTimer();
+    this.stopTimer();
+    this.patternField?.destroy();
   }
-
-  // ── Actions ────────────────────────────────────────────────────────────────
 
   start() {
-    this.timeRemaining = this.totalTime;
-    this.currentScore = 0;
-    this.solvedCount = 0;
-    this.usedKataIds.clear();
+    this.running = true;
+    this.timeLeft = 30;
+    this.score = 0;
+    this.current = null;
+    this.scoreTarget.textContent = "0";
+    this.timeTarget.textContent = "30";
+    this.barTarget.style.width = "100%";
 
-    // Update displays
-    this._updateTimer();
-    this._updateScoreDisplay();
+    this.startScreenTarget.classList.add("hidden");
+    this.endScreenTarget.classList.add("hidden");
+    this.runScreenTarget.classList.remove("hidden");
 
-    // Show game, hide start + results
-    this.startScreenTarget.classList.add("panel-hidden");
-    this.resultPanelTarget.classList.add("panel-hidden");
-    this.gamePanelTarget.classList.remove("panel-hidden");
-
-    // Load first kata
-    this._nextKata();
-
-    // Start countdown
-    this._stopTimer();
-    this.timerInterval = setInterval(() => this._tick(), 1000);
+    this.nextChallenge();
+    this.stopTimer();
+    this.timer = setInterval(() => this.tick(), 1000);
   }
 
-  submit() {
-    if (!this.currentKata || this.timeRemaining <= 0) return;
+  tick() {
+    this.timeLeft--;
+    this.timeTarget.textContent = String(this.timeLeft);
+    this.barTarget.style.width = `${Math.max(0, (this.timeLeft / 30) * 100)}%`;
+    if (this.timeLeft <= 0) this.finish();
+  }
 
-    const rawPattern = this.patternInputTarget.value.trim();
-    if (rawPattern === "") return;
+  finish() {
+    this.stopTimer();
+    this.running = false;
 
-    let regex;
+    const best = Math.max(this.bestValue, this.score);
+    this.bestValue = best;
+    this.bestTarget.textContent = String(best);
+
+    this.runScreenTarget.classList.add("hidden");
+    this.resultTarget.textContent =
+      `${this.score} ${this.score === 1 ? "desafio resolvido" : "desafios resolvidos"} · recorde ${best}`;
+    this.endScreenTarget.classList.remove("hidden");
+
+    this.persistScore();
+  }
+
+  // Fire-and-forget: a lost record simply re-establishes itself next run.
+  persistScore() {
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    fetch("/blitz/score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { "X-CSRF-Token": token } : {}),
+      },
+      body: JSON.stringify({ score: this.score, speed_multiplier: 1.0 }),
+    }).catch(() => {});
+  }
+
+  skip() {
+    if (this.running) this.nextChallenge();
+  }
+
+  nextChallenge() {
+    const pool = this.challengesValue;
+    if (!pool.length) return;
+
+    let next;
+    do {
+      next = pool[Math.floor(Math.random() * pool.length)];
+    } while (pool.length > 1 && next === this.current);
+
+    this.current = next;
+    this.taskTarget.innerHTML = next.task;
+    this.patternField.setValue("");
+    this.evaluate();
+    this.patternField.focus();
+  }
+
+  evaluate() {
+    if (!this.current) return;
+
+    const pattern = this.patternField.pattern;
+    let regex = null;
     try {
-      regex = new RegExp(rawPattern);
+      if (pattern) regex = new RegExp(pattern);
     } catch (_) {
-      this._showFeedback("❌ Invalid regex syntax", "text-dojo-red bg-dojo-red/10 border border-dojo-red/30");
-      return;
+      regex = null;
     }
 
-    // Same grading rule as the server (RegexDojo::Validator): a participating
-    // capture group wins over the full match; null expected = must not match.
-    const allPassed = this.currentKata.test_cases.every((tc) => {
-      const match = regex.exec(tc.input);
-      const actual = match
-        ? (match.slice(1).find((group) => group !== undefined) ?? match[0])
-        : null;
-      return actual === (tc.expected_match ?? null);
-    });
+    let passCount = 0;
+    this.testsListTarget.innerHTML = this.current.test_cases
+      .map((testCase) => {
+        const ok = Boolean(pattern) && gradeTestCase(pattern, "", testCase);
+        if (ok) passCount++;
 
-    if (allPassed) {
-      const speedMultiplier = Math.max(this.timeRemaining / this.totalTime, 0.1);
-      const baseXP = this.currentKata.xp || 25;
-      const earned = Math.round(baseXP * (1 + speedMultiplier));
+        const match = regex ? testCase.input.match(regex) : null;
+        const shown = markFirst(testCase.input, match);
+        const expectation =
+          testCase.expected_match != null ? `“${escapeHTML(testCase.expected_match)}”` : "nada";
+        const status = ok
+          ? '<span class="w-2.5 h-2.5 shrink-0 rounded-full bg-sage-500"></span>'
+          : '<span class="w-2.5 h-2.5 shrink-0 rounded-full border border-ink/25"></span>';
 
-      this.currentScore += earned;
-      this.solvedCount++;
-      this._updateScoreDisplay();
+        return (
+          '<div class="flex items-center gap-3 rounded-xl bg-dune-100 px-4 py-2">' +
+          `<span class="font-mono text-[13.5px] flex-1">${shown}</span>` +
+          `<span class="text-[11px] text-ink/45">${expectation}</span>` +
+          status +
+          "</div>"
+        );
+      })
+      .join("");
 
-      this._showFeedback(`✅ +${earned} XP!`, "text-dojo-green bg-dojo-green/10 border border-dojo-green/30");
-
-      setTimeout(() => this._nextKata(), 500);
-    } else {
-      this._showFeedback("❌ Not all test cases pass — keep trying!", "text-dojo-red bg-dojo-red/10 border border-dojo-red/30");
-    }
-  }
-
-  liveCheck() {
-    // Optional: could add live highlighting during blitz
-    // Left as no-op for speed
-  }
-
-  restart() {
-    this.start();
-  }
-
-  // ── Private: Timer ─────────────────────────────────────────────────────────
-
-  _tick() {
-    this.timeRemaining--;
-    this._updateTimer();
-
-    if (this.timeRemaining <= 0) {
-      this._end();
+    if (this.running && pattern && passCount === this.current.test_cases.length) {
+      this.score++;
+      this.scoreTarget.textContent = String(this.score);
+      this.nextChallenge();
     }
   }
 
-  _updateTimer() {
-    if (this.hasTimerTarget) {
-      this.timerTarget.textContent = this.timeRemaining;
-
-      // Color coding + danger animation
-      this.timerTarget.classList.remove("text-dojo-cyan", "text-dojo-gold", "danger");
-      if (this.timeRemaining > 15) {
-        this.timerTarget.classList.add("text-dojo-cyan");
-      } else if (this.timeRemaining > 5) {
-        this.timerTarget.classList.add("text-dojo-gold");
-      } else {
-        this.timerTarget.classList.add("danger");
-      }
-    }
-
-    // Timer progress bar
-    if (this.hasTimerBarTarget) {
-      const pct = Math.max((this.timeRemaining / this.totalTime) * 100, 0);
-      this.timerBarTarget.style.width = `${pct}%`;
-    }
-  }
-
-  _stopTimer() {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
-    }
-  }
-
-  // ── Private: Kata management ───────────────────────────────────────────────
-
-  _nextKata() {
-    if (this.katas.length === 0) return;
-
-    if (this.usedKataIds.size >= this.katas.length) {
-      this.usedKataIds.clear();
-    }
-
-    const available = this.katas.filter((k) => !this.usedKataIds.has(k.id));
-    const kata = available[Math.floor(Math.random() * available.length)];
-
-    this.currentKata = kata;
-    this.usedKataIds.add(kata.id);
-
-    // Populate game panel
-    if (this.hasConceptTarget) this.conceptTarget.textContent = kata.concept || "";
-    if (this.hasKataTitleTarget) this.kataTitleTarget.textContent = kata.title;
-    if (this.hasTaskTarget) this.taskTarget.textContent = kata.task || "";
-    if (this.hasXpBadgeTarget) this.xpBadgeTarget.textContent = `+${kata.xp} XP`;
-    if (this.hasTestStringTarget) this.testStringTarget.textContent = kata.test_string;
-    if (this.hasPatternInputTarget) {
-      this.patternInputTarget.value = "";
-      this.patternInputTarget.focus();
-    }
-    this._hideFeedback();
-  }
-
-  _loadKatasFromPage() {
-    const scriptTag = document.getElementById("blitz-katas-data");
-    if (scriptTag) {
-      try {
-        this.katas = JSON.parse(scriptTag.textContent);
-      } catch (_) {
-        this.katas = [];
-      }
-    }
-  }
-
-  // ── Private: Scoring ───────────────────────────────────────────────────────
-
-  _updateScoreDisplay() {
-    if (this.hasScoreTarget) this.scoreTarget.textContent = this.currentScore;
-    if (this.hasSolvedCountTarget) this.solvedCountTarget.textContent = this.solvedCount;
-  }
-
-  // ── Private: Game end ──────────────────────────────────────────────────────
-
-  _end() {
-    this._stopTimer();
-
-    // Hide game, show results
-    this.gamePanelTarget.classList.add("panel-hidden");
-    this.resultPanelTarget.classList.remove("panel-hidden");
-
-    // Update final scores
-    if (this.hasFinalScoreTarget) this.finalScoreTarget.textContent = this.currentScore;
-    if (this.hasFinalSolvedTarget) this.finalSolvedTarget.textContent = this.solvedCount;
-  }
-
-  // ── Private: Feedback ──────────────────────────────────────────────────────
-
-  _showFeedback(message, classes) {
-    if (!this.hasFeedbackTarget) return;
-    this.feedbackTarget.textContent = message;
-    this.feedbackTarget.className = `text-xs font-mono p-2 rounded ${classes}`;
-    this.feedbackTarget.classList.remove("hidden");
-  }
-
-  _hideFeedback() {
-    if (!this.hasFeedbackTarget) return;
-    this.feedbackTarget.classList.add("hidden");
+  stopTimer() {
+    if (this.timer) clearInterval(this.timer);
+    this.timer = null;
   }
 }

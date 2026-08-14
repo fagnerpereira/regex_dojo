@@ -20,8 +20,8 @@ RSpec.describe "Blitz", type: :request do
     it "embeds only non-hard challenges for the game" do
       get "/blitz"
 
-      root = Nokogiri::HTML(last_response.body).at_css('[data-controller="blitz-page"]')
-      ids = JSON.parse(root["data-blitz-page-challenges-value"]).map { |c| c["id"] }
+      root = Nokogiri::HTML(last_response.body).at_css('[data-controller="blitz"]')
+      ids = JSON.parse(root["data-blitz-challenges-value"]).map { |c| c["id"] }
 
       expect(ids).to eq((31..42).map(&:to_s))
     end
@@ -45,7 +45,7 @@ RSpec.describe "Blitz", type: :request do
       expect(last_response.status).to eq(204)
 
       get "/blitz"
-      expect(last_response.body).to include('data-blitz-page-best-value="4"')
+      expect(last_response.body).to include('data-blitz-best-value="4"')
     end
 
     it "rejects a negative score" do

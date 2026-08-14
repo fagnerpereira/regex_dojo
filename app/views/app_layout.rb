@@ -49,9 +49,9 @@ module RegexDojo
       private
 
       def html_attributes
-        # The `organic` class scopes the migration-bridge CSS; data-dark is
-        # stamped server-side so the first paint carries the right theme.
-        attrs = {lang: "pt-BR", class: "organic"}
+        # data-dark is stamped server-side so the first paint carries the
+        # right theme.
+        attrs = {lang: "pt-BR"}
         attrs[:"data-dark"] = "" if @dark
         attrs
       end
