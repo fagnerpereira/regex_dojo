@@ -453,7 +453,7 @@ export default class extends Controller {
     xpBadge.className = "text-dojo-gold font-mono";
     xpBadge.textContent = xp > 0 ? `+${xp} XP` : "already solved";
 
-    banner.append(icon, " Kata Solved! ", xpBadge);
+    banner.append(icon, " Challenge Solved! ", xpBadge);
     document.body.appendChild(banner);
 
     // Remove banner after 2.5 seconds

@@ -146,7 +146,7 @@ module RegexDojo
                   end
                   div(class: "text-center") do
                     span(class: "block text-4xl font-mono font-bold text-dojo-green", data: {blitz_target: "finalSolved"}) { "0" }
-                    span(class: "text-xs text-gray-500 font-mono uppercase") { "Katas Solved" }
+                    span(class: "text-xs text-gray-500 font-mono uppercase") { "Challenges Solved" }
                   end
                 end
 
