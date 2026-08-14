@@ -11,6 +11,12 @@ RSpec.describe RegexDojo::Views::Layout do
     expect(html).to include("MARKER")
   end
 
+  it "titles the page from the locale files" do
+    html = described_class.new.call { "" }
+
+    expect(html).to include("<title>Regex Dojo</title>")
+  end
+
   it "does not fall back to Phlex's missing-view_template warning" do
     html = described_class.new.call { "MARKER" }
 

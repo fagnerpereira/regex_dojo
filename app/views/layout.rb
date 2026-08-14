@@ -5,7 +5,9 @@ require "phlex"
 module RegexDojo
   module Views
     class Layout < Phlex::HTML
-      def initialize(title: "🥋 RegexDojo — Gamified Regex Learning", csrf_token: nil)
+      include Translatable
+
+      def initialize(title: nil, csrf_token: nil)
         @title = title
         @csrf_token = csrf_token
       end
@@ -18,7 +20,7 @@ module RegexDojo
             meta(charset: "utf-8")
             meta(name: "viewport", content: "width=device-width, initial-scale=1")
             meta(name: "csrf-token", content: @csrf_token) if @csrf_token
-            title { @title }
+            title { @title || t("app.title") }
 
             # Google Fonts: Inter for UI, JetBrains Mono for Code
             link(rel: "preconnect", href: "https://fonts.googleapis.com")
