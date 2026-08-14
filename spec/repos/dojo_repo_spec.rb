@@ -114,7 +114,7 @@ RSpec.describe RegexDojo::Repos::DojoRepo do
     it "promotes the belt to match the new XP total" do
       repo.record_solved_kata(user.id, "1", 200)
 
-      expect(repo.find_user_by_session_id("solver").belt).to eq("orange")
+      expect(repo.find_user_by_session_id("solver").belt).to eq("Intermediário")
     end
 
     it "is backed by a DB unique index on (user_id, kata_id)" do

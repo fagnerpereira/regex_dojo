@@ -53,7 +53,7 @@ RSpec.describe RegexDojo::Actions::Kata::Check, :db do
     body = json(response)
     expect(body[:passing]).to be(false)
     expect(body[:total_xp]).to eq(25)
-    expect(body[:belt]).to eq("white")
+    expect(body[:belt]).to eq("Novato")
   end
 
   it "creates a guest user and awards XP when no session exists" do
