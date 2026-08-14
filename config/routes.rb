@@ -15,5 +15,8 @@ module RegexDojo
     get "/blitz", to: "blitz.show"
     post "/blitz/score", to: "blitz.score"
     get "/codex", to: "codex.show"
+    get "/ruby", to: "ruby.index"
+    get "/ruby/:id", to: "ruby.show"
+    post "/ruby/:id/check", to: "challenges.check"
   end
 end

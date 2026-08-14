@@ -56,6 +56,17 @@ en:
     placeholder: "solve…"
     time_up: "Time!"
     again: "Again"
+  ruby:
+    context: "Ruby · Challenge %{position} of %{total}"
+    experiment: "experiment"
+    given_label: "given"
+    expected_label: "expected result"
+    placeholder: "write your Ruby code…"
+    code_label: "Ruby code"
+    verify: "Check"
+    ways_label: "ways to solve"
+    failing: "Your code would return something different from the expected result — check the block."
+    previous: "Previous"
   codex:
     context: "Codex · reference"
     subtitle: "The complete reference. Tap a card to try it in the Sandbox."

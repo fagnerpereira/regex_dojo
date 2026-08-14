@@ -17,6 +17,7 @@ import ThemeController from "./controllers/theme_controller";
 import DesafioController from "./controllers/desafio_controller";
 import SandboxPageController from "./controllers/sandbox_page_controller";
 import BlitzPageController from "./controllers/blitz_page_controller";
+import RevealController from "./controllers/reveal_controller";
 
 const application = Application.start();
 
@@ -31,3 +32,4 @@ application.register("desafio", DesafioController);
 // the final swap renames these.
 application.register("sandbox-page", SandboxPageController);
 application.register("blitz-page", BlitzPageController);
+application.register("reveal", RevealController);

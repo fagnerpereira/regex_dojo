@@ -56,6 +56,17 @@ pt:
     placeholder: "resolva…"
     time_up: "Tempo!"
     again: "De novo"
+  ruby:
+    context: "Ruby · Desafio %{position} de %{total}"
+    experiment: "experimento"
+    given_label: "dado"
+    expected_label: "resultado esperado"
+    placeholder: "escreva seu código Ruby…"
+    code_label: "Código Ruby"
+    verify: "Verificar"
+    ways_label: "formas de resolver"
+    failing: "Seu código retornaria um resultado diferente do esperado — confira o bloco."
+    previous: "Anterior"
   codex:
     context: "Codex · referência"
     subtitle: "Referência completa. Toque num cartão para testar no Sandbox."
