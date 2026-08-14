@@ -45,6 +45,14 @@ pt:
       i: "ignora maiúsculas/minúsculas"
       m: "multilinha — ^ e $ valem por linha"
       s: "o ponto também casa quebra de linha"
+  sandbox:
+    context: "Sandbox · teste livre"
+    subtitle: "Cole um texto, teste qualquer padrão, explore o que combina."
+    tokens_placeholder: "digite um padrão para ver a explicação"
+    test_text_label: "texto de teste"
+    copy: "copiar"
+    result_label: "resultado"
+    zero_occurrences: "0 ocorrências"
   date:
     formats:
       greeting: "%A, %-d de %B"

@@ -11,5 +11,6 @@ module RegexDojo
     get "/desafios", to: "desafios.index"
     get "/desafios/:id", to: "desafios.show"
     post "/desafios/:id/check", to: "challenges.check"
+    get "/sandbox", to: "sandbox.show"
   end
 end

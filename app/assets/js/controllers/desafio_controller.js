@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 import { PatternField } from "../lib/pattern_field";
 import { gradeTestCase } from "../lib/grading";
 import { escapeHTML, markFirst } from "../lib/highlight";
-import { tokenize, TOKEN_COLORS, FLAG_LABELS } from "../lib/tokenizer";
+import { explanationHTML } from "../lib/explanation";
 
 // The Desafio screen: live evaluation on every keystroke against the
 // challenge's test cases (mirroring the server rule via lib/grading), the
@@ -121,24 +121,10 @@ export default class extends Controller {
   }
 
   renderTokens(pattern) {
-    const chips = pattern
-      ? tokenize(pattern)
-          .map(
-            ([token, label, kind]) =>
-              '<a href="/codex" class="inline-flex items-center gap-2 rounded-full bg-dune-100 px-3 py-1.5 text-[12.5px] no-underline text-ink hover:bg-terra-100 transition-colors">' +
-              `<span class="font-mono text-[14px] font-medium ${TOKEN_COLORS[kind] || ""}">${escapeHTML(token)}</span>${label}</a>`
-          )
-          .join("")
-      : '<span class="text-[12.5px] text-ink/35">digite para ver cada símbolo explicado</span>';
-
-    const flagChips = [...this.patternField.flags]
-      .map(
-        (flag) =>
-          '<span class="inline-flex items-center gap-2 rounded-full bg-terra-100 px-3 py-1.5 text-[12.5px] text-terra-800">' +
-          `<span class="font-mono text-[14px] font-medium">${flag}</span>${FLAG_LABELS[flag]}</span>`
-      )
-      .join("");
-
-    this.tokensTarget.innerHTML = chips + flagChips;
+    this.tokensTarget.innerHTML = explanationHTML(
+      pattern,
+      this.patternField.flags,
+      "digite para ver cada símbolo explicado"
+    );
   }
 }

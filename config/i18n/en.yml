@@ -45,6 +45,14 @@ en:
       i: "ignores upper/lower case"
       m: "multiline — ^ and $ apply per line"
       s: "the dot also matches newlines"
+  sandbox:
+    context: "Sandbox · free play"
+    subtitle: "Paste a text, test any pattern, explore what matches."
+    tokens_placeholder: "type a pattern to see the explanation"
+    test_text_label: "test text"
+    copy: "copy"
+    result_label: "result"
+    zero_occurrences: "0 occurrences"
   date:
     formats:
       greeting: "%A, %B %-d"
