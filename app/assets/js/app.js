@@ -16,6 +16,7 @@ import RubyDojoController from "./controllers/ruby_dojo_controller";
 import ThemeController from "./controllers/theme_controller";
 import DesafioController from "./controllers/desafio_controller";
 import SandboxPageController from "./controllers/sandbox_page_controller";
+import BlitzPageController from "./controllers/blitz_page_controller";
 
 const application = Application.start();
 
@@ -27,5 +28,6 @@ application.register("ruby-dojo", RubyDojoController);
 application.register("theme", ThemeController);
 application.register("desafio", DesafioController);
 // "-page" suffix while the legacy dashboard still owns the plain name;
-// the final swap renames it.
+// the final swap renames these.
 application.register("sandbox-page", SandboxPageController);
+application.register("blitz-page", BlitzPageController);

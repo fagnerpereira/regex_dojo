@@ -45,6 +45,17 @@ pt:
       i: "ignora maiúsculas/minúsculas"
       m: "multilinha — ^ e $ valem por linha"
       s: "o ponto também casa quebra de linha"
+  blitz:
+    context: "Blitz · revisão mista"
+    intro: "30 segundos. Desafios misturados de tudo que você já viu — parecer mais difícil que o normal é sinal de que está funcionando."
+    time_label: "tempo"
+    record_label: "recorde"
+    solved_label: "resolvidos"
+    start: "Começar"
+    skip: "Pular"
+    placeholder: "resolva…"
+    time_up: "Tempo!"
+    again: "De novo"
   sandbox:
     context: "Sandbox · teste livre"
     subtitle: "Cole um texto, teste qualquer padrão, explore o que combina."

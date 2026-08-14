@@ -27,6 +27,25 @@ RSpec.describe RegexDojo::Repos::DojoRepo do
     end
   end
 
+  describe "#best_blitz_score" do
+    let(:user) do
+      repo.create_user(session_id: "blitzer")
+      repo.find_user_by_session_id("blitzer")
+    end
+
+    it "returns the user's highest score across runs" do
+      repo.save_blitz_score(user.id, 3, 1.0)
+      repo.save_blitz_score(user.id, 7, 1.0)
+      repo.save_blitz_score(user.id, 5, 1.0)
+
+      expect(repo.best_blitz_score(user.id)).to eq(7)
+    end
+
+    it "is zero for a user with no runs" do
+      expect(repo.best_blitz_score(user.id)).to eq(0)
+    end
+  end
+
   describe "#create_submission" do
     let(:user) do
       repo.create_user(session_id: "submitter")

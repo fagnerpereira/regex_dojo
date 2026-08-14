@@ -45,6 +45,17 @@ en:
       i: "ignores upper/lower case"
       m: "multiline — ^ and $ apply per line"
       s: "the dot also matches newlines"
+  blitz:
+    context: "Blitz · mixed review"
+    intro: "30 seconds. Mixed challenges from everything you have seen — feeling harder than usual means it is working."
+    time_label: "time"
+    record_label: "record"
+    solved_label: "solved"
+    start: "Start"
+    skip: "Skip"
+    placeholder: "solve…"
+    time_up: "Time!"
+    again: "Again"
   sandbox:
     context: "Sandbox · free play"
     subtitle: "Paste a text, test any pattern, explore what matches."

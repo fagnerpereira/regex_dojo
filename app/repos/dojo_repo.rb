@@ -66,6 +66,10 @@ module RegexDojo
         )
       end
 
+      def best_blitz_score(user_id)
+        blitz_scores.dataset.where(user_id: user_id).max(:score) || 0
+      end
+
       def all_challenges(track: "regex")
         challenges.where(track: track).combine(:test_cases).order(:id).to_a
       end
