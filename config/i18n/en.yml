@@ -56,6 +56,9 @@ en:
     placeholder: "solve…"
     time_up: "Time!"
     again: "Again"
+  codex:
+    context: "Codex · reference"
+    subtitle: "The complete reference. Tap a card to try it in the Sandbox."
   sandbox:
     context: "Sandbox · free play"
     subtitle: "Paste a text, test any pattern, explore what matches."

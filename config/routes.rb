@@ -14,5 +14,6 @@ module RegexDojo
     get "/sandbox", to: "sandbox.show"
     get "/blitz", to: "blitz.show"
     post "/blitz/score", to: "blitz.score"
+    get "/codex", to: "codex.show"
   end
 end

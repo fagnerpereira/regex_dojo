@@ -56,6 +56,9 @@ pt:
     placeholder: "resolva…"
     time_up: "Tempo!"
     again: "De novo"
+  codex:
+    context: "Codex · referência"
+    subtitle: "Referência completa. Toque num cartão para testar no Sandbox."
   sandbox:
     context: "Sandbox · teste livre"
     subtitle: "Cole um texto, teste qualquer padrão, explore o que combina."
