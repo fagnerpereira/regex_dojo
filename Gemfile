@@ -28,6 +28,16 @@ group :development, :test do
   # Syntax highlighting SQL logs
   gem "rouge"
   gem "standard", require: false
+  gem "standardrb", "~> 1.0.1"
+  gem "repl_type_completor", "~> 0.1.16"
+  # gem "pry"
+  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
+  gem "brakeman", require: false
+  gem "ruby-lsp-rspec", require: false
+  gem "ruby-lsp-reek", require: false
+  gem "ruby-lsp-brakeman", require: false
 end
 
 group :cli, :development do
