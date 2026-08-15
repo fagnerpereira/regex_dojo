@@ -54,9 +54,9 @@
     "task": "Encontre qualquer letra entre <code>p</code> e <code>s</code> (p, q, r, s).",
     "hint": ["Use um intervalo, não uma lista.", "Hífen entre a primeira e a última letra.", "[p-s]"],
     "test_cases": [
-      {"input": "option p", "expected_match": "p"},
-      {"input": "option r", "expected_match": "r"},
-      {"input": "option a", "expected_match": null}
+      {"input": "item p", "expected_match": "p"},
+      {"input": "item r", "expected_match": "r"},
+      {"input": "item a", "expected_match": null}
     ]
   },
   {
