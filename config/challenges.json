@@ -2,357 +2,225 @@
   {
     "id": 31,
     "difficulty": "Easy",
-    "title": "Literal Characters",
-    "concept": "🥋 Literal Matches",
-    "description": "A regular expression (regex) is a pattern used to find text. The simplest pattern is a literal match. The pattern <code>ruby</code> matches the letters 'r', 'u', 'b', 'y' in that exact sequence, and is <strong>case-sensitive</strong>.",
-    "lesson": "A regular expression (regex) is a pattern used to find text. The simplest pattern is a literal match. The pattern <code>ruby</code> matches the letters 'r', 'u', 'b', 'y' in that exact sequence, and is <strong>case-sensitive</strong>.",
-    "task": "Match the word <code>ruby</code> (lowercase) in the target string.",
-    "hint": "Literal patterns match themselves. Type exactly 'ruby' to pass.",
+    "title": "Caracteres literais",
+    "concept": "Literais · Novato",
+    "description": "Uma expressão regular é um padrão para encontrar texto. O padrão mais simples é o <em>literal</em>: <code>ruby</code> encontra as letras r, u, b, y nessa ordem exata — e diferencia maiúsculas.",
+    "lesson": "Uma expressão regular é um padrão para encontrar texto. O padrão mais simples é o <em>literal</em>: <code>ruby</code> encontra as letras r, u, b, y nessa ordem exata — e diferencia maiúsculas.",
+    "task": "Encontre a palavra <code>ruby</code> (minúscula) no texto.",
+    "hint": ["Padrões literais encontram a si mesmos.", "São exatamente 4 letras, sem símbolos.", "ruby"],
     "test_cases": [
-      {
-        "input": "welcome to ruby dojo",
-        "expected_match": "ruby"
-      },
-      {
-        "input": "Ruby is elegant",
-        "expected_match": null
-      },
-      {
-        "input": "python is fine too",
-        "expected_match": null
-      }
+      {"input": "welcome to ruby dojo", "expected_match": "ruby"},
+      {"input": "Ruby is elegant", "expected_match": null},
+      {"input": "python is fine too", "expected_match": null}
     ]
   },
   {
     "id": 32,
     "difficulty": "Easy",
-    "title": "Wildcard Dot",
-    "concept": "🔮 Wildcard Dot (.)",
-    "description": "The dot <code>.</code> is a wildcard character that matches <strong>any single character</strong> (letters, digits, symbols, spaces) except a newline. For example, <code>d.g</code> matches 'dog', 'dig', 'dug', or even 'd#g'.",
-    "lesson": "The dot <code>.</code> is a wildcard character that matches <strong>any single character</strong> (letters, digits, symbols, spaces) except a newline. For example, <code>d.g</code> matches 'dog', 'dig', 'dug', or even 'd#g'.",
-    "task": "Match <code>cat</code>, <code>cot</code>, and <code>cut</code> with a single pattern using the wildcard dot.",
-    "hint": "Replace the middle vowel with a dot: c.t",
+    "title": "Curinga (ponto)",
+    "concept": "Curinga · Novato",
+    "description": "O ponto <code>.</code> encontra <strong>qualquer caractere</strong> (menos quebra de linha). <code>d.g</code> encontra \"dog\", \"dig\", \"dug\" e até \"d#g\".",
+    "lesson": "O ponto <code>.</code> encontra <strong>qualquer caractere</strong> (menos quebra de linha). <code>d.g</code> encontra \"dog\", \"dig\", \"dug\" e até \"d#g\".",
+    "task": "Encontre <code>cat</code>, <code>cot</code> e <code>cut</code> com um único padrão.",
+    "hint": ["A primeira e a última letra são fixas.", "Troque a vogal do meio pelo ponto.", "c.t"],
     "test_cases": [
-      {
-        "input": "the black cat",
-        "expected_match": "cat"
-      },
-      {
-        "input": "sleeping in a cot",
-        "expected_match": "cot"
-      },
-      {
-        "input": "a deep paper cut",
-        "expected_match": "cut"
-      }
+      {"input": "the black cat", "expected_match": "cat"},
+      {"input": "sleeping in a cot", "expected_match": "cot"},
+      {"input": "a deep paper cut", "expected_match": "cut"}
     ]
   },
   {
     "id": 33,
     "difficulty": "Easy",
-    "title": "Character Classes",
-    "concept": "🎯 Character Sets [abc]",
-    "description": "Square brackets <code>[...]</code> define a character class. It matches <strong>any single character</strong> enclosed within the brackets. E.g., <code>b[ae]t</code> matches 'bat' and 'bet', but not 'bit'.",
-    "lesson": "Square brackets <code>[...]</code> define a character class. It matches <strong>any single character</strong> enclosed within the brackets. E.g., <code>b[ae]t</code> matches 'bat' and 'bet', but not 'bit'.",
-    "task": "Match <code>bat</code> and <code>bet</code>, but do NOT match <code>bit</code>.",
-    "hint": "Put the permitted vowels inside brackets: b[ae]t",
+    "title": "Classes de caracteres",
+    "concept": "Classes · Novato",
+    "description": "Colchetes <code>[...]</code> definem uma classe: encontram <strong>um</strong> caractere qualquer dentre os listados. <code>b[ae]t</code> encontra \"bat\" e \"bet\", mas não \"bit\".",
+    "lesson": "Colchetes <code>[...]</code> definem uma classe: encontram <strong>um</strong> caractere qualquer dentre os listados. <code>b[ae]t</code> encontra \"bat\" e \"bet\", mas não \"bit\".",
+    "task": "Encontre <code>bat</code> e <code>bet</code>, mas NÃO <code>bit</code>.",
+    "hint": ["Liste só as vogais permitidas.", "As vogais vão entre colchetes, no meio.", "b[ae]t"],
     "test_cases": [
-      {
-        "input": "baseball bat",
-        "expected_match": "bat"
-      },
-      {
-        "input": "friendly bet",
-        "expected_match": "bet"
-      },
-      {
-        "input": "a little bit",
-        "expected_match": null
-      }
+      {"input": "baseball bat", "expected_match": "bat"},
+      {"input": "friendly bet", "expected_match": "bet"},
+      {"input": "a little bit", "expected_match": null}
     ]
   },
   {
     "id": 34,
     "difficulty": "Easy",
-    "title": "Ranges in sets",
-    "concept": "📈 Character Ranges [a-z]",
-    "description": "Instead of listing every letter or number, you can specify ranges using a hyphen <code>-</code> inside square brackets. E.g., <code>[a-z]</code> matches any lowercase letter, and <code>[0-9]</code> matches any digit.",
-    "lesson": "Instead of listing every letter or number, you can specify ranges using a hyphen <code>-</code> inside square brackets. E.g., <code>[a-z]</code> matches any lowercase letter, and <code>[0-9]</code> matches any digit.",
-    "task": "Match any single lowercase letter between 'p' and 's' (p, q, r, s).",
-    "hint": "Write the character set range using a hyphen: [p-s]",
+    "title": "Intervalos",
+    "concept": "Classes · Novato",
+    "description": "Um hífen dentro dos colchetes define um intervalo: <code>[a-z]</code> é qualquer minúscula, <code>[0-9]</code> é qualquer dígito.",
+    "lesson": "Um hífen dentro dos colchetes define um intervalo: <code>[a-z]</code> é qualquer minúscula, <code>[0-9]</code> é qualquer dígito.",
+    "task": "Encontre qualquer letra entre <code>p</code> e <code>s</code> (p, q, r, s).",
+    "hint": ["Use um intervalo, não uma lista.", "Hífen entre a primeira e a última letra.", "[p-s]"],
     "test_cases": [
-      {
-        "input": "option p",
-        "expected_match": "p"
-      },
-      {
-        "input": "option r",
-        "expected_match": "r"
-      },
-      {
-        "input": "option a",
-        "expected_match": null
-      }
+      {"input": "item p", "expected_match": "p"},
+      {"input": "item r", "expected_match": "r"},
+      {"input": "item a", "expected_match": null}
     ]
   },
   {
     "id": 35,
     "difficulty": "Easy",
-    "title": "Negated Sets",
-    "concept": "🚫 Negation Sets [^abc]",
-    "description": "Adding a caret <code>^</code> as the first character inside square brackets negates the class. E.g., <code>[^0-9]</code> matches any single character that is <strong>NOT</strong> a digit.",
-    "lesson": "Adding a caret <code>^</code> as the first character inside square brackets negates the class. E.g., <code>[^0-9]</code> matches any single character that is <strong>NOT</strong> a digit.",
-    "task": "Match any word ending in 'ot' EXCEPT the word <code>not</code>.",
-    "hint": "Negate 'n' in the character set before 'ot': [^n]ot",
+    "title": "Conjuntos negados",
+    "concept": "Classes · Novato",
+    "description": "Um <code>^</code> como primeiro caractere dos colchetes nega a classe: <code>[^0-9]</code> encontra qualquer coisa que <strong>não</strong> seja dígito.",
+    "lesson": "Um <code>^</code> como primeiro caractere dos colchetes nega a classe: <code>[^0-9]</code> encontra qualquer coisa que <strong>não</strong> seja dígito.",
+    "task": "Encontre palavras terminadas em \"ot\", EXCETO <code>not</code>.",
+    "hint": ["Negue uma única letra antes de \"ot\".", "O ^ vai dentro dos colchetes.", "[^n]ot"],
     "test_cases": [
-      {
-        "input": "a cooking pot",
-        "expected_match": "pot"
-      },
-      {
-        "input": "slept on the cot",
-        "expected_match": "cot"
-      },
-      {
-        "input": "do not click here",
-        "expected_match": null
-      }
+      {"input": "a cooking pot", "expected_match": "pot"},
+      {"input": "slept on the cot", "expected_match": "cot"},
+      {"input": "do not click here", "expected_match": null}
     ]
   },
   {
     "id": 36,
     "difficulty": "Medium",
-    "title": "Start Anchor",
-    "concept": "🏁 Start Anchor (^)",
-    "description": "Outside square brackets, the caret <code>^</code> anchors the pattern to the <strong>beginning</strong> of a line or string. E.g., <code>^cat</code> matches 'cat' only if it is the very first word.",
-    "lesson": "Outside square brackets, the caret <code>^</code> anchors the pattern to the <strong>beginning</strong> of a line or string. E.g., <code>^cat</code> matches 'cat' only if it is the very first word.",
-    "task": "Match <code>Hello</code> only when it starts the line.",
-    "hint": "Put the caret at the start of your pattern: ^Hello",
+    "title": "Âncora de início",
+    "concept": "Âncoras · Iniciante",
+    "description": "Fora dos colchetes, o circunflexo <code>^</code> ancora o padrão ao <strong>início</strong> da linha. <code>^cat</code> encontra \"cat\" apenas quando é a primeira palavra.",
+    "lesson": "Fora dos colchetes, o circunflexo <code>^</code> ancora o padrão ao <strong>início</strong> da linha. <code>^cat</code> encontra \"cat\" apenas quando é a primeira palavra.",
+    "task": "Encontre <code>Hello</code> apenas quando inicia a linha.",
+    "hint": ["A âncora vem antes do texto.", "Circunflexo + a palavra.", "^Hello"],
     "test_cases": [
-      {
-        "input": "Hello friend",
-        "expected_match": "Hello"
-      },
-      {
-        "input": "well, Hello there",
-        "expected_match": null
-      }
+      {"input": "Hello friend", "expected_match": "Hello"},
+      {"input": "well, Hello there", "expected_match": null}
     ]
   },
   {
     "id": 37,
     "difficulty": "Medium",
-    "title": "End Anchor",
-    "concept": "🛑 End Anchor ($)",
-    "description": "The dollar sign <code>$</code> anchors the pattern to the <strong>end</strong> of a line or string. E.g., <code>dog$</code> matches 'dog' only if it is the last word in the string.",
-    "lesson": "The dollar sign <code>$</code> anchors the pattern to the <strong>end</strong> of a line or string. E.g., <code>dog$</code> matches 'dog' only if it is the last word in the string.",
-    "task": "Match <code>Dojo</code> only when it ends the line.",
-    "hint": "Put the dollar sign at the end of your pattern: Dojo$",
+    "title": "Âncora de fim",
+    "concept": "Âncoras · Iniciante",
+    "description": "O cifrão <code>$</code> ancora o padrão ao <strong>fim</strong> da linha. <code>dog$</code> encontra \"dog\" apenas como última palavra.",
+    "lesson": "O cifrão <code>$</code> ancora o padrão ao <strong>fim</strong> da linha. <code>dog$</code> encontra \"dog\" apenas como última palavra.",
+    "task": "Encontre <code>Dojo</code> apenas no fim da linha.",
+    "hint": ["A âncora vem depois do texto.", "A palavra + cifrão.", "Dojo$"],
     "test_cases": [
-      {
-        "input": "welcome to the Dojo",
-        "expected_match": "Dojo"
-      },
-      {
-        "input": "Dojo master class",
-        "expected_match": null
-      }
+      {"input": "welcome to the Dojo", "expected_match": "Dojo"},
+      {"input": "Dojo master class", "expected_match": null}
     ]
   },
   {
     "id": 38,
     "difficulty": "Medium",
-    "title": "The Plus Quantifier",
-    "concept": "➕ Plus Quantifier (+)",
-    "description": "The plus <code>+</code> matches <strong>one or more</strong> repetitions of the preceding character or group. For example, <code>go+al</code> matches 'goal' and 'gooal', but not 'gal'.",
-    "lesson": "The plus <code>+</code> matches <strong>one or more</strong> repetitions of the preceding character or group. For example, <code>go+al</code> matches 'goal' and 'gooal', but not 'gal'.",
-    "task": "Match <code>hooray</code> with any number of 'o's (must have at least one 'o').",
-    "hint": "Use the plus quantifier on the 'o' character: ho+ray",
+    "title": "Quantificador +",
+    "concept": "Quantificadores · Iniciante",
+    "description": "O <code>+</code> repete o item anterior <strong>uma ou mais</strong> vezes. <code>go+al</code> encontra \"goal\" e \"gooal\", mas não \"gal\".",
+    "lesson": "O <code>+</code> repete o item anterior <strong>uma ou mais</strong> vezes. <code>go+al</code> encontra \"goal\" e \"gooal\", mas não \"gal\".",
+    "task": "Encontre <code>hooray</code> com qualquer quantidade de \"o\" (pelo menos um).",
+    "hint": ["Só uma letra se repete.", "O + vai logo depois do o.", "ho+ray"],
     "test_cases": [
-      {
-        "input": "hooray!",
-        "expected_match": "hooray"
-      },
-      {
-        "input": "hooooooray!",
-        "expected_match": "hooooooray"
-      },
-      {
-        "input": "horay!",
-        "expected_match": null
-      }
+      {"input": "hooray!", "expected_match": "hooray"},
+      {"input": "hooooooray!", "expected_match": "hooooooray"},
+      {"input": "horay!", "expected_match": "horay"}
     ]
   },
   {
     "id": 39,
     "difficulty": "Medium",
-    "title": "The Star Quantifier",
-    "concept": "✨ Star Quantifier (*)",
-    "description": "The asterisk <code>*</code> matches <strong>zero or more</strong> repetitions of the preceding character or group. E.g., <code>ab*c</code> matches 'ac', 'abc', and 'abbc'.",
-    "lesson": "The asterisk <code>*</code> matches <strong>zero or more</strong> repetitions of the preceding character or group. E.g., <code>ab*c</code> matches 'ac', 'abc', and 'abbc'.",
-    "task": "Match <code>ac</code>, <code>abc</code>, and <code>abbc</code> with a single pattern using the star quantifier.",
-    "hint": "Place the asterisk after the optional repeating 'b': ab*c",
+    "title": "Quantificador *",
+    "concept": "Quantificadores · Iniciante",
+    "description": "O <code>*</code> repete o item anterior <strong>zero ou mais</strong> vezes. <code>ab*c</code> encontra \"ac\", \"abc\" e \"abbc\".",
+    "lesson": "O <code>*</code> repete o item anterior <strong>zero ou mais</strong> vezes. <code>ab*c</code> encontra \"ac\", \"abc\" e \"abbc\".",
+    "task": "Encontre <code>ac</code>, <code>abc</code> e <code>abbc</code> com um único padrão.",
+    "hint": ["O b é opcional e repetível.", "O * vai depois do b.", "ab*c"],
     "test_cases": [
-      {
-        "input": "matched ac",
-        "expected_match": "ac"
-      },
-      {
-        "input": "matched abc",
-        "expected_match": "abc"
-      },
-      {
-        "input": "matched abbc",
-        "expected_match": "abbc"
-      }
+      {"input": "matched ac", "expected_match": "ac"},
+      {"input": "matched abc", "expected_match": "abc"},
+      {"input": "matched abbc", "expected_match": "abbc"}
     ]
   },
   {
     "id": 40,
     "difficulty": "Medium",
-    "title": "Optional Question Mark",
-    "concept": "❓ Question Mark (?)",
-    "description": "The question mark <code>?</code> makes the preceding character or group <strong>optional</strong> (matches 0 or 1 time). E.g., <code>colors?</code> matches 'color' and 'colors'.",
-    "lesson": "The question mark <code>?</code> makes the preceding character or group <strong>optional</strong> (matches 0 or 1 time). E.g., <code>colors?</code> matches 'color' and 'colors'.",
-    "task": "Match both American <code>color</code> and British <code>colour</code> spellings.",
-    "hint": "Make the 'u' character optional: colou?r",
+    "title": "Opcional ?",
+    "concept": "Quantificadores · Iniciante",
+    "description": "O <code>?</code> torna o item anterior <strong>opcional</strong> (0 ou 1 vez). <code>colors?</code> encontra \"color\" e \"colors\".",
+    "lesson": "O <code>?</code> torna o item anterior <strong>opcional</strong> (0 ou 1 vez). <code>colors?</code> encontra \"color\" e \"colors\".",
+    "task": "Encontre as grafias <code>color</code> e <code>colour</code>.",
+    "hint": ["Uma letra é opcional.", "O ? vai depois do u.", "colou?r"],
     "test_cases": [
-      {
-        "input": "bright color",
-        "expected_match": "color"
-      },
-      {
-        "input": "bright colour",
-        "expected_match": "colour"
-      },
-      {
-        "input": "bright colouur",
-        "expected_match": null
-      }
+      {"input": "bright color", "expected_match": "color"},
+      {"input": "bright colour", "expected_match": "colour"},
+      {"input": "bright colouur", "expected_match": null}
     ]
   },
   {
     "id": 41,
     "difficulty": "Medium",
-    "title": "Range Quantifiers",
-    "concept": "🔢 Curly Braces {n,m}",
-    "description": "Curly braces <code>{n,m}</code> match between n and m repetitions of the preceding item. <code>{n}</code> matches exactly n times. <code>{n,}</code> matches n or more times.",
-    "lesson": "Curly braces <code>{n,m}</code> match between n and m repetitions of the preceding item. <code>{n}</code> matches exactly n times. <code>{n,}</code> matches n or more times.",
-    "task": "Match exactly 3 digits in a row.",
-    "hint": "Use a digit set [0-9] and the quantifier {3}.",
+    "title": "Chaves {n,m}",
+    "concept": "Quantificadores · Intermediário",
+    "description": "Chaves controlam a repetição: <code>{n}</code> exatamente n vezes, <code>{n,m}</code> de n a m, <code>{n,}</code> n ou mais.",
+    "lesson": "Chaves controlam a repetição: <code>{n}</code> exatamente n vezes, <code>{n,m}</code> de n a m, <code>{n,}</code> n ou mais.",
+    "task": "Encontre exatamente 3 dígitos seguidos.",
+    "hint": ["Combine uma classe de dígito com {3}.", "[0-9] ou \\d, seguido de {3}.", "[0-9]{3}"],
     "test_cases": [
-      {
-        "input": "Code 123",
-        "expected_match": "123"
-      },
-      {
-        "input": "ID 9876",
-        "expected_match": "987"
-      },
-      {
-        "input": "Room 42",
-        "expected_match": null
-      }
+      {"input": "Code 123", "expected_match": "123"},
+      {"input": "ID 9876", "expected_match": "987"},
+      {"input": "Room 42", "expected_match": null}
     ]
   },
   {
     "id": 42,
     "difficulty": "Medium",
-    "title": "Digit Shortcuts",
-    "concept": "⚡ Escape Shortcuts (\\d)",
-    "description": "Regex provides shortcuts for common character sets. <code>\\d</code> matches any single digit (equivalent to <code>[0-9]</code>). <code>\\w</code> matches any word character (alphanumeric and underscore). <code>\\s</code> matches whitespace.",
-    "lesson": "Regex provides shortcuts for common character sets. <code>\\d</code> matches any single digit (equivalent to <code>[0-9]</code>). <code>\\w</code> matches any word character (alphanumeric and underscore). <code>\\s</code> matches whitespace.",
-    "task": "Match a 3-digit number using the digit shortcut <code>\\d</code>.",
-    "hint": "Combine \\d with a curly brace quantifier: \\d{3}",
+    "title": "Atalhos \\d \\w \\s",
+    "concept": "Classes · Intermediário",
+    "description": "Atalhos para classes comuns: <code>\\d</code> dígito, <code>\\w</code> caractere de palavra, <code>\\s</code> espaço em branco.",
+    "lesson": "Atalhos para classes comuns: <code>\\d</code> dígito, <code>\\w</code> caractere de palavra, <code>\\s</code> espaço em branco.",
+    "task": "Encontre um número de 3 dígitos usando o atalho <code>\\d</code>.",
+    "hint": ["Igual ao desafio anterior, com atalho.", "\\d no lugar de [0-9].", "\\d{3}"],
     "test_cases": [
-      {
-        "input": "Flight 821 arrived",
-        "expected_match": "821"
-      },
-      {
-        "input": "Room 42 empty",
-        "expected_match": null
-      },
-      {
-        "input": "No number",
-        "expected_match": null
-      }
+      {"input": "Flight 821 arrived", "expected_match": "821"},
+      {"input": "Room 42 empty", "expected_match": null},
+      {"input": "No number", "expected_match": null}
     ]
   },
   {
     "id": 43,
     "difficulty": "Hard",
-    "title": "Grouping and Alternation",
-    "concept": "🌿 Grouping & Alternation (|)",
-    "description": "Parentheses <code>(...)</code> group terms, and the pipe <code>|</code> acts as an 'OR' operator. For example, <code>(red|blue)</code> matches 'red' or 'blue'.",
-    "lesson": "Parentheses <code>(...)</code> group terms, and the pipe <code>|</code> acts as an 'OR' operator. For example, <code>(red|blue)</code> matches 'red' or 'blue'.",
-    "task": "Match <code>red</code>, <code>green</code>, or <code>blue</code> using grouping and alternation.",
-    "hint": "Put the colors inside parentheses separated by pipes: (red|green|blue)",
+    "title": "Grupos e alternância",
+    "concept": "Grupos · Intermediário",
+    "description": "Parênteses <code>(...)</code> agrupam; a barra vertical <code>|</code> é um \"OU\". <code>(red|blue)</code> encontra \"red\" ou \"blue\".",
+    "lesson": "Parênteses <code>(...)</code> agrupam; a barra vertical <code>|</code> é um \"OU\". <code>(red|blue)</code> encontra \"red\" ou \"blue\".",
+    "task": "Encontre <code>red</code>, <code>green</code> ou <code>blue</code> com um único padrão.",
+    "hint": ["Três opções separadas por |.", "Tudo dentro de um grupo.", "(red|green|blue)"],
     "test_cases": [
-      {
-        "input": "sky is blue",
-        "expected_match": "blue"
-      },
-      {
-        "input": "apple is red",
-        "expected_match": "red"
-      },
-      {
-        "input": "grass is green",
-        "expected_match": "green"
-      },
-      {
-        "input": "yellow submarine",
-        "expected_match": null
-      }
+      {"input": "sky is blue", "expected_match": "blue"},
+      {"input": "apple is red", "expected_match": "red"},
+      {"input": "grass is green", "expected_match": "green"},
+      {"input": "yellow submarine", "expected_match": null}
     ]
   },
   {
     "id": 44,
     "difficulty": "Hard",
-    "title": "Word Boundaries",
-    "concept": "🚧 Word Boundaries (\\b)",
-    "description": "The boundary anchor <code>\\b</code> asserts a position where a word character is next to a non-word character (like spaces, punctuation, or start/end of string). E.g., <code>\\bcat\\b</code> matches 'cat' but not 'cats' or 'bobcat'.",
-    "lesson": "The boundary anchor <code>\\b</code> asserts a position where a word character is next to a non-word character (like spaces, punctuation, or start/end of string). E.g., <code>\\bcat\\b</code> matches 'cat' but not 'cats' or 'bobcat'.",
-    "task": "Match the word <code>cat</code> exactly, preventing matches inside other words.",
-    "hint": "Wrap the literal word 'cat' in word boundaries: \\bcat\\b",
+    "title": "Bordas de palavra",
+    "concept": "Âncoras · Avançado",
+    "description": "<code>\\b</code> marca a fronteira entre palavra e não-palavra. <code>\\bcat\\b</code> encontra \"cat\", mas não \"cats\" nem \"bobcat\".",
+    "lesson": "<code>\\b</code> marca a fronteira entre palavra e não-palavra. <code>\\bcat\\b</code> encontra \"cat\", mas não \"cats\" nem \"bobcat\".",
+    "task": "Encontre a palavra <code>cat</code> exata, sem casar dentro de outras palavras.",
+    "hint": ["Cerque a palavra com fronteiras.", "\\b dos dois lados.", "\\bcat\\b"],
     "test_cases": [
-      {
-        "input": "the wild cat jumped",
-        "expected_match": "cat"
-      },
-      {
-        "input": "cats are sleeping",
-        "expected_match": null
-      },
-      {
-        "input": "wild bobcat",
-        "expected_match": null
-      }
+      {"input": "the wild cat jumped", "expected_match": "cat"},
+      {"input": "cats are sleeping", "expected_match": null},
+      {"input": "wild bobcat", "expected_match": null}
     ]
   },
   {
     "id": 45,
     "difficulty": "Hard",
-    "title": "Lookahead Assertions",
-    "concept": "👁️ Positive Lookahead (?=...)",
-    "description": "A positive lookahead <code>(?=...)</code> matches a position followed by a pattern, but does NOT include it in the match result. E.g., <code>\\d+(?=px)</code> matches digits only if they are immediately followed by 'px'.",
-    "lesson": "A positive lookahead <code>(?=...)</code> matches a position followed by a pattern, but does NOT include it in the match result. E.g., <code>\\d+(?=px)</code> matches digits only if they are immediately followed by 'px'.",
-    "task": "Match any numeric value only if followed immediately by the unit <code>usd</code>.",
-    "hint": "Use digits quantifier \\d+ followed by positive lookahead (?=usd)",
+    "title": "Lookahead (?=)",
+    "concept": "Lookaround · Avançado",
+    "description": "O lookahead <code>(?=...)</code> espia o que vem a seguir <strong>sem incluir</strong> no resultado. <code>\\d+(?=px)</code> encontra dígitos apenas se seguidos de \"px\".",
+    "lesson": "O lookahead <code>(?=...)</code> espia o que vem a seguir <strong>sem incluir</strong> no resultado. <code>\\d+(?=px)</code> encontra dígitos apenas se seguidos de \"px\".",
+    "task": "Encontre um valor numérico apenas se seguido da unidade <code>usd</code>.",
+    "hint": ["Dígitos + uma espiada à frente.", "\\d+ seguido de (?=usd).", "\\d+(?=usd)"],
     "test_cases": [
-      {
-        "input": "Total: 250usd",
-        "expected_match": "250"
-      },
-      {
-        "input": "Price: 100eur",
-        "expected_match": null
-      },
-      {
-        "input": "Weight: 50kg",
-        "expected_match": null
-      }
+      {"input": "Total: 250usd", "expected_match": "250"},
+      {"input": "Price: 100eur", "expected_match": null},
+      {"input": "Weight: 50kg", "expected_match": null}
     ]
   }
 ]

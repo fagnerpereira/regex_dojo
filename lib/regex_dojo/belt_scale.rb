@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
 module RegexDojo
-  # Single source of truth for belt ranks.
+  # Single source of truth for the XP levels (formerly belt ranks).
   #
-  # Two callers depend on these numbers agreeing: DojoRepo assigns a belt from
-  # a user's cumulative XP, and the HUD draws its progress bar against the top
-  # threshold. Keeping the table here stops the two from drifting apart.
+  # Two callers depend on these numbers agreeing: DojoRepo assigns a level from
+  # a user's cumulative XP, and the header draws its progress bar against the
+  # top threshold. Keeping the table here stops the two from drifting apart.
   module BeltScale
     # Cumulative XP thresholds, highest first — the first one reached wins.
+    # Labels are the learner-facing level names (plain language, no jargon).
     TIERS = [
-      [370, "black"],
-      [265, "green"],
-      [160, "orange"],
-      [75, "yellow"],
-      [0, "white"]
+      [370, "Especialista"],
+      [265, "Avançado"],
+      [160, "Intermediário"],
+      [75, "Iniciante"],
+      [0, "Novato"]
     ].freeze
 
     # XP needed for the top belt, i.e. a full progress bar.

@@ -8,16 +8,16 @@ import "@hotwired/turbo";
 import { Application } from "@hotwired/stimulus";
 
 // Controllers
-import TabsController from "./controllers/tabs_controller";
-import DojoController from "./controllers/dojo_controller";
+import ThemeController from "./controllers/theme_controller";
+import DesafioController from "./controllers/desafio_controller";
 import SandboxController from "./controllers/sandbox_controller";
 import BlitzController from "./controllers/blitz_controller";
-import RubyDojoController from "./controllers/ruby_dojo_controller";
+import RevealController from "./controllers/reveal_controller";
 
 const application = Application.start();
 
-application.register("tabs", TabsController);
-application.register("dojo", DojoController);
+application.register("theme", ThemeController);
+application.register("desafio", DesafioController);
 application.register("sandbox", SandboxController);
 application.register("blitz", BlitzController);
-application.register("ruby-dojo", RubyDojoController);
+application.register("reveal", RevealController);
